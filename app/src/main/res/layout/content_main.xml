@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:acContext=".common.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+        <TableLayout
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TableRow>
+                <LinearLayout
+
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/fab"
+                        />
+                    <TextView
+                        android:layout_gravity="center_horizontal"
+                        android:text="我的表情包"
+                        android:layout_marginTop="5dp"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/fab1"
+                        />
+                    <TextView
+                        android:layout_gravity="center_horizontal"
+                        android:text="制作表情"
+                        android:layout_marginTop="5dp"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </TableRow>
+            <TableRow>
+
+                <LinearLayout
+                    android:layout_margin="10dp"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    >
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/fab2"
+                        />
+                    <TextView
+                        android:layout_gravity="center_horizontal"
+                        android:text="手绘图"
+                        android:layout_marginTop="5dp"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_margin="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/fab3"
+                        />
+                    <TextView
+                        android:layout_gravity="center_horizontal"
+                        android:text="自拍相机"
+                        android:layout_marginTop="5dp"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+
+
+</RelativeLayout>

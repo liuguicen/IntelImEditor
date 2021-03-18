@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/apk/res-auto"
+    package="com.mathandintell.intelimeditor">
+
+    <!-- 从SDCard读取数据权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 系统方面 -->
+    <!-- 不知道加入原因，不应该有用到的 -->
+    <!-- <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> -->
+    <!-- bmob 保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 允许读取手机状态 用于创建BmobInstallation -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 允许联网 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 获取GSM（2g）、WCDMA（联通3g）等网络状态的信息 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 获取wifi网络状态的信息 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 如果需要精确定位的话请加上此权限 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- targetSdkVersion >= 26 时需要配置此权限，否则无法进行安装app的动作 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 穿山甲广告要求 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!-- 穿山甲3400版本新增：建议添加“query_all_package”权限，穿山甲将通过此权限在Android R系统上判定广告对应的应用是否在用户的app上安装，避免投放错误的广告，以此提高用户的广告体验。若添加此权限，需要在您的用户隐私文档中声明！ -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    
+    <permission
+        android:name="${applicationId}.permission.KW_SDK_BROADCAST"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.KW_SDK_BROADCAST" />
+
+
+    <!--    pytorch 5.0以上才能用，这里强制使用，代码判断之-->
+    <!--    <uses-sdk tool:overrideLibrary="org.pytorch.torchvision,org.pytorch" />-->
+    <application
+        android:name=".common.appInfo.IntelImEditApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/app_icon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_config"
+        android:requestLegacyExternalStorage="true"
+        android:screenOrientation="portrait"
+        android:theme="@style/MyAppTheme"
+        android:usesCleartextTraffic="true"
+        tool:ignore="LockedOrientationActivity">
+        <activity
+            android:name=".common.LaunchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity> <!-- value的值填写你在友盟后台申请的应用Appkey -->
+        <activity
+            android:name=".home.HomeActivity"
+            android:screenOrientation="portrait" /> <!-- value的值填写渠道名称，例如yingyongbao。这里设置动态渠道名称变量 -->
+        <activity
+            android:name=".ptu.PtuActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ptu.saveAndShare.PTuResultActivity"
+            android:label="@string/save_and_share"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.HelpActivity"
+            android:label="@string/title_help" />
+        <activity
+            android:name=".user.userSetting.SettingActivity"
+            android:label="@string/setting"
+            android:screenOrientation="portrait"
+            android:theme="@style/SettingAppTheme" />
+        <activity
+            android:name=".user.FeedBackActivity"
+            android:label="@string/feedback_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.userSetting.AboutAppActivity"
+            android:label="@string/about_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.useruse.AppGuideActivity"
+            android:screenOrientation="portrait" /> <!-- 支持全面屏的大高宽比 -->
+        <activity
+            android:name=".user.useruse.AppAgreementActivity"
+            android:label="@string/user_agreement"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.userVip.OpenVipActivity"
+            android:label="@string/open_vip"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.userVip.PayProblemMeasureActivity"
+            android:label="@string/pay_problem_handle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.search.SearchActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/search"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".ptu.changeFace.ChangeFaceActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/expression_change_face"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.tietuChoose.MorePicInfoActivity"
+            android:label="@string/title_activity_more_pic_info"
+            android:theme="@style/MyAppTheme.NoActionBar" /> <!-- 腾讯qq分享的 -->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1105572903" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullScreenAppTheme" />
+
+        <service
+            android:name="com.kaijia.adsdk.service.BatteryService"
+            android:enabled="true"
+            android:label="SmartCamService">
+            <intent-filter>
+                <action android:name="android.intent.action.BATTERY_CHANGED" />
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+
+            </intent-filter>
+        </service>
+
+        <!--铠甲广告的-->
+        <activity
+            android:name="com.kaijia.adsdk.activity.AppActivity"
+            android:configChanges="screenSize|keyboard|keyboardHidden|orientation" />
+
+        <provider
+            android:name="com.kaijia.adsdk.provider.kjFileProvider"
+            android:authorities="${packageName}.kj.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/kj_file_paths" />
+        </provider>
+        <service android:name="com.kaijia.adsdk.service.DownloadService" />
+        <!--铠甲广告的-->
+        <!--百度广告的-->
+        <provider
+            android:name="com.baidu.mobads.openad.BdFileProvider"
+            android:authorities="${packageName}.bd.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/kj_file_paths" />
+        </provider>
+
+        <activity
+            android:name="com.baidu.mobads.AppActivity"
+            android:configChanges="screenSize|keyboard|keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--百度广告的-->
+        <!--百度广告的-->
+        <!-- 下面这个不知道是那个sdk的了，可能是虹采的，没写到注释！！！ -->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" /> <!-- 允许绘制到华为刘海屏机型的刘海区域 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" /> <!-- 允许绘制到小米刘海屏机型的刘海区域 -->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait" />
+        <!--
+ &lt;!&ndash;微信开放平台的&ndash;&gt;
+         <activity
+             android:name=".wxapi.WXEntryActivity"
+             android:exported="true"
+             android:label="@string/app_name"
+             android:launchMode="singleTask"
+             android:taskAffinity="a.baozouptu"
+             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="@string/um_id" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
+        <!-- 腾讯广告联盟的 -->
+        <!-- 示例工程里面加了这个什么意思不知 -->
+        <meta-data
+            android:name="com.tencent.rdm.uuid"
+            android:value="3f34c50c-1bd6-44cf-9f47-c5d6adf9bee7" />
+
+        <provider
+            android:name="com.qq.e.comm.GDTFileProvider"
+            android:authorities="a.intelimedit.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/gdt_file_path" />
+        </provider>
+        <!-- 腾讯广告联盟的 end-->
+        <provider
+            android:name=".common.dataAndLogic.FileProviderToShare"
+            android:authorities="a.intelimedit.FileProviderToShare"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/share_file_path" />
+        </provider> <!-- targetSDKVersion >= 24时才需要添加这个 provider。provider 的 authorities 属性的值为 ${applicationId}.fileprovider，请开发者根据自己的 ${applicationId} 来设置这个值 -->
+        <provider
+            android:name="cn.bmob.v3.util.BmobContentProvider"
+            android:authorities="a.intelimedit.BmobContentProvider" /> <!-- 头条穿山甲广告的 -->
+        <provider
+            android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
+            android:authorities="${applicationId}.TTMultiProvider"
+            android:exported="false" />
+        <provider
+            android:name="com.bytedance.sdk.openadsdk.TTFileProvider"
+            android:authorities="${applicationId}.TTFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <service android:name=".common.appInfo.AppIntentService">
+            <intent-filter>
+                <action android:name="a.baozouptu.common.appInfo.AppIntentService" />
+            </intent-filter>
+        </service> <!-- bmob的 -->
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+
+        <!-- 友盟推送 以下为基本配置信息，需要自行添加至您的AndroidManifest文件中 start
+          <service
+              android:name="com.taobao.accs.ChannelService"
+              android:exported="true"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="com.taobao.accs.intent.action.SERVICE" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.taobao.accs.intent.action.ELECTION" />
+              </intent-filter>
+          </service>
+
+          <service
+              android:name="com.taobao.accs.data.MsgDistributeService"
+              android:exported="true">
+              <intent-filter>
+                  <action android:name="com.taobao.accs.intent.action.RECEIVE" />
+              </intent-filter>
+          </service>
+
+          <receiver
+              android:name="com.taobao.accs.EventReceiver"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="android.intent.action.BOOT_COMPLETED" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                  <data android:scheme="package" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="android.intent.action.USER_PRESENT" />
+              </intent-filter>
+          </receiver>
+
+          <receiver
+              android:name="com.taobao.accs.ServiceReceiver"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="com.taobao.accs.intent.action.COMMAND" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.taobao.accs.intent.action.START_FROM_AGOO" />
+              </intent-filter>
+          </receiver>
+
+          <service
+              android:name="com.taobao.accs.internal.AccsJobService"
+              android:permission="android.permission.BIND_JOB_SERVICE"
+              android:process=":channel" />
+
+          <service
+              android:name="com.taobao.accs.ChannelService$KernelService"
+              android:process=":channel" />
+
+          <service
+              android:name="org.android.agoo.accs.AgooService"
+              android:exported="true">
+              <intent-filter>
+                  <action android:name="com.taobao.accs.intent.action.RECEIVE" />
+              </intent-filter>
+          </service>
+
+          <service
+              android:name="com.umeng.message.UmengIntentService"
+              android:exported="true"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="org.agoo.android.intent.action.RECEIVE" />
+              </intent-filter>
+          </service>
+
+          <service
+              android:name="com.umeng.message.XiaomiIntentService"
+              android:exported="true"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="org.agoo.android.intent.action.RECEIVE" />
+              </intent-filter>
+          </service>
+
+          <receiver
+              android:name="com.taobao.agoo.AgooCommondReceiver"
+              android:exported="true"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="${applicationId}.intent.action.COMMAND" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                  <data android:scheme="package" />
+              </intent-filter>
+          </receiver>
+
+          <service
+              android:name="com.umeng.message.UmengMessageIntentReceiverService"
+              android:exported="true"
+              android:process=":channel">
+              <intent-filter>
+                  <action android:name="org.android.agoo.client.MessageReceiverService" />
+              </intent-filter>
+          </service>
+
+          <receiver
+              android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
+              android:exported="false" />
+
+          <service
+              android:name="com.umeng.message.UmengMessageCallbackHandlerService"
+              android:exported="false"
+              android:permission="android.permission.BIND_JOB_SERVICE">
+              <intent-filter>
+                  <action android:name="com.umeng.messge.registercallback.action" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.umeng.message.enablecallback.action" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.umeng.message.disablecallback.action" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.umeng.message.message.handler.action" />
+              </intent-filter>
+              <intent-filter>
+                  <action android:name="com.umeng.message.message.sendmessage.action" />
+              </intent-filter>
+          </service>
+
+          <service
+              android:name="com.umeng.message.UmengDownloadResourceService"
+              android:exported="false"
+              android:permission="android.permission.BIND_JOB_SERVICE" />
+
+          <provider
+              android:name="com.umeng.message.provider.MessageProvider"
+              android:authorities="${applicationId}.umeng.message"
+              android:exported="false">
+              <grant-uri-permission android:pathPattern=".*" />
+          </provider>
+          友盟推送 以下为基本配置信息，需要自行添加至您的AndroidManifest文件中 end-->
+        <activity
+            android:name="com.tencent.bugly.beta.ui.BetaActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent" />
+
+    </application>
+</manifest>

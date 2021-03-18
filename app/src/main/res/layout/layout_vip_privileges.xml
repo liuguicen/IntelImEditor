@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_8"
+        android:text="@string/vip_privileges"
+        android:textSize="@dimen/text_size_middle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/to_open_vip_no_ad"
+        style="@style/VipPrivilegesIV"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="@dimen/dp_4"
+        android:contentDescription="@string/exempt_ad"
+        android:src="@drawable/no_ad"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vip_privileges_no_id_tv"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+    <TextView
+        android:id="@+id/vip_privileges_no_id_tv"
+        style="@style/VipPrivilegesTv"
+        android:text="@string/exempt_ad"
+        app:layout_constraintBottom_toBottomOf="@+id/to_open_vip_no_ad"
+        app:layout_constraintEnd_toStartOf="@+id/vip_privileges_guideline"
+        app:layout_constraintStart_toEndOf="@+id/to_open_vip_no_ad"
+        app:layout_constraintTop_toTopOf="@+id/to_open_vip_no_ad" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vip_privileges_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:id="@+id/vip_privileges_all_functions_iv"
+        style="@style/VipPrivilegesIV"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="@dimen/dp_4"
+        android:contentDescription="@string/use_all_functions"
+        android:src="@drawable/all_function"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@+id/vip_privileges_guideline"
+        app:layout_constraintRight_toLeftOf="@id/vip_privileges_more_function_tv"
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+    <TextView
+        android:id="@+id/vip_privileges_more_function_tv"
+        style="@style/VipPrivilegesTv"
+        android:text="@string/use_all_functions"
+        app:layout_constraintBottom_toBottomOf="@+id/vip_privileges_all_functions_iv"
+        app:layout_constraintLeft_toRightOf="@+id/vip_privileges_all_functions_iv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vip_privileges_all_functions_iv" />
+</androidx.constraintlayout.widget.ConstraintLayout>

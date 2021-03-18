@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="240dp"
+    android:layout_gravity="center"
+    android:background="@color/vip_color_light"
+    app:layout_constraintHorizontal_chainStyle="packed">
+
+    <TextView
+        android:id="@+id/to_open_vip_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/vip_color_deep"
+        android:textSize="21sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/to_open_vip_no_ad"
+        tools:text="VIP免广告，仅需2元" />
+
+    <TextView
+        android:id="@+id/to_open_vip_no_ad"
+        style="@style/ToOpenVipPrivilegesIV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:contentDescription="@string/exempt_ad"
+        android:drawableTop="@drawable/no_ad"
+        android:text="@string/exempt_ad"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/to_open_vip_all_function"
+        app:layout_constraintBottom_toTopOf="@id/to_open_vip_notice"
+        app:layout_constraintTop_toBottomOf="@+id/to_open_vip_title" />
+
+    <TextView
+        android:id="@+id/to_open_vip_all_function"
+        style="@style/ToOpenVipPrivilegesIV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/all_function"
+        android:text="@string/use_all_functions"
+        app:layout_constraintBottom_toBottomOf="@+id/to_open_vip_no_ad"
+        app:layout_constraintLeft_toRightOf="@id/to_open_vip_no_ad"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <TextView
+        android:id="@+id/to_open_vip_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="点击即可开通"
+        android:textColor="@color/vip_color_deep"
+        android:textSize="@dimen/text_size_small_x"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/to_open_vip_no_ad" />
+</androidx.constraintlayout.widget.ConstraintLayout>

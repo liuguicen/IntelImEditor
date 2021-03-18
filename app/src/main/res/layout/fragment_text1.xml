@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:scrollbarAlwaysDrawHorizontalTrack="false"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="4dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add_text_toumingdu"
+            android:layout_width="@dimen/function_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView"
+                style="@style/function_text_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@mipmap/transparency"
+                app:layout_constraintBottom_toTopOf="@+id/text_guideline_toumingdu"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                style="@style/function_text"
+                android:layout_width="72dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="透明度"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_guideline_toumingdu" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/text_guideline_toumingdu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.666"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="482dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add_text_style"
+            android:layout_width="@dimen/function_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/function_text_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@mipmap/bold"
+                app:layout_constraintBottom_toTopOf="@+id/text_guideline_style"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                style="@style/function_text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="风格"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_guideline_style" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/text_guideline_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.666"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="482dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rend_function_choose_base"
+            android:layout_width="@dimen/function_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/function_text_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/color"
+                app:layout_constraintBottom_toTopOf="@+id/rend_guideline_color"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                style="@style/function_text"
+                android:layout_width="72dp"
+                android:layout_height="0dp"
+                android:text="颜色"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/rend_guideline_color" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/rend_guideline_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.666"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="482dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add_text_typeface"
+            android:layout_width="@dimen/function_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/function_text_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="7dp"
+                android:src="@mipmap/typeface"
+                app:layout_constraintBottom_toTopOf="@+id/text_guideline_typeface"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/function_text"
+                android:layout_width="72dp"
+                android:layout_height="0dp"
+                android:text="字体"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_guideline_typeface" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/text_guideline_typeface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.666"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="482dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/text_rubber"
+            android:layout_width="@dimen/function_width"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/function_text_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@mipmap/eraser"
+                app:layout_constraintBottom_toTopOf="@+id/text_guideline_rubber"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/function_text"
+                android:layout_width="72dp"
+                android:layout_height="0dp"
+                android:text="橡皮"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/text_guideline_rubber" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/text_guideline_rubber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.666"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="482dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- <LinearLayout
+             android:id="@+id/add_text_special"
+             android:layout_width="@dimen/function_width"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
+
+             <ImageView
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_weight="2"
+                 android:src="@mipmap/special"
+                 android:paddingLeft="@dimen/padding_function_item_image"
+                 android:paddingRight="@dimen/padding_function_item_image"
+                 android:paddingTop="@dimen/padding_function_item_image"
+                 android:paddingBottom="@dimen/padding_function_item_image"
+                 />
+
+             <TextView
+                 android:layout_width="@dimen/function_width"
+                 android:layout_height="0dp"
+                 android:layout_weight="1"
+                 android:gravity="center"
+                 android:text="特效"
+                 android:textColor="@color/text_color1"
+                 android:textSize="@dimen/text_size_main_function" />
+         </LinearLayout>
+
+         <LinearLayout
+             android:id="@+id/add_text_bubble"
+             android:layout_width="@dimen/function_width"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
+
+             <ImageView
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_weight="2"
+                 android:src="@mipmap/bubble"
+                 android:paddingLeft="@dimen/padding_function_item_image"
+                 android:paddingRight="@dimen/padding_function_item_image"
+                 android:paddingTop="@dimen/padding_function_item_image"
+                 android:paddingBottom="@dimen/padding_function_item_image"
+                 />
+
+             <TextView
+                 android:layout_width="@dimen/function_width"
+                 android:layout_height="0dp"
+                 android:layout_weight="1"
+                 android:gravity="center"
+                 android:text="气泡"
+                 android:textColor="@color/text_color1"
+                 android:textSize="@dimen/text_size_main_function" />
+         </LinearLayout>
+-->
+    </LinearLayout>
+</HorizontalScrollView>

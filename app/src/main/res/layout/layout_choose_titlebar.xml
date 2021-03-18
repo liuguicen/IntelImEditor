@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/layout_choose_local"
+        style="@style/chooseTitleLayout">
+
+        <TextView
+            android:id="@+id/tv_choose_local"
+            style="@style/chooseTitleTvName"
+            android:text="@string/title_choose_local"/>
+
+        <ImageView
+            android:id="@+id/line_chose_local"
+            style="@style/chooseTitleIvLine"/>
+    </LinearLayout>
+   
+    <LinearLayout
+        android:id="@+id/layout_choose_tietu"
+        style="@style/chooseTitleLayout">
+
+        <TextView
+            android:id="@+id/tv_choose_tietu"
+            style="@style/chooseTitleTvName"
+            android:text="@string/title_choose_tietu"/>
+
+        <ImageView
+            android:id="@+id/line_chose_tietu"
+            style="@style/chooseTitleIvLine"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_choose_template"
+        style="@style/chooseTitleLayout">
+
+        <TextView
+            android:id="@+id/tv_choose_template"
+            android:text="@string/title_choose_template"
+            style="@style/chooseTitleTvName"/>
+
+        <ImageView
+            android:id="@+id/line_chose_template"
+            style="@style/chooseTitleIvLine"/>
+    </LinearLayout>
+</LinearLayout>

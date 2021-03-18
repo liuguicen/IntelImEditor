@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <!--不要和本地图片共用布局-->
+<!--   背景去掉，不用加，不让界面太挤
+ android:background="@drawable/bg_radius_white"-->
+    <!--margin在代码在设置了
+    android:layout_marginStart="@dimen/pic_resource_list_tietu_margin"
+    android:layout_marginTop="@dimen/pic_resource_list_tietu_margin_big"
+    android:layout_marginEnd="@dimen/pic_resource_list_tietu_margin"
+    android:layout_marginBottom="@dimen/pic_resource_list_tietu_margin_big"-->
+
+    <ImageView
+        android:id="@+id/picIv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:src="@mipmap/icon"
+        app:layout_constraintBottom_toTopOf="@+id/hotTv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/videoSignIv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:src="@drawable/video_sign"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/chooserView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:src="@drawable/chosen"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

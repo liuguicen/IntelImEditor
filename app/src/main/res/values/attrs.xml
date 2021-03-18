@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Defines the custom XML attributes supported for a HorizontalListView -->
+    <declare-styleable name="HorizontalListView">
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="android:divider" />
+        <attr name="android:requiresFadingEdge" />
+        <attr name="android:fadingEdgeLength" />
+    </declare-styleable>
+
+    <declare-styleable name="slideswitch">
+        <attr name="themeColor" format="color" />
+        <attr name="isOpen" format="boolean" />
+        <attr name="shape">
+            <enum name="rect" value="1" />
+            <enum name="circle" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ColorLumpCircle">
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="colorLumpRadius" format="dimension" />
+        <attr name="colorLumpColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="MenuItemView">
+        <attr name="miv_title" format="reference|string" />
+        <attr name="miv_icon" format="reference|integer" />
+        <attr name="miv_color" format="reference|color" />
+    </declare-styleable>
+    <declare-styleable name="SettingsItemView">
+        <attr name="siv_title" format="reference|string" />
+        <attr name="siv_subTitle" format="reference|integer" />
+        <attr name="siv_color" format="reference|color" />
+        <attr name="siv_showSwitch" format="reference|boolean" />
+    </declare-styleable>
+
+    <!--底部功能View-->
+    <declare-styleable name="BottomFunctionView">
+        <attr name="bfv_icon" format="reference|color" />
+        <attr name="bfv_icon_bg" format="reference|color" />
+        <attr name="bfv_title" format="reference|string" />
+        <attr name="bfv_color" format="reference|color" />
+        <attr name="bfv_is_lock" format="reference|boolean" />
+    </declare-styleable>
+
+    <!--图片列表公共item-->
+    <declare-styleable name="PicGridView">
+        <!--        <attr name="brv" format="reference|color" />-->
+        <!--        <attr name="brv_title" format="reference|string" />-->
+        <!--        <attr name="brv_hot" format="reference|string" />-->
+        <!--        <attr name="brv_tag" format="reference|string" />-->
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
+    </declare-styleable>
+
+
+    <!--    <declare-styleable name="SegmentCutIndicator">-->
+    <!--        <attr name="indicator" format="reference"/>-->
+    <!--    </declare-styleable>-->
+
+</resources>

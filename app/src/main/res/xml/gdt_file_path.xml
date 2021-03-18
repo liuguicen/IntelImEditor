@@ -1,0 +1,36 @@
+<paths>
+    <!--铠甲广告增加的-->
+    <root-path
+        name="root"
+        path="" />
+    <files-path
+        name="files"
+        path="." />
+    <cache-path
+        name="cache"
+        path="." />
+    <external-path
+        name="external"
+        path="." />
+    <external-files-path
+        name="external_file_path"
+        path="." />
+
+    <external-cache-path
+        name="external_cache_path"
+        path="." />
+
+    <external-path
+        name="gdt_sdk_download_path"
+        path="GDTDOWNLOAD" />
+    <!--铠甲广告增加的 end-->
+
+    <!--广点通原来的-->
+    <!-- 这个下载路径也不可以修改，必须为GDTDOWNLOAD -->
+    <cache-path
+        name="gdt_sdk_download_path2"
+        path="com_qq_e_download" />
+    <external-cache-path
+        name="gdt_sdk_download_path1"
+        path="com_qq_e_download" />
+</paths>

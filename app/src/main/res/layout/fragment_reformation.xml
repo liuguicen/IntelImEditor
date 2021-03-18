@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/reformation_radius_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="12"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="4dp"/>
+
+    <view.MRangeSeekBar
+        app:layout_constraintLeft_toRightOf="@+id/reformation_radius_tv"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/reformation_radius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingHorizontal="4dp"
+        app:rsb_gravity="center"
+        app:rsb_mode="single"
+        app:rsb_indicator_show_mode="alwaysHide"
+        app:rsb_max="255"
+        app:rsb_min="0"
+        app:rsb_progress_color="@color/amber"
+        app:rsb_progress_height="4dp"
+        app:rsb_thumb_drawable="@drawable/huaji"
+        app:rsb_indicator_background_color="@color/white"
+        app:rsb_indicator_text_color="@color/text_checked_color"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

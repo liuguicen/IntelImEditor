@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/seek_bar_value_tv"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="4dp"
+        android:gravity="center"
+        tools:text="12" />
+
+    <view.MRangeSeekBar
+        android:id="@+id/seek_bar_popw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:maxHeight="4dp"
+        android:paddingHorizontal="4dp"
+        app:rsb_gravity="center"
+        app:rsb_mode="single"
+        android:layout_marginRight="2dp"
+        app:rsb_progress_color="@color/amber"
+        app:rsb_progress_height="4dp"
+        app:rsb_thumb_drawable="@drawable/huaji"
+        app:rsb_thumb_height="30dp"
+        app:rsb_thumb_width="30dp" />
+</LinearLayout>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintHorizontal_chainStyle="spread">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dig_preview"
+        style="@style/function_layout"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/dig_blur_radius"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/dig_preview_iv"
+            style="@style/function_text_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/preview_normal"
+            app:layout_constraintBottom_toTopOf="@+id/text_guideline_rubber"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/dig_preview_tv"
+            style="@style/function_text"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:text="@string/preview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_guideline_rubber" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/text_guideline_rubber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.666"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="482dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dig_blur_radius"
+        style="@style/function_layout"
+        app:layout_constraintLeft_toRightOf="@+id/dig_preview"
+        app:layout_constraintRight_toLeftOf="@+id/go_change_face"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            style="@style/function_text_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="7dp"
+            android:src="@mipmap/transparency"
+            app:layout_constraintBottom_toTopOf="@+id/text_guideline_typeface"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/function_text"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:text="@string/blur_radius_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_guideline_typeface" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/text_guideline_typeface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.666" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/go_change_face"
+        style="@style/function_layout"
+        android:visibility="visible"
+        app:layout_constraintLeft_toRightOf="@id/dig_blur_radius"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            style="@style/function_text_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@mipmap/choose_base"
+            app:layout_constraintBottom_toTopOf="@+id/dig_guideline_color"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            style="@style/function_text"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:text="@string/go_change_face"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dig_guideline_color" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/dig_guideline_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.666" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

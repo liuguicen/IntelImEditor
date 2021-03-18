@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    tools:parentTag="android.widget.RelativeLayout">
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_toStartOf="@+id/srl_classics_center"
+        android:layout_toLeftOf="@+id/srl_classics_center"
+        android:contentDescription="@android:string/untitled"
+        android:src="@drawable/round_arrow_upward"
+        app:layout_constraintBottom_toBottomOf="@+id/srl_classics_center"
+        app:layout_constraintEnd_toStartOf="@+id/pb_progress"
+        app:layout_constraintTop_toTopOf="@+id/srl_classics_center" />
+
+    <ProgressBar
+        android:id="@+id/pb_progress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_toStartOf="@+id/srl_classics_center"
+        android:layout_toLeftOf="@+id/srl_classics_center"
+        android:contentDescription="@android:string/untitled"
+        app:layout_constraintBottom_toBottomOf="@+id/srl_classics_center"
+        app:layout_constraintEnd_toStartOf="@+id/srl_classics_center"
+        app:layout_constraintTop_toTopOf="@+id/srl_classics_center"
+        tools:tint="#666666" />
+
+    <LinearLayout
+        android:id="@+id/srl_classics_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="@string/app_name"
+            android:textColor="#666666"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

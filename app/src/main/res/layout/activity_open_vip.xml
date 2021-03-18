@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#eee"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/immediate_pay_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:context=".user.userVip.OpenVipActivity">
+
+            <include layout="@layout/include_toolbar" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/open_vip_privileges_layout"
+                style="@style/OpenVipGroupLayout">
+
+                <TextView
+                    android:id="@+id/vip_privileges_detail_title"
+                    style="@style/OpenVipGroupTitle"
+                    android:text="@string/vip_privileges"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/vip_no_ad_detail_iv"
+                    style="@style/OpenVipPrivilegesIV"
+                    android:layout_marginTop="@dimen/open_vip_item_margin_title"
+                    android:src="@drawable/no_ad"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/vip_privileges_detail_title" />
+
+                <TextView
+                    android:id="@+id/vip_no_ad_detail_tv"
+                    style="@style/OpenVipPrivilegesTv"
+                    android:text="@string/no_ad_detail"
+                    app:layout_constraintBottom_toBottomOf="@+id/vip_no_ad_detail_iv"
+                    app:layout_constraintLeft_toRightOf="@+id/vip_no_ad_detail_iv"
+                    app:layout_constraintTop_toTopOf="@+id/vip_no_ad_detail_iv" />
+
+
+                <ImageView
+                    android:id="@+id/vip_all_function_iv"
+                    style="@style/OpenVipPrivilegesIV"
+                    android:src="@drawable/all_function"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vip_no_ad_detail_iv" />
+
+                <TextView
+                    android:id="@+id/vip_all_function_tv"
+                    style="@style/OpenVipPrivilegesTv"
+                    android:text="@string/use_all_functions"
+                    app:layout_constraintBottom_toBottomOf="@+id/vip_all_function_iv"
+                    app:layout_constraintLeft_toRightOf="@+id/vip_all_function_iv"
+                    app:layout_constraintTop_toTopOf="@+id/vip_all_function_iv" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/set_meals_layout"
+                style="@style/OpenVipGroupLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/open_vip_privileges_layout">
+
+                <TextView
+                    android:id="@+id/vip_set_meal_title"
+                    style="@style/OpenVipGroupTitle"
+                    android:text="@string/vip_set_meal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/vip_all_function_iv" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/vipListRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/open_vip_item_margin_title"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/vip_set_meal_title" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pay_way_layout"
+                style="@style/OpenVipGroupLayout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/set_meals_layout">
+
+                <include
+                    android:id="@+id/wXinPayView"
+                    style="@style/OpenVipPayLayout"
+                    layout="@layout/layout_pay_way"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/gray_light"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/aliPayView"
+                    style="@style/OpenVipPayLayout"
+                    layout="@layout/layout_pay_way" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/vip_service_agreement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="@string/vip_service_agreement"
+                    android:textColor="@color/default_link_color"
+                    android:textSize="13sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/btn_to_pay_problem_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="@string/to_pay_problem_measure"
+                    android:textColor="@color/gray_dark"
+                    android:textSize="13sp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/immediate_pay_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/vip_color_middle_x"
+        android:gravity="center"
+        android:onClick="payVip"
+        android:padding="@dimen/dp_16"
+        android:text="@string/pay_immediately"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_big_x"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

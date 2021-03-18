@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view.PtuConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ptu_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/ptu_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/base_toolbar_background"
+        android:fitsSystemWindows="true">
+
+        <view.PtuToolbar
+            android:id="@+id/ptu_toolbar_relative"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ptu_top_bar_height"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <view.PtuFrameLayout
+        android:id="@+id/ptu_frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_main_function"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ptu_appbar"
+        app:layout_constraintVertical_weight="85">
+
+        <view.PtuSeeView
+            android:id="@+id/ptu_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/default_ptu_bg" />
+
+    </view.PtuFrameLayout>
+
+    <FrameLayout
+        android:id="@+id/banner_ad_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/ptu_appbar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ptu_notice_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_round_corner_white"
+        android:padding="4dp"
+        android:paddingStart="8dp"
+        android:paddingLeft="8dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ptu_appbar">
+
+        <TextView
+            android:id="@+id/ptu_notice_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_deep_x_black"
+            android:textSize="@dimen/text_size_big_xx"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="绕着五官画圈抠脸即可" />
+
+        <ImageView
+            android:id="@+id/ptu_notice_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:src="@drawable/cancel"
+            app:layout_constraintBottom_toBottomOf="@+id/ptu_notice_tv"
+            app:layout_constraintLeft_toRightOf="@+id/ptu_notice_tv"
+            app:layout_constraintTop_toTopOf="@+id/ptu_notice_tv" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gif_operation_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_main_function"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/gif_play_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/round_remove_red_eye"
+            android:drawableLeft="@drawable/round_remove_red_eye"
+            android:drawablePadding="@dimen/dp_4"
+            android:gravity="center"
+            android:padding="@dimen/dp_4"
+            android:text="@string/preview"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/gif_rv"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/gif_notice_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/make_gif_notice"
+            app:layout_constraintBottom_toTopOf="@+id/gif_rv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/gif_frame_show_hide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_4"
+            android:src="@drawable/ic_arrow_down"
+            app:layout_constraintBottom_toTopOf="@id/gif_rv"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/gif_rv"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/gif_frame_height"
+            android:background="@color/default_ptu_bg"
+            android:paddingBottom="24dp"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
+            app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"
+            app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
+            app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_main_function"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/bottom_function_layout_height"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</view.PtuConstraintLayout>

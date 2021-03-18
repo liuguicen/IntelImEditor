@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/settings_toolbar"
+        layout="@layout/include_toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_toolbar">
+
+        <LinearLayout
+            android:id="@+id/layout_activity_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/setting_user_title"
+                style="@style/setting_group_title"
+                android:text="@string/settings_user" />
+
+            <LinearLayout
+                android:id="@+id/setting_user_layout"
+                style="@style/setting_set_group_layout">
+
+                <Button
+                    android:id="@+id/setting_user_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:backgroundTint="@color/deepOrange"
+                    android:text="@string/user_login"
+                    android:textColor="@color/white" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:background="@drawable/divider_setting_item" />
+
+                <include layout="@layout/layout_user_info" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:background="@drawable/divider_setting_item" />
+
+                <include layout="@layout/layout_vip_privileges" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/setting_group_title"
+                android:text="@string/settings_quick_tools" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:id="@+id/showNotifyToolsView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toGiveStar"
+                app:siv_showSwitch="true"
+                app:siv_title="@string/settings_notify_quick" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:id="@+id/exitDisplayNotify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toGiveStar"
+                app:siv_showSwitch="true"
+                app:siv_title="@string/settings_notify" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:id="@+id/shareWithNoLabelView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toGiveStar"
+                app:siv_showSwitch="true"
+                app:siv_title="@string/settings_share" />
+
+            <TextView
+                style="@style/setting_group_title"
+                android:text="@string/settings_comment"
+                android:textColor="@color/text_middle_black" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toGiveStar"
+                app:siv_title="@string/settings_star" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toOfficialGroup"
+                app:siv_subTitle="175947325"
+                app:siv_title="暴走P图交流群" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toOfficialGroup"
+                app:siv_subTitle="910595711"
+                app:siv_title="暴走P图反馈群" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toAppFeedbackPage"
+                app:siv_title="@string/settings_feedback" />
+
+            <TextView
+                style="@style/setting_group_title"
+                android:text="@string/settings_other" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toAppGuidePage"
+                app:siv_title="@string/guide" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:onClick="toAppAboutPage"
+                app:siv_title="@string/settings_about" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:background="@drawable/divider_setting_item" />
+
+            <a.intelimedit.common.view.SettingsItemView
+                android:id="@+id/cacheView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:siv_title="@string/clean_cache" />
+
+            <TextView
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:background="@drawable/bg_btn_login"
+                android:gravity="center"
+                android:padding="@dimen/dp_8"
+                android:text="@string/logout"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

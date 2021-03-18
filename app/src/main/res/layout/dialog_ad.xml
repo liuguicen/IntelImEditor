@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/ad_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/save_set_dialog_name"
+        android:textSize="10pt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/ad_dialog_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ad_dialog_title" />
+
+    <TextView
+        android:id="@+id/ad_dialog_first"
+        style="@style/ADDialogBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ad_dialog_second"
+        app:layout_constraintTop_toTopOf="@+id/ad_dialog_container" />
+
+    <TextView
+        android:id="@+id/ad_dialog_second"
+        style="@style/ADDialogBtn"
+        app:layout_constraintLeft_toRightOf="@+id/ad_dialog_first"
+        app:layout_constraintRight_toLeftOf="@+id/ad_dialog_third"
+        app:layout_constraintTop_toTopOf="@+id/ad_dialog_container" />
+
+    <TextView
+        android:id="@+id/ad_dialog_third"
+        style="@style/ADDialogBtn"
+        app:layout_constraintLeft_toRightOf="@+id/ad_dialog_second"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ad_dialog_container" />
+</androidx.constraintlayout.widget.ConstraintLayout>

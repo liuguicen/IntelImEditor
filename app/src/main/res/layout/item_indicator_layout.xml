@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/indicatorLayout"
+    android:layout_width="@dimen/dp_72"
+    android:layout_height="2dp"
+    android:layout_gravity="center_horizontal|bottom"
+    android:layout_marginTop="@dimen/dp_2"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/bg_indicator_layout"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <View
+        android:id="@+id/indicatorView"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="2dp"
+        android:background="@drawable/bg_indicator_view" />
+
+</FrameLayout>

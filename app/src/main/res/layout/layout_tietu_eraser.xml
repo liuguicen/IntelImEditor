@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_eraser_function_layout"
+    style="@style/function_total_layout"
+    android:scrollbars="none"
+    app:layout_constraintHorizontal_chainStyle="spread">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tietu_eraser_size"
+        style="@style/rend_function_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/tietu_eraser_blur"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            style="@style/function_tietu_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/size"
+            android:src="@mipmap/fixed_size"
+            app:layout_constraintBottom_toTopOf="@+id/tietu_eraser_guideline_size"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            style="@style/function_text"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:text="@string/size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tietu_eraser_guideline_size" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tietu_eraser_guideline_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.666" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tietu_eraser_blur"
+        style="@style/function_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@+id/tietu_eraser_size"
+        app:layout_constraintRight_toLeftOf="@+id/tietu_erase_function_divider"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/tietu_eraser_blur_iv"
+            style="@style/function_tietu_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:background="@drawable/function_background_tietu_green"
+            android:contentDescription="@string/blur_radius_name"
+            android:src="@mipmap/transparency"
+            app:layout_constraintBottom_toTopOf="@+id/tietu_eraser_guideline_blur"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tietu_eraser_blur_tv"
+            style="@style/function_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/blur_radius_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tietu_eraser_guideline_blur" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tietu_eraser_guideline_blur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.666" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <ImageView
+        android:id="@+id/tietu_erase_function_divider"
+        android:layout_width="2dp"
+        android:layout_marginTop="@dimen/margin_big"
+        android:layout_marginBottom="@dimen/margin_middle_x"
+        android:layout_height="match_parent"
+        android:background="#b0b0b0"
+        app:layout_constraintLeft_toRightOf="@id/tietu_eraser_blur"
+        app:layout_constraintRight_toLeftOf="@id/tietu_eraser_finish"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tietu_eraser_finish"
+        style="@style/function_layout"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/tietu_erase_function_divider"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            style="@style/function_text_image"
+            android:layout_width="0dp"
+            android:contentDescription="@string/finish"
+            android:padding="5dp"
+            android:src="@drawable/ic_tick"
+            app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_eraser"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/function_eraser_finish_tv"
+            style="@style/function_text"
+            android:text="@string/finish"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_eraser" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tietu_guideline_eraser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.666" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/tietu_function_make"
+                style="@style/function_layout"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@+id/tietu_function_eraser"
+                app:layout_constraintRight_toLeftOf="@+id/tietu_function_synthesis"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    style="@style/function_tietu_image"
+                    android:layout_width="0dp"
+                    android:src="@mipmap/tools"
+                    app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_make"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/make" />
+
+                <TextView
+                    android:id="@+id/function_tietu_make_text"
+                    style="@style/function_text"
+                    android:text="@string/make"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_make" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/tietu_guideline_make"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.666" />
+
+            </android.support.constraint.ConstraintLayout>-->
+    <!--
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/tietu_eraser_btn_layout"
+                style="@style/function_layout"
+                android:visibility="gone"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@+id/tietu_function_make"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    style="@style/function_tietu_image"
+                    android:layout_width="0dp"
+                    android:src="@mipmap/synthesis"
+                    app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_synthesis"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/tiao_se" />
+
+                <TextView
+                    android:id="@+id/function_text"
+                    style="@style/function_text"
+                    android:text="@string/tiao_se"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_synthesis" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/tietu_guideline_synthesis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.666" />
+
+            </android.support.constraint.ConstraintLayout>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--友盟Id-->
+    <string name="um_id">5caddc5b570df36f9900151d</string>
+    <!--基础的，用于其应用复用它-->
+    <string name="save_share">分享到</string>
+    <string name="sure">确定</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="back">返回</string>
+    <!--图片选择相关-->
+    <string name="latest_use">最近使用</string>
+    <string name="recent_pic">最近图片</string>
+    <string name="prefer_pic">常用图片</string>
+    <string name="choose_pic_from_system">从系统相册选图</string>
+
+    <!--首页用到的-->
+    <string name="click_to_skip">点击跳过</string>
+    <string name="app_necessary_permission_notice">点击允许所有权限，APP才能正常使用哦</string>
+    <string name="app_option_permission_notice">缺乏必要权限会影响我们提供给您的服务，您可以选择打开</string>
+    <string name="go_to_permit">去允许</string>
+    <string name="permission">权限</string>
+    <string name="privacy_tips_title">温馨提示</string>
+    <string name="privacy_tips_content">如您不同意我们的用户协议和隐私政策，您将无法使用我们的APP</string>
+    <string name="setting_permission_guide">\n请在 设置-应用管理-权限 中，允许权限</string>
+    <!--"·关于存储权限：为读取、编辑和保存您的图片，我们会申请存储权限！\n"-->
+    <string name="permission_use_statement">"·关于定位权限：我们只会基于定位推荐您感兴趣的内容，不会用作其它用途并严格保护您的隐私！\n\n"
+                "·关于通话权限：我们需要根据电话状态码区分您和其他用户，不会使用电话短信相关功能，请您放心！\n"</string>
+
+    <string name="app_name">暴走P图</string>
+    <string name="version_name">v%1$s</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">设置</string>
+    <string name="title_activity_main">暴走P图</string>
+    <string name="open">开</string>
+    <string name="close">关</string>
+    <string name="pen">钢笔</string>
+    <string name="shape">形状</string>
+    <string name="swear">涂抹</string>
+    <string name="rubber">橡皮</string>
+    <string name="cut_scale">比例</string>
+    <string name="cut_rotate">旋转</string>
+    <string name="cut_flip">翻转</string>
+    <string name="title_choose_local">本机</string>
+    <string name="title_choose_tietu">贴图</string>
+    <string name="title_choose_template">模板</string>
+    <string name="save_size">图片大小(省流发送)</string>
+    <string name="save_set_dialog_name">保存和分享</string>
+    <string name="save_finish">保存完成!</string>
+    <string name="share_finish">分享完成!</string>
+    <string name="save_and_share">已保存</string>
+
+    <!--P图结果页-->
+    <string name="return_choose">回首页</string>
+    <string name="continue_ptu">继续P图</string>
+    <string name="please_wait">请稍后</string>
+
+    <string name="latest_pic">最新图片</string>
+    <string name="make_expression">制作表情</string>
+
+    <string name="draw">绘图</string>
+    <string name="edit">编辑</string>
+    <string name="text">文字</string>
+    <string name="tietu">贴图</string>
+    <string name="mat">抠图</string>
+    <string name="dig_face">抠脸</string>
+    <string name="the_return">返回</string>
+    <!--    <string name="share_add">分享+</string>-->
+    <string name="save_add">保存 +</string>
+    <string name="setting">设置</string>
+    <!--    <string name="tag_manager">标签管理</string>-->
+    <string name="fuse">融合</string>
+    <string name="apply_success">申请成功</string>
+    <string name="generating">正在生成中...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--设置相关-->
+    <string name="clean_cache">清除缓存</string>
+    <string name="settings_about">关于暴走P图</string>
+    <string name="settings_check_update">检查更新</string>
+    <string name="app_guide">P图引导页</string>
+    <string name="settings_other">其它</string>
+    <string name="settings_feedback">意见反馈</string>
+    <string name="settings_star">给个好评吧</string>
+    <string name="settings_quick_tools">快捷工具</string>
+    <string name="settings_comment">评价</string>
+    <string name="settings_share">分享时不带应用标签</string>
+    <string name="settings_notify">退出后显示通知</string>
+    <string name="settings_notify_quick">通知栏快捷工具</string>
+    <string name="about_des">本软件基于个人业余爱好开发，希望分享一些有趣的功能给大家。</string>
+    <string name="about_title">关于</string>
+
+    <!--用户-->
+    <string name="settings_user">用户</string>
+    <string name="user_login">登录</string>
+
+    <!--VIP、免广告相关-->
+    <string name="open_vip">开通会员</string>
+    <string name="exempt_ad">无广告</string>
+    <string name="no_ad_detail">告别广告打扰</string>
+    <string name="use_all_functions">解锁所有模板</string>
+    <string name="vip_privileges">会员特权</string>
+    <string name="min_vip_price">会员免广告，仅需2元！</string>
+    <string name="set_meal_half_month">半个月</string>
+    <string name="set_meal_one_month">一个月</string>
+    <string name="set_meal_three_moths">三个月</string>
+
+    <!--反馈-->
+    <string name="feedback_method">联系方式:</string>
+    <string name="feedback_contact">选填(QQ、微信、手机号码、邮箱)，便于我们联系您解决，我们将会抽取部分用户进行有奖调查</string>
+    <string name="feedback_comment">有什么不爽或建议尽管吐槽吧，我们会努力改进的。</string>
+    <string name="feedback_commit">提交反馈</string>
+    <string name="feedback_title">意见反馈</string>
+    <string name="feedback_des">问题描述:</string>
+    <string name="feedback_has_commit">反馈已提交</string>
+    <string name="commit_success_thanks">提交成功，感谢您的反馈!</string>
+    <string name="record_success_thanks">记录成功，感谢您的反馈!</string>
+    <string name="network_error_try_latter">网络或服务器出错，请稍后再试！</string>
+
+    <string name="load_tietu_failed">加载贴图失败</string>
+    <string name="load_pic_failed">加载图片失败</string>
+    <string name="rend_pic">撕图</string>
+    <string name="finish">完成</string>
+    <string name="split">分开</string>
+
+
+    <!--PTu相关-->
+    <!--公用的-->
+    <string name="preview">预览</string>
+    <string name="reset">重置</string>
+    <!--撕图-->
+    <string name="choose_base_pic">选背景</string>
+    <string name="scale">缩放</string>
+    <string name="add_text">加文字</string>
+    <string name="go_edit">去裁剪</string>
+    <string name="rend_again">再撕一次</string>
+
+
+    <string name="go_choose_base_pic">选背景 >></string>
+    <!--加载-->
+    <string name="load_pic_failed_not_exit_or_format_error">图片加载失败，图片不存在，或格式出错</string>
+    <string name="get_pic_failed">获取图片失败</string>
+    <string name="cut_out">抠图</string>
+    <string name="blur_radius_name">模糊半径</string>
+    <string name="blur_radius_value">%1$d</string>
+    <string name="paint_size">画笔大小 %1$s</string>
+    <string name="cutout_processing">正在抠图中...</string>
+    <string name="fail_to_cacu_crack_notice">计算裂痕失败！请让图片至于两指中心。</string>
+    <string name="first_download_pic_resource_notice">首次进入需要下载表情,可能需要较多时间,请您稍后！</string>
+    <string name="download_pic_resources_note">正在加载表情… 请稍后</string>
+    <string name="size">尺寸</string>
+    <string name="loading">正在加载中...</string>
+    <string name="ad_pause_to_see">暂停观看</string>
+    <string name="enter_app">进入应用</string>
+    <string name="no_momery_notice">很抱歉，应用内存不足！请保存图片，重新进入应用再编辑</string>
+    <string name="please_cutout_first">请先圈出抠图区域！</string>
+    <string name="cut_out_review">预览</string>
+    <string name="crop">裁剪</string>
+    <string name="leave_from_much_edit">当前编辑较多，再点即可离开</string>
+    <string name="my_tietu">我的</string>
+    <string name="my_tietu_guide">图片选择页长按图片即可收藏我的贴图哦</string>
+    <string name="delete_finish">已删除</string>
+    <string name="prop">道具</string>
+    <string name="expression">表情</string>
+    <string name="paint_color">颜色</string>
+    <string name="paint_eraser">橡皮檫</string>
+    <string name="paint">画笔</string>
+    <string name="paint_style">样式</string>
+    <string name="no_template_resource">暂时无法下载模板，网络或者服务器出错</string>
+
+    <!--贴图相关-->
+    <string name="no_my_tietu_notice">您还没有添加贴图，首页长按图片即可添加哦</string>
+    <string name="pic_download_failed_info">下载图片失败，网络或者服务器出错!</string>
+    <string name="no_network_tietu_notice">暂时无法下载贴图，网络或者服务器出错!</string>
+
+    <!--gif相关-->
+    <string name="gif_guide">下方是帧列表，长按可选择多帧，效果只添加到选中帧上面哟，双击可取消</string>
+    <string name="gif_ptu_preview_guide">点击此处可以预览P图效果哟</string>
+    <string name="composing_gif">合成GIF中...</string>
+    <string name="adding">添加中...</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+    <string name="gif_save_guide">只会保存选中的帧哦，全选全部请全选</string>
+    <string name="saving">保存中...</string>
+    <string name="delete">删除</string>
+    <string name="ad_state">本应用为免费应用，广告有助于支持我们更好的开发应用，感谢！</string>
+    <string name="about_ad">关于广告</string>
+    <string name="ad">广告</string>
+    <string name="failed_to_get_data_from_local_db">从本地数据库获取数据失败！</string>
+    <string name="make">制作</string>
+    <string name="property">道具</string>
+    <string name="more">更多</string>
+    <string name="tiao_se">调色</string>
+    <!--抠图-->
+    <string name="dig_save_guide">抠图已保存，点击我的贴图可看到</string>
+    <string name="blur_radius_guide">调节模糊半径，可使抠图后贴图效果更逼真哦</string>
+    <string name="register_success">登录成功!</string>
+    <string name="login_has_canceled">已取消登录</string>
+    <string name="login_out">退出</string>
+    <string name="login_failed_by_server">服务器创建用户失败！</string>
+    <string name="faile_to_get_login_info">获取登录信息出错!</string>
+    <string name="please_relogin">请重新登陆</string>
+    <string name="login_failed_by_other_error">登录失败，服务器或者网络出错</string>
+    <string name="server_create_user_failed_by_other_error">创建用户失败，服务器或者网络出错</string>
+    <string name="get_user_info_failed_by_other_error">获取用户信息失败，网络或服务器出错！</string>
+    <string name="failed_to_access_server">访问服务器失败</string>
+    <string name="login_success">登录成功</string>
+    <string name="msg_got_is_null">获取到的信息为空</string>
+    <string name="quickly_ptu_notice_chanel_name">快速P图</string>
+    <string name="quickly_ptu_notice_chanel_description">快速打开应用进行P图</string>
+    <string name="cancel_multi_choose_confirm">当前已选择多张图片，确定取消吗</string>
+
+    <string name="fail_to_download_font">解析字体失败,试试在设置中删除再重新下载</string>
+
+
+    <string name="text_transparency">透明度</string>
+    <string name="text_style">风格</string>
+    <string name="text_color">颜色</string>
+    <string name="text_font">字体</string>
+    <string name="make_gif">制作GIF</string>
+    <string name="make_gif_notice">双击或长按</string>
+    <string name="too_many_pic_to_mack_gif">当前选择图片过多</string>
+    <string name="contain_video_cannot_mack_gif">所选图片中已经包含短视频，无法制作</string>
+    <string name="pay_immediately">立即支付</string>
+    <string name="price_format">%1$.2f元</string>
+    <string name="part_pic_cannot_be_load">部分图片无法加载</string>
+    <string name="unkown_error">操作遇到未知错误</string>
+    <string name="not_yet_support_video_make">暂不支持视频制作</string>
+    <string name="path_is">路径: %1$s</string>
+    <string name="on_loading_info">正在加载资料</string>
+    <string name="on_logging_server">正在登陆服务器</string>
+    <string name="paint_opacity">不透明度</string>
+    <string name="no_net_to_download_typeface">没有网络暂时无法下载字体哟！</string>
+    <string name="unlock_title">此功能需要解锁哟</string>
+    <string name="unlock_title_resource">此资源需要解锁哟</string>
+    <string name="please_wait_for_load_video">加载视频中，请稍后</string>
+    <string name="locked_after_video">看完视频解锁</string>
+    <string name="user_agreement">用户协议</string>
+    <string name="privacy_policies">隐私政策</string>
+
+    <string name="long_time_parse_video_so_ad">视频解析时间较长，先看个视频吧</string>
+    <string name="support_by_video_ad">支持我们，看个视频吧</string>
+    <string name="have_a_look">看一看(%1$d)</string>
+    <string name="drop_it">算了</string>
+    <string name="tietu_gif_secondary_sure_guide">您可以点击下面一个确定按钮√，快速添加贴图哟</string>
+    <string name="draw_gif_secondary_sure_guide">您可以点击下面一个确定按钮√，绘制到当前选中的GIF</string>
+    <string name="share_methods_tips">分享方式</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="confirm">确定</string>
+    <string name="error_missing_appid_rsa_private">私有密钥错误</string>
+    <string name="pay_success">付款成功</string>
+    <string name="pay_result">付款结果</string>
+    <string name="pay_failed">付款失败</string>
+    <string name="logout">退出登录</string>
+    <string name="upload_works_for_other_to_use">将您的作品上传到服务器，分享给其他用户使用</string>
+    <string name="ok">好的</string>
+    <string name="upload">上传</string>
+    <string name="delete_result_or_re_save">删除图片，删除后您可以返回上页重新保存</string>
+
+    <!--vip相关-->
+    <string name="congratulations_on_successful_membership">恭喜您开通会员成功！</string>
+    <string name="regrit_failed_to_open_vip">很遗憾开通会员失败</string>
+    <string name="has_opened_vip">您已经是VIP，不用再开通</string>
+    <string name="vip_free_ad_floor_price">VIP免广告，仅需%1$s元！</string>
+    <string name="vip_resources_floor_price">VIP解锁所有图片，仅需%1$s元！</string>
+    <string name="go_open">去开通</string>
+    <string name="vip_set_meal">VIP套餐</string>
+    <string name="weixin_pay">微信支付</string>
+    <string name="alipay">支付宝</string>
+    <string name="vip_service_agreement">《VIP服务协议》</string>
+    <string name="vip_service_agreement_title">暴走P图VIP服务协议</string>
+    <string name="to_pay_problem_measure"><u>已付款但未开通，请点这里</u></string>
+    <string name="please_login_to_get_id">请您先登录以获取您的用户ID</string>
+    <string name="please_copy_the_id">请复制此ID:</string>
+    <string name="pay_problem_handle">支付问题处理</string>
+
+    <string name="we_will_reduce_likely_ad">我们将减少类似广告</string>
+    <string name="title_help">教程</string>
+    <string name="q1">暴走P图能干什么</string>
+    <string name="a1">可以对图片、GIF动图，进行撕图，裁剪，旋转，贴图，添加文字，涂鸦，抠图等操作，从而制作专属自己的表情包！</string>
+    <string name="q2">怎样撕图？</string>
+    <string name="a2">选择图片进入撕图界面，双指往外拉即可完成撕图，最后点击右上角保存图片！</string>
+    <string name="q3">怎样贴图？</string>
+    <string name="a3">选择图片进入贴图界面，选择提供的表情，图片进行贴图，贴图也可进行旋转，缩放，撕图等操作！</string>
+    <string name="q4">怎样抠图？</string>
+    <string name="a4">选择图片进入抠图界面，手指在图片上画出需要抠出来的区域，点击右上角图标即可完成抠图！</string>
+    <string name="q5">怎样制作GIF动态图</string>
+    <string name="a5">1.在本地页面，长按图片，就会出现制作GIF图的按钮\n2.选择需要制作的图片，然后点击制作GIF按钮跳转到P图界面进行编辑\n3.长按选择GIF帧图\n4.单击某张图片可以对某张图进行贴图，加文字操作\n5.点击分享+即可完成GIF制作</string>
+    <string name="q6">怎样编辑gif动态图</string>
+    <string name="a6">1.选择GIF图片进行编辑\n2.长按选择GIF帧图\n3.单击某张图片可以对某张图进行贴图，加文字操作\n4.点击分享+即可完成GIF制作\n</string>
+    <string name="q7">更多问题</string>
+    <string name="a7">请加入QQ群 910595711 反馈</string>
+    <string name="auto_add_tietu_notice">已自动添加了贴图，你可以将它贴到下一帧！</string>
+    <string name="tools">工具</string>
+    <string name="reversal">反向</string>
+    <string name="big_and_small">大小字</string>
+    <string name="vertical">竖着</string>
+    <string name="dialog">对话框</string>
+    <string name="rate_hint">给个好评吧！</string>
+    <string name="rate_hint_1">如果喜欢我们这个App，请按下评星</string>
+    <string name="search_hint">"请输入关键词，如'暴走'"</string>
+    <string name="search">搜索</string>
+    <string name="search_history">搜索历史</string>
+    <string name="action_sort">排序</string>
+    <string name="sort_by_hot_desc">最热图片</string>
+    <string name="sort_by_time_asc">最新图片</string>
+    <string name="sort_by_group">分组排列</string>
+    <string name="empty_tips">非常抱歉\n没有搜索到相关的表情哦😯</string>
+    <string name="recommend_for_you">为你推荐</string>
+    <string name="guide">教程</string>
+    <string name="stretch">拉伸</string>
+    <string name="app_des">能让您一言不合就斗图的APP</string>
+    <string name="highlight">白色</string>
+    <string name="shadow">黑色</string>
+    <string name="title_activity_more_pic_info">分组</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="clear_bg">擦背景</string>
+    <string name="expression_change_face">熊猫头换脸</string>
+    <string name="go_change_face">去换脸</string>
+    <string name="change_face">换脸</string>
+    <string name="choose_face">选人脸</string>
+    <string name="choose_expression">"选表情"</string>
+    <string name="go_dig_face">去抠脸</string>
+    <string name="choose_finish_go_change_face">选好了，去换脸</string>
+    <string name="next_step">下一步</string>
+    <string name="change_one_expression">换一张</string>
+    <string name="please_choose_pic_width_face">选择一张带人脸的图片哟</string>
+    <string name="compose_gif">合成GIF</string>
+
+    <!-- 长文本 -->
+    <string name="measures_when_user_pay_but_open_failed">1、请确认您已付款成功.
+        \n\n2、若已付款但开通失败，有可能是网络延时导致
+        \n您可以先关闭APP，稍等一会儿再次进入查看
+        \n\n3、如果仍未开通，
+        \n您可以在支付宝或者微信中复制订单号，并复制下方的用户ID
+        \n发送给客服，QQ：2281168026
+        \n若您确实已支付费用，我们会帮您在线开通</string>
+    <string name="user_agreement_content">"
+       欢迎光临暴走P图APP（以下统称称本app），请您仔细阅读以下条款，如果您对本协议的任何条款表示异议，您可以选择不使用本app；进入本app则意味着您将同意遵守本协议下全部规定，并完全服从于app开发者的统一管理。 
+
+第一章 总则
+
+第1条 本app是app开发者向用户提供的趣味图片查找，编辑的平台。
+
+第2条 本app所有权、经营权、管理权均属app开发者。
+
+第3条 本协议最终解释权归属app开发者。
+
+第二章 app用户
+
+第4条 凡是注册用户和浏览用户均为app用户（以下统称"用户"）。
+
+第5条 用户的个人信息受到保护，不接受任何个人或单位的查询。国家机关依法查询除外，用户的个人设置公开除外。
+
+第6条 用户享有言论自由的权利。
+
+第7条 用户的言行不得违反《计算机信息网络国际联网安全保护管理办法》、《互联网信息服务管理办法》、《互联网电子公告服务管理规定》、《维护互联网安全的决定》、《互联网新闻信息服务管理规定》等相关法律规定，不得在本app发布、传播或以其它方式传送含有下列内容之一的信息：
+
+1.反对宪法所确定的基本原则的；
+
+2.危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；
+
+3.损害国家荣誉和利益的；
+
+4.煽动民族仇恨、民族歧视、破坏民族团结的；
+
+5.破坏国家宗教政策，宣扬邪教和封建迷信的；
+
+6.散布谣言，扰乱社会秩序，破坏社会稳定的；
+
+7.散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；
+
+8.侮辱或者诽谤他人，侵害他人合法权利的；
+
+9.煽动非法集会、结社、游行、示威、聚众扰乱社会秩序的；
+
+10.以非法民间组织名义活动的；
+
+11.含有虚假、有害、胁迫、侵害他人隐私、骚扰、侵害、中伤、粗俗、猥亵、或其它道德上令人反感的内容；
+
+12.含有中国法律、法规、规章、条例以及任何具有法律效力之规范所限制或禁止的其它内容的。
+
+第8条 用户不得在app内发布任何形式的广告，包括但不限于：
+
+1.发布带有任何有联系方式的网络创业、网络兼职、刷Q币以及非真实性中奖信息；
+
+2.内容包含带有任何联系方式的学历职称代办，专业代做试题，作业，论文等题目以及售卖考试答案等信息；
+
+3.发布任何带有联系方式的银行卡代办、买卖发票、非法彩票等信息；
+
+4.含有联系方式的黑客、收费删帖、办证刻章等违法信息；
+
+5.非官方认证的发布任何带有联系方式的医院、美容、药品、祛斑、医生专家和整容等信息。
+
+第9条 用户应承担一切因其个人的行为而直接或间接导致的民事或刑事法律责任，因用户行为给app开发者造成损失的，用户应负责赔偿。 
+
+第10条 app开发者拥有对违反本app规则的用户进行处理的权力，直至禁止其在本app内发布信息。
+
+第11条 禁止任何使用非法软件进行灌水、违规发布内容的行为。
+
+第12条 任何用户发现app内容涉嫌侮辱或者诽谤他人、侵害他人合法权益的，有权按app投诉规则进行投诉。
+
+第13条 为了能够给广大用户提供一个优质的交流平台，同时使app能够良性、健康的发展，将对涉及反动、色情的头像、签名档和发布不良内容的用户，进行严厉处理。一经发现此类行为，将给予永久封禁ID并清空所有发言的处罚。
+
+第三章 权利声明
+
+第14条 app内容由用户创建，发布的内容或者文章仅代表作者观点，与app开发者无关。对于用户言论的真实性引发的全部责任，由用户自行承担，app开发者不承担任何责任。
+
+第15条 用户之间因使用app而产生或可能产生的任何纠纷和/或损失，由用户自行解决并承担相应的责任，与app开发者无关。
+
+第16条 用户在app发表的作品，app开发者有权转载或引用，无需通知用户。
+
+第17条 用户在任何时间段在app发表的任何内容（包括自拍）的著作财产权，用户许可app开发者在全世界范围内免费地、永久性地、不可撤销地、可分许可地和非独家地使用的权利，包括但不限于：复制权、发行权、出租权、展览权、表演权、放映权、广播权、信息网络传播权、摄制权、改编权、翻译权、汇编权以及《著作权法》规定的由著作权人享有的其他著作财产权利。并且，用户许可app开发者有权利就任何主体侵权而单独提起诉讼，并获得全部赔偿。
+
+第四章 处罚规则
+
+第18条 app开发者郑重提醒用户，若出现下列情况任意一种或几种，将承担包括被关闭全部或者部分权限、被暂停或被删除其帐号的后果，情节严重的，还将承担相应的法律责任。 
+
+1.使用不雅或不恰当ID和昵称；
+
+2.发表含有猥亵、色情、人身攻击和反政府言论等非法或侵权言论的；
+
+3.从事非法商业活动；
+
+4.模仿贴吧管理人员ID或者他人ID，用以假冒管理人员或破坏管理人员形象；
+
+5.使用发贴机等非法软件进行爆吧、违规发贴的行为。
+
+6.其他app开发者认为不恰当的情况。
+
+第19条 凡文章出现以下情况之一，app管理人员有权不提前通知作者直接删除，并依照有关规定作相应处罚。情节严重者，app管理人员有权对其做出关闭部分权限、暂停直至删除其帐号。 
+
+1.发表含有本协议第7条禁止发布、传播内容的文章； 
+
+2.发表不符合版面主题，或者无内容的灌水文章；
+
+3.同一文章多次出现的； 
+
+4.违反本协议第8条的规定，发布广告的；
+
+5.文章内容或个人签名会包含有严重影响用户浏览的内容或格式的；
+
+6.其他app开发者认为不恰当的情况。
+
+第五章 附则
+
+第20条 关于打击网络谣言的司法解释：《最高人民法院、最高人民检察院关于办理利用信息网络实施诽谤等刑事案件适用法律若干问题的解释》已于2013年9月5日由最高人民法院审判委员会第1589次会议、2013年9月2日由最高人民检察院第十二届检察委员会第9次会议通过，现予公布，自2013年9月10日起施行。
+
+第21条 所有用户发表的文章而引起的法律纠纷，与app开发者无关。 
+
+第22条 app如因系统维护或升级等而需暂停服务时，将事先公告。若因硬件故障或其它不可抗力而导致暂停服务，于暂停服务期间造成的一切不便与损失，本贴吧不负任何责任。 由于app的调整导致信息丢失和/或其他结果的，app开发者不承担任何责任。
+
+第23条 本协议未涉及的问题参见国家有关法律法规，当本协议与国家法律法规冲突时，以国家法律法规为准。
+
+文明上网七条底线
+
+根据我国网络发展的现状，国信办鲁炜主任提出了网络空间的“七条底线”，我们每位网民在自由表达自己意见和诉求的同时，也要遵守“七条底线”，文明上网，争做文明网民。 
+
+七条底线
+
+1.法律法规底线：有法可依、有法必依、执法必严、违法必究，任何时候，无论是网上网下，都将始终做到违法必究；
+
+2.社会主义制度底线，为我们全面建成小康社会提供了有力地制度保障，我们要积极拥护社会主义及社会主义制度；
+
+3.国家利益底线，作为国家公民，时刻维护我们伟大祖国的利益，这也是宪法赋予我们每位公民的光荣义务；
+
+4.公民合法权益底线，我们在网络反腐的同时，切记不能以“艳照”等不健康、不正当甚至违法手段对别人进行人身攻击，否则不仅触犯法律，也侵犯了无辜者的合法权益；
+
+5.社会公共秩序底线，网络世界必须也要遵循一定的秩序规则，唯有如此大家才能营造一个良好健康的网络环境；
+
+6.道德风尚底线，崇尚美德在我国延续几千年的优秀传统，网络空间里也要讲道德，不做有违道德之事；
+
+7.信息真实性底线，要求我们在上网时一定要实事求是，而不能以讹传讹、散发谣传，积极宣传政府部门发布的真实信息。
+
+ 七条底线是根本，不能突破；是方圆，不能逾越。我们广大网民积极宣传落实“七条底线”，争做文明网民，净化网络空间，还网络一片“蓝天”。"</string>
+    <string name="privacy_policies_content">"
+        更新日期：2020年10月10日
+        生效日期：2020年10月25日
+        暴走P图尊重并保护所有使用服务用户的个人隐私权。为了给您提供更准确、更有个性化的服务，暴走P图会按照本隐私权政策的规定使用和披露您的个人信息。但暴走P图将以高 度的勤勉、审慎义务对待这些信息。除本隐私权政策另有规定外，在未征得您事先许可的情况下 ，暴走P图不会将这些信息对外披露或向第三方提供。暴走P图会不时更新本隐私权政策 。您在同意暴走P图服务使用协议之时，即视为您已经同意本隐私权政策全部内容。本隐私 权政策属于暴走P图服务使用协议不可分割的一部分。
+
+1. 信息收集
+a) 当您使用暴走P图的服务时为了判断您是否是新用户，区分您和其它用户，提供更加符合您需求的服务； 以及保障您的帐号、网络、运营及系统安全，预防钓鱼网站欺诈及木马病毒，在您使用本产品的过程中，我们可能会收集您的设备信息，包括不可变更的设备唯一标识（如IMEI号、AndroidID、IDFA、GUID、OPENUDID）、硬件序列号、MAC地址。
+
+b) 在您注册暴走P图帐号时，您根据暴走P图要求提供的个人注册信息；
+
+c) 在您使用暴走P图网络服务，或访问暴走P图平台网页时，暴走P图自动接收并记 录的您的浏览器和计算机上的信息，包括但不限于您的IP地址、浏览器的类型、使用的语言、访 问日期和时间、软硬件特征信息及您需求的网页记录等数据；
+
+d) 暴走P图通过合法途径从商业伙伴处取得的用户个人数据。
+
+您了解并同意，以下信息不适用本隐私权政策：
+
+ a) 您在使用暴走P图平台提供的搜索服务时输入的关键字信息；
+
+ b) 暴走P图收集到的您在暴走P图发布的有关信息数据，包括但不限于参与活动、成交信息及评价详情；
+
+ c) 违反法律规定或违反暴走P图规则行为及暴走P图已对您采取的措施。 c) 违反法律规定或违反暴走P图规则行为及暴走P图已对您采取的措施。
+
+2. 信息使用
+
+ a) 暴走P图不会向任何无关第三方提供、出售、出租、分享或交易您的个人信息，除非事先得到您的许可，或该第三方和暴走P图（含暴走P图关联公司）单独或共同为您提供服务，且在该服务结束后，其将被禁止访问包括其以前能够访问的所有这些资料。
+
+b) 暴走P图亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息。任何暴走P图平台用户如从事上述活动，一经发现，暴走P图有权立即终止与该用户的服务协议。
+
+c) 为服务用户的目的，暴走P图可能通过使用您的个人信息，向您提供您感兴趣的信息，包括但不限于向您发出产品和服务信息，或者与暴走P图合作伙伴共享信息以便他们向您发送 有关其产品和服务的信息（后者需要您的事先同意）。
+
+d) 我们选择【友盟+】作为合作方，并委托合作方收集、使用、加工和处理最终用户个人信息。有关本告知内容建议您在隐私政策的“数据共享与披露”章节中透出，推荐条款如下：“为了统计分析+等目的，我们的产品可能会集成第三方的SDK或其他类似的应用程序，例如【友盟+】SDK，【友盟+】SDK需要收集您设备的国际移动设备识别码（IMEI）、iOS广告标识符（IDFA)、设备Mac地址和设备型号等信息。为了您的信息安全，我们已与第三方SDK服务商签署严格数据安全保密协议，这些公司会严格遵守我们的数据隐私和安全要求。除非得到您的同意，我们不会与其共享您的个人身份信息。为便于您更好地了解【友盟+】采集的数据类型及用途，以及何保护您的个人信息，您可以登陆https://www.umeng.com/policy了解【友盟+】隐私权政策。”
+
+3. 信息披露 在如下情况下，暴走P图将依据您的个人意愿或法律的规定全部或部分的披露您的个人信息：
+
+a) 经您事先同意，向第三方披露；
+
+ b) 为提供您所要求的产品和服务，而必须和第三方分享您的个人信息；
+c) 根据法律的有关规定，或者行政或司法机构的要求，向第三方或者行政、司法机构披露；
+
+d) 如您出现违反中国有关法律、法规或者暴走P图服务协议或相关规则的情况，需要向第三方披露；
+
+ e) 如您是适格的知识产权投诉人并已提起投诉，应被投诉人要求，向被投诉人披露，以便双方 处理可能的权利纠纷；
+
+f) 在暴走P图平台上创建的某一交易中，如交易任何一方履行或部分履行了交易义务并提出信息披露请求的，暴走P图有权决定向该用户提供其交易对方的联络方式等必要信息，以促 成交易的完成或纠纷的解决。
+
+g) 其它暴走P图根据法律、法规或者网站政策认为合适的披露。
+
+4. 信息存储和交换
+4.1   信息存储的方式和期限
+
+我们会通过安全的方式存储您的信息 。 一般情况下，我们只会在为实现服务目的所必需的时间内或法律法规规定的时限内存储您的个人信息。
+
+4.2   信息存储的地域
+
+我们会按照法律法规规定，将境内收集的用户个人信息存储于中国境内。
+
+目前我们不会跨境传输或存储您的个人信息 。 将来如需跨境传输或存储的，我们会向您告知信息出境的目的、接收方、安全保证措施和安全风险，并征得您的同意。
+
+4.3   产品或服务停止运营时的通知
+
+当我们的产品或服务发生停止运营的情况时，我们将以推送通知、公告等形式通知您，并在合理期限内删除您的个人信息或 进行匿名化处理 ， 法律法规另有规定的除外。
+
+5. Cookie的使用
+
+a) 在您未拒绝接受cookies的情况下，暴走P图会在您的计算机上设定或取用cookies ，以便您能登录或使用依赖于cookies的暴走P图平台服务或功能。暴走P图使用cookies 可为您提供更加周到的个性化服务，包括推广服务。
+
+b) 您有权选择接受或拒绝接受cookies。 您可以通过修改浏览器设置的方式拒绝接受cookies。但如果您选择拒绝接受cookies，则您可能 无法登录或使用依赖于cookies的暴走P图网络服务或功能。
+
+c) 通过暴走P图所设cookies所取得的有关信息，将适用本政策。
+
+6. 信息安全
+
+a) 暴走P图帐号均有安全保护功能，请妥善保管您的用户名及密码信息。暴走P图将通 过对用户密码进行加密等安全措施确保您的信息不丢失，不被滥用和变造。尽管有前述安全措施 ，但同时也请您注意在信息网络上不存在“完善的安全措施”。
+
+b) 在使用暴走P图网络服务进行网上交易时，您不可避免的要向交易对方或潜在的交易对方披露自己的个人信息，如联络方式或者邮政地址。请您妥善保护自己的个人信息，仅在必要的情 形下向他人提供。如您发现自己的个人信息泄密，尤其是暴走P图用户名及密码发生泄露， 请您立即联络暴走P图客服，以便暴走P图采取相应措施。"
+
+    我们使用友盟统计分析APP相关的数据，您可访问https://www.umeng.com/page/policy?spm=a211eg.10560647.0.0.547034dcafEUZJ 了解详情
+    </string>
+    <string name="vip_service_agreement_content">
+        暴走P图VIP服务协议
+
+暴走P图按照本协议的规定提供基于互联网的充值服务，为获得充值服务，服务使用人(以下称“用户”)同意本协议的全部条款并按照页面上的提示完成全部的充值程序。用户在进行充值程序过程中使用充值服务即表示用户完全接受本协议项下的全部条款。用户在使用暴走P图提供的各项服务之前，应仔细阅读本服务协议，尤其是重点提示条款，如用户不同意本充值用户协议及/或对其的修改，请停止使用暴走P图提供的服务。
+
+特别提示：未成年用户使用暴走P图充值服务，必须得到监护人的同意。请未成年人用户监护人切实履行其监护义务。
+
+1、服务内容
+
+暴走P图的充值系统提供支付宝、微信支付等不同的充值方式。用户使用该平台进行充值，可以为其使用的账号充值。
+
+2、操作方法
+
+2.1 用户可以在此充值系统上自由选择具体的充值方式，并按相应页面提示的程序完成充值。
+
+2.2 用户使用各种充值方式进行充值后，应保留充值订单号或充值卡以作为今后发生问题核对依据凭证（用户就充值服务投诉，但未有充值卡或其他有效凭证佐证的，暴走P图将不会作出补偿或赔偿）。
+
+3、风险提示
+
+3.1 在使用充值方式时，用户务必仔细确认自己的账号并仔细选择相关操作选项。若因为用户自身输入账号错误、操作不当或不了解充值计费方式等因素造成充错账号、错选充值种类等情形而损害自身权益的，暴走P图将不会作补偿或赔偿。
+
+3.2 若用户以非法的方式，或使用非暴走P图所指定的充值方式进行充值，暴走P图不保证该充值顺利或者正确完成。若因此造成用户权益受损时，暴走P图不会作补偿或赔偿，暴走P图同时保留随时终止该用户账号资格及使用各项充值服务的权利。
+
+3.3 用户不得通过暴走P图充值进行任何违法犯罪活动，不得利用充值漏洞谋利，否则暴走P图有权终止服务，追缴非法获利，情节严重的，依法移交司法机关。
+
+4、充值成功后
+
+充值成功后，暴走P图不会提供退还或逆向兑换服务。
+
+5、渠道商服务手续费用
+
+各充值方式对应的渠道商可能会按其标准制定相关充值渠道手续费用（可能会在充值操作页面或渠道商其他页面上提示），并在用户充值时收取。暴走P图特此提醒：请用户务必注意各充值方式的渠道商服务手续费，并按自己的需求选取充值方式。
+
+6、若因暴走P图充值方式原因造成用户充值失实并经查证属实的，暴走P图将根据用户充值情况作出变动措施：
+
+6.1 因充值方式原因，造成系统充值额小于用户实际充值额的，暴走P图予以补其差额；
+
+6.2 因充值方式原因，造成系统充值额大于用户实际充值额的，暴走P图有权追回差额；
+
+6.3 因渠道商收取服务手续费用等原因造成系统充值额小于用户实际充值额的，不属于用户充值失实。
+
+7、服务变更、中断或终止
+
+7.1 暴走P图可以根据业务需求随时变更服务或更新本协议的条款，但应在相关的页面上及时提示修改内容。修改后的服务协议一旦在页面上公布即代替原来的服务协议。
+
+7.2 如因系统维护或升级的需要而需暂停网络充值服务，暴走P图将尽可能事先进行通告。
+
+7.3 如发生下列任何一种情形，暴走P图有权随时中断或终止向用户提供本协议项下的网络服务而无需通知用户：
+
+(a) 用户提供的个人资料不真实；
+
+(b) 用户违反本协议中规定的使用规则。
+
+7.4 除前款所述情形外，暴走P图同时保留在不事先通知用户的情况下随时中断或终止部分或全部网络充值服务的权利，对于充值服务的中断或终止而造成的损失，暴走P图无需对用户或第三方承担责任。
+
+8、免责声明和损害赔偿
+
+8.1发生下列情况时，暴走P图免于承担法律责任：
+
+（a）用户因使用第三方支付渠道充值过程中发生的相关争议；
+
+（b）由于用户将密码告知他人导致的用户财产损失；
+
+（c）因用户个人故意或重大过失，或本协议之外的第三方所造成的用户财产损失；
+
+（d）由不可抗力及不可预见的情势导致的各种情况和纠纷；不可抗力和不可预见情势包括：黑客攻击、电信部门技术调整导致重大影响、政府管制导致的暂时关闭、病毒侵袭。
+
+8.2 用户同意保障和维护暴走P图及其他用户的利益，如因用户违反有关法律、法规或本协议项下的条款而给暴走P图或其他第三人造成损失，用户同意承担由此造成的损害赔偿责任。
+
+9、其他
+
+9.1 本协议的订立、执行和解释及争议的解决均应适用中国法律。
+
+9.2 如双方就本协议内容或其执行发生争议，双方应尽量友好协商解决；协商不成时，任何一方均应向本协议签署地广州市番禺区人民法院提起诉讼。
+
+9.3 本协议项下所有的通知均可通过重要页面公告、电子邮件或常规的信件传送等方式进行；该等通知于发送之日视为已送达收件人。</string>
+    <string name="do_not_notice_again">不再提示</string>
+    <string name="go_dig_face_notice">请选择一张人脸图片，然后抠脸即可</string>
+    <string name="see_video_finish_contine_ptu">看完视频继续P图哦</string>
+    <string name="today_number_is_over">使用次数已达最高</string>
+    <string name="deformation">变形</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="example">样例</string>
+    <string name="gif_en">GIF</string>
+    <string name="speed">速度</string>
+    <string name="add_pic">加图</string>
+    <string name="del_pic">删图</string>
+    <string name="choose_all">全选</string>
+    <string name="auto_add">自动加</string>
+    <string name="gif_auto_add_tietu_notice">已自动添加贴图，您可在下方关闭</string>
+    <string name="gif_auto_add_tietu_notice_1">点击下方自动加，可以一键添加贴图哦</string>
+    <string name="auto_add_tietu_tips">双击贴图可进行调整哟</string>
+    <string name="deformation_guide">在图片上滑动即可变形</string>
+    <string name="gif_operation_notice">双击或长按，可选中部分帧进行编辑</string>
+</resources>

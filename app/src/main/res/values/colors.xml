@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  应用的基础色-->
+
+    <color name="base_color1">#ffff5722</color>
+    <color name="colorPrimary">#ff8a65</color>
+    <color name="colorPrimaryDark">#ffff5722</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="base_text_color1">#ffff5722</color>
+    <color name="float_item_color">#ff5722</color>
+    <color name="float_rim_color">#80ffffff</color>
+    <color name="white">#ffffff</color>
+
+    <!--选择图片界面的-->
+    <color name="emoji_category_text_chosen">#ffffff</color>
+    <color name="emoji_category_text_normal">#234224</color>
+
+    <!--material design 基础色-->
+    <color name="red">#e51c23</color>
+    <color name="pink">#e91e63</color>
+    <color name="purple">#9c27b0</color>
+    <color name="deepPurple">#673ab7</color>
+    <color name="indigo">#3f51b5</color>
+    <color name="blue">#5677fc</color>
+    <color name="lightBlue">#03a9f4</color>
+    <color name="cyan">#00bcd4</color>
+    <color name="teal">#009688</color>
+    <color name="grean">#00ff00</color>
+    <color name="lightGreen">#8bc34a</color>
+    <color name="lime">#cddc39</color>
+    <color name="yellow">#ffed3b</color>
+    <color name="transparent_yellow">#33ffed3b</color>
+    <color name="amber">#ffc107</color>
+    <color name="orange">#ff9800</color>
+    <color name="deepOrange">#ff5722</color>
+    <color name="brown">#795548</color>
+    <color name="grey">#9e9e9e</color>
+    <color name="blueGrey">#607d8b</color>
+
+    <color name="gray_light">#ffaaaaaa</color>
+    <color name="gray_dark">#888888</color>
+
+    <color name="button_color_switch">#5677fc</color>
+    <color name="text_checked_color">#ff5722</color>
+    <color name="text_default_color">#ff111111</color>
+    <color name="text_light_black">#ff666666</color>
+    <color name="text_light_light_black">#ff707070</color>
+    <color name="text_middle_black">#ff444444</color>
+    <color name="text_deep_black">#ff242328</color>
+    <color name="text_deep_x_black">#ff303030</color>
+
+    <color name="back_pic_operation">#998e8e8e</color>
+    <color name="divider_pic_operation">#222222</color>
+
+    <!--ptu功能-->
+    <color name="base_toolbar_background">#ff8a65</color>
+    <color name="can_repeal_redo">#dd2c00</color>
+    <color name="canot_repeal_redo">#a0ffffff</color>
+    <color name="mat_pen_line1">#ff111111</color>
+    <color name="mat_pen_line2">#ff5e5e5e</color>
+    <color name="cut_frame">#ffffff</color>
+    <color name="black_deep">#333333</color>
+    <color name="black">#000000</color>
+    <color name="transparent_black">#CC000000</color>
+    <color name="light_grey">#aaaaaa</color>
+    <color name="half_transparent_black">#68000000</color>
+    <color name="background_pressed">#80aaaaaa</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="common_activity_background">#EEEEEE</color>
+    <color name="cancel_btn">#ffffff</color>
+    <color name="sure_btn">#ffffff</color>
+
+    <drawable name="dialog_background">#80ffffff</drawable>
+    <drawable name="hou">#dcdcdc</drawable>
+    <drawable name="text_popup_window_background">#fff</drawable>
+    <drawable name="white">#fff</drawable>
+    <drawable name="transparent">#0000</drawable>
+
+    <color name="translate">#11ffffff</color>
+    <color name="translucent_white">#80FFFFFF</color>
+
+    <color name="gif_frame_choose">#ffffff00</color>
+    <color name="sliver_gray">#cacaca</color>
+    <color name="text_ad_mark">#aaffffff</color>
+    <color name="text_ad_mark_1">#bbffffff</color>
+    <color name="default_ptu_bg">#eee</color>
+
+    <color name="vip_color_light">#FFEABA</color>
+    <color name="vip_color_light_light">#FFf0c5</color>
+    <color name="vip_color_deep">#BE8B49</color>
+    <color name="vip_color_middle">#f3d26b</color>
+    <color name="vip_color_middle_x">#e3c25b</color>
+    <color name="default_link_color">#0066cc</color>
+
+    <color name="guide_shadow">#CC222222</color>
+    <color name="AA_808080">#aa808080</color>
+
+    <color name="black_overlay">#66000000</color>
+
+</resources>

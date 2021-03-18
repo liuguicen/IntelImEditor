@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item >
+        <shape
+            android:dither="true"
+            android:shape="oval"
+            android:useLevel="false">
+            <solid android:color="@color/colorPrimary" />
+           <!-- <fixed_size
+                android:width="@dimen/list_item_width_save_set"
+                android:height="@dimen/list_item_width_save_set" />-->
+        </shape>
+    </item>
+    <item >
+        <shape
+            android:dither="true"
+            android:shape="oval"
+            android:useLevel="false">
+            <solid android:color="#fff" />
+            <size
+                android:width="@dimen/list_item_width_save_set_small"
+                android:height="@dimen/list_item_width_save_set_small" />
+        </shape>
+    </item>
+</layer-list>

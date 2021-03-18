@@ -1,0 +1,13 @@
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item  
+        android:id="@+id/action_refresh"  
+        android:orderInCategory="100"  
+        android:showAsAction="always"  
+        android:title="选择图片"
+        tools:ignore="AppCompatResource" />
+    <item  
+        android:id="@+id/action_settings"  
+        android:title="取消">  
+    </item>  
+</menu>   

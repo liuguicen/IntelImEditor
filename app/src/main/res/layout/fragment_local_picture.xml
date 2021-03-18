@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_fragment_local_pic"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout_show_picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--Viewpager2嵌套recyclerview，解决滑动冲突-->
+        <a.intelimedit.common.view.NestedScrollableHost
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/gv_photolist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/choose_pic_item_divider"
+                android:layout_marginRight="@dimen/choose_pic_item_divider"
+                android:gravity="center" />
+
+        </a.intelimedit.common.view.NestedScrollableHost>
+
+        <include layout="@layout/item_loading" />
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/pic_directory_nav_view"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:fadeScrollbars="true"
+            android:fitsSystemWindows="true"
+            android:overScrollMode="always"
+            android:scrollbars="none"
+            app:headerLayout="@layout/layout_drawer_file_list"
+            app:insetForeground="#00000000" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

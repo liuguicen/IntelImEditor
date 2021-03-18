@@ -1,0 +1,34 @@
+group = "Umeng"
+version = "1.1.0"
+println("---------------------------生成友盟事件txt-----------------------")
+def filePath = './src/main/java/a/baozouptu/'
+//输入打点的统计文件夹路径
+def event = file(filePath + 'EventName.java')
+def oldTextList = event.readLines("UTF-8")
+def sb = new StringBuffer()
+def lastStr = ""
+oldTextList.each {
+    def name = it.trim()
+    if (name.startsWith("//")) {
+        lastStr = name.replace("//", "").trim()
+    }
+    if (it.contains("public")
+            && it.contains("static")
+            && it.contains("final")
+            && it.contains("String")) {
+        def value = it.split("\"")[1]
+        if (lastStr.isEmpty()) {
+            lastStr = value
+        }
+        sb.append("$value,$lastStr,0\n")
+    }
+}
+def newFile = new File('UmengEventName.txt')
+if (newFile.exists()) {
+    newFile.write(sb.toString(), 'UTF-8')
+} else {
+    if (newFile.createNewFile()) {
+        newFile.write(sb.toString(), 'UTF-8')
+    }
+}
+

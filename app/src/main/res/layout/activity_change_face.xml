@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ptu.changeFace.ChangeFaceActivity">
+
+    <include
+        android:id="@+id/change_face_toolbar"
+        layout="@layout/include_toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/change_face_toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_face"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="用于替换的人脸"
+                app:layout_constraintEnd_toEndOf="@+id/face_iv"
+                app:layout_constraintStart_toStartOf="@+id/face_iv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/face_iv"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_radius_white"
+                android:onClick="onClickFaceIv"
+                android:src="@drawable/add_circle"
+                app:layout_constraintEnd_toStartOf="@+id/expression_iv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_face" />
+
+            <TextView
+                android:id="@+id/tv_expression"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="需要换脸的表情"
+                app:layout_constraintEnd_toEndOf="@+id/expression_iv"
+                app:layout_constraintStart_toStartOf="@+id/expression_iv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/expression_iv"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_margin="@dimen/dp_8"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_radius_white"
+                android:onClick="onClickExpressionIv"
+                android:src="@drawable/add_circle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/face_iv"
+                app:layout_constraintTop_toBottomOf="@+id/tv_expression" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:gravity="center"
+                android:src="@drawable/round_add_black"
+                android:text="+"
+                app:layout_constraintBottom_toBottomOf="@+id/face_iv"
+                app:layout_constraintEnd_toStartOf="@+id/expression_iv"
+                app:layout_constraintStart_toEndOf="@+id/face_iv"
+                app:layout_constraintTop_toTopOf="@+id/face_iv" />
+
+            <TextView
+                android:id="@+id/go_dig_face_tv"
+                style="@style/ChangeFaceGoBtn"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:onClick="onClickGoDigFace"
+                android:text="@string/choose_face"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/face_iv"
+                app:layout_constraintEnd_toEndOf="@id/face_iv" />
+
+            <Switch
+                android:id="@+id/bw_color_checkbox"
+                style="@style/ChangeFaceColorCheckBox"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/dp_8"
+                android:checked="true"
+                android:text="黑白色"
+                app:layout_constraintEnd_toEndOf="@+id/face_iv"
+                app:layout_constraintStart_toStartOf="@+id/face_iv"
+                app:layout_constraintTop_toBottomOf="@+id/face_iv" />
+
+            <TextView
+                android:id="@+id/choose_expression"
+                style="@style/ChangeFaceGoBtn"
+                android:layout_gravity="center_vertical"
+                android:onClick="chooseExpression_InSearch"
+                android:text="@string/choose_expression"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/expression_iv"
+                app:layout_constraintEnd_toEndOf="@+id/expression_iv" />
+
+            <TextView
+                android:id="@+id/go_erase_bg"
+                style="@style/ChangeFaceGoBtn"
+                android:layout_gravity="center_vertical"
+                android:onClick="onClickEraseExpression"
+                android:text="擦背景"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/bw_color_checkbox"
+                app:layout_constraintEnd_toEndOf="@+id/expression_iv"
+                app:layout_constraintLeft_toRightOf="@+id/choose_expression"
+                app:layout_constraintRight_toRightOf="@id/expression_iv"
+                app:layout_constraintStart_toStartOf="@+id/expression_iv"
+                app:layout_constraintTop_toTopOf="@id/bw_color_checkbox" />
+
+            <TextView
+                android:id="@+id/choose_face_title"
+                style="@style/changeFaceChildTitle"
+                android:text="@string/choose_face"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bw_color_checkbox" />
+
+            <!--    <TextView
+                    android:id="@+id/bw_color_checkbox"
+                    style="@style/ChangeFaceGoBtn"
+                    android:layout_marginRight="16dp"
+                    android:onClick="onClickGoDigFace"
+                    android:text="@string/go_dig_face"
+                    android:textColor="@color/white"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/choose_face_title" />-->
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/choose_face_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:padding="4dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/choose_face_title" />
+
+            <TextView
+                android:id="@+id/choose_expression_title"
+                style="@style/changeFaceChildTitle"
+                android:text="@string/choose_expression"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choose_face_rcv" />
+
+            <TextView
+                style="@style/changeFaceChildTitle"
+                android:onClick="chooseExpression_InSearch"
+                android:text="@string/more"
+                android:textColor="@color/gray_dark"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choose_face_rcv" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/choose_expression_rcv"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/white"
+                android:paddingVertical="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choose_expression_title" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/choose_finish_and_go"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_btn_login"
+        android:gravity="center"
+        android:onClick="goChangeFace"
+        android:padding="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:text="@string/choose_finish_go_change_face"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_big"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

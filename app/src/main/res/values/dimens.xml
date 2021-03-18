@@ -1,0 +1,103 @@
+<resources>
+    <!--字体-->
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="sp_48px">24sp</dimen>
+
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_72">72dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="height_picture_file_item">100dp</dimen>
+    <dimen name="picture_item_height">200dp</dimen>
+    <dimen name="padding_main_function">10dp</dimen>
+    <dimen name="padding_function_item_image">6dp</dimen>
+    <dimen name="picfile_list_item_height">111dp</dimen>
+
+    <dimen name="margin_small">3dp</dimen>
+    <dimen name="margin_middle">5dp</dimen>
+    <dimen name="margin_middle_x">8dp</dimen>
+    <dimen name="margin_big">10dp</dimen>
+    <dimen name="margin_big_x">12dp</dimen>
+    <dimen name="margin_big_xx">15dp</dimen>
+    <dimen name="function_width">72dp</dimen>
+
+    <!--文字字体大小-->
+    <dimen name="text_size_file_list_item">21sp</dimen>
+    <dimen name="text_size_big_xx">22sp</dimen>
+    <dimen name="text_size_big_x">21sp</dimen>
+    <dimen name="text_size_big">20sp</dimen>
+    <dimen name="text_size_middle_xx">18sp</dimen>
+    <dimen name="text_size_middle_x">16sp</dimen>
+    <dimen name="text_size_middle">14sp</dimen>
+    <dimen name="text_size_small_x">12sp</dimen>
+    <dimen name="text_size_small">10sp</dimen>
+    <dimen name="text_size_choose_pic_from_system">18.5sp</dimen>
+    <dimen name="text_size_vip_privileges">18.5sp</dimen>
+    <dimen name="text_size_main_function">14sp</dimen>
+    <dimen name="text_size_tool_bar">11pt</dimen>
+    <dimen name="text_size_tietu_category">12pt</dimen>
+    <dimen name="choose_pic_title_text_size">16sp</dimen>
+    <dimen name="text_size_use_statement">15sp</dimen>
+
+
+    <dimen name="show_picture_item_height">83dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="color_lump_width">35dp</dimen>
+    <dimen name="pading_3dp">3dp</dimen>
+    <dimen name="top_btn_width">40dp</dimen>
+    <dimen name="padding_top_btn">15dp</dimen>
+
+    <dimen name="cut_frame_lump_width">11dp</dimen>
+    <!--选择图片的title-->
+    <dimen name="choose_title_line_height">4dp</dimen>
+
+    <!--保存设置对话框-->
+    <dimen name="list_item_width_save_set_wide">80dp</dimen>
+    <dimen name="list_item_width_save_set_wide_small">70dp</dimen>
+    <dimen name="list_item_width_save_set_small">44dp</dimen>
+    <dimen name="list_item_width_save_set_middle">50dp</dimen>
+    <dimen name="my_toolbar_height">50dp</dimen>
+    <dimen name="width_synthesis_image">55dp</dimen>
+    <dimen name="choose_pic_item_divider">1.5dp</dimen>
+
+    <dimen name="pic_list_header_big">19sp</dimen>
+    <dimen name="pic_list_header_small">18sp</dimen>
+    <dimen name="ptu_top_bar_height">50dp</dimen>
+    <dimen name="text_very_small">8sp</dimen>
+    <dimen name="text_very_very_small">7sp</dimen>
+    <dimen name="text_ad_mark_middle">9sp</dimen>
+    <dimen name="ptu_choose_base_height">220dp</dimen>
+    <!--重要尺寸，注意别乱动-->
+    <dimen name="bottom_function_layout_height">72dp</dimen>
+    <dimen name="pic_resource_list_tietu_margin">7dp</dimen>
+    <dimen name="pic_resource_list_tietu_margin_big">12dp</dimen>
+    <dimen name="pic_resource_list_template_margin">5dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+
+    <!--开通VIP界面-->
+    <dimen name="open_vip_group_title_left_margin">12dp</dimen>
+    <dimen name="open_vip_group_item_left_margin">16dp</dimen>
+    <dimen name="open_vip_item_margin_title">8dp</dimen>
+    <dimen name="dp_96">96</dimen>
+    <dimen name="dp_05">0.5dp</dimen>
+    <!--PTu主界面-->
+    <dimen name="gif_frame_height">88dp</dimen>
+    <dimen name="unlock_with_vip_dialog_width">280dp</dimen>
+    <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="ptu_tietu_list_padding">8dp</dimen>
+</resources>
+

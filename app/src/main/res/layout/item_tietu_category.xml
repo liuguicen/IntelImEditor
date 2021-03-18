@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:paddingLeft="@dimen/margin_middle_x"
+        android:paddingRight="@dimen/margin_middle_x"
+        android:paddingTop="@dimen/margin_big"
+        android:paddingBottom="@dimen/margin_big"
+        android:id="@+id/tv_tietu_category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_tietu_category"/>
+
+</LinearLayout>

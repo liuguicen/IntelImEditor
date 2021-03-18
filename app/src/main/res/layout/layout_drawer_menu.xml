@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/userInfoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_40"
+        android:background="?selectableItemBackground"
+        android:gravity="center|start"
+        android:padding="@dimen/dp_16">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/headerCoverIv"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:src="@mipmap/icon"
+            app:riv_border_color="@color/amber"
+            app:riv_border_width="@dimen/dp_2"
+            app:riv_corner_radius="32dp" />
+
+        <TextView
+            android:id="@+id/userNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/app_name"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/signInView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_40"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="signIn"
+            android:text="登录"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="点击登录" />
+    </LinearLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:onClick="openVip"
+        app:cardBackgroundColor="@color/amber"
+        app:cardElevation="@dimen/dp_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_vip_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_8"
+                android:text="开通VIP，会员特权，去广告，使用所有功能"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <a.intelimedit.common.view.MenuItemView
+        android:id="@+id/helpView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:miv_color="@color/black"
+        app:miv_icon="@drawable/ic_help_outline"
+        app:miv_title="@string/title_help" />
+
+    <a.intelimedit.common.view.MenuItemView
+        android:id="@+id/aboutView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:miv_icon="@drawable/ic_about"
+        app:miv_title="@string/about_title" />
+
+    <a.intelimedit.common.view.MenuItemView
+        android:id="@+id/feedbackView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:miv_icon="@drawable/ic_feedback"
+        app:miv_title="@string/feedback_title" />
+
+    <a.intelimedit.common.view.MenuItemView
+        android:id="@+id/settingsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:miv_icon="@drawable/ic_settings"
+        app:miv_title="@string/setting" />
+    <!--
+        <a.baozouptu.common.view.MenuItemView
+            android:id="@+id/tagsManagerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:miv_icon="@drawable/ic_settings"
+            app:miv_title="@string/tag_manager" />-->
+
+
+</LinearLayout>

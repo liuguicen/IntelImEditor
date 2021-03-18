@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintHorizontal_chainStyle="spread">
+
+    <a.intelimedit.home.view.BottomFunctionView
+        android:id="@+id/rend_function_choose_base"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:bfv_icon="@mipmap/choose_base"
+        app:bfv_title="@string/choose_base_pic" />
+
+    <a.intelimedit.home.view.BottomFunctionView
+        android:id="@+id/rend_scale"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:bfv_icon="@mipmap/scale"
+        app:bfv_title="缩放" />
+
+    <a.intelimedit.home.view.BottomFunctionView
+        android:id="@+id/rend_add_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:bfv_icon="@mipmap/text"
+        app:bfv_title="加文字" />
+
+    <a.intelimedit.home.view.BottomFunctionView
+        android:id="@+id/rend_go_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:bfv_icon="@mipmap/edit"
+        app:bfv_title="去裁剪" />
+
+    <a.intelimedit.home.view.BottomFunctionView
+        android:id="@+id/rend_once_again"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:bfv_icon="@mipmap/bold"
+        app:bfv_title="@string/rend_again" />
+
+</LinearLayout>

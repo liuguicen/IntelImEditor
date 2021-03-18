@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:background="@color/white">
+
+    <ImageView
+        style="@style/LoginItem"
+        android:id="@+id/choose_qq_login"
+        android:src="@mipmap/qq_icon"/>
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/choose_weixin_login"
+        style="@style/LoginItem"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:src="@mipmap/weixin_icon"/>
+</LinearLayout>

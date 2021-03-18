@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/draw_function_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <a.intelimedit.home.view.BottomFunctionView
+            android:id="@+id/draw_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bfv_icon="@mipmap/draw"
+            app:bfv_icon_bg="@drawable/function_background_draw_pink"
+            app:bfv_title="@string/paint" />
+
+        <a.intelimedit.home.view.BottomFunctionView
+            android:id="@+id/draw_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bfv_icon="@drawable/color"
+            app:bfv_title="@string/paint_color" />
+
+        <a.intelimedit.home.view.BottomFunctionView
+            android:id="@+id/draw_eraser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bfv_icon="@mipmap/eraser"
+            app:bfv_title="@string/paint_eraser" />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/layout_tietu_eraser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</FrameLayout>

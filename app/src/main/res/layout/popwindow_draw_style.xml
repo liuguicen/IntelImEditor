@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:slideswitch="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="  粗体"
+            android:textSize="10pt"
+            android:textColor="@color/base_text_color1"
+            />
+
+        <view.MySwitchButton
+            android:id="@+id/switch_button_bold"
+            android:layout_width="55dp"
+            android:layout_height="35dp"
+            slideswitch:isOpen="false"
+            slideswitch:shape="circle"
+            slideswitch:themeColor="@color/button_color_switch" />
+    </LinearLayout>
+    <!--设置斜体-->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+
+            android:id="@+id/text_italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="  斜体"
+            android:textSize="10pt"
+            android:textColor="@color/base_text_color1"
+            />
+
+        <view.MySwitchButton
+            android:id="@+id/switch_button_text_italic"
+            android:layout_width="55dp"
+            android:layout_height="35dp"
+            slideswitch:isOpen="false"
+            slideswitch:shape="circle"
+            slideswitch:themeColor="@color/button_color_switch" />
+    </LinearLayout><!--设置斜体-->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_shadow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="  阴影"
+            android:textSize="10pt"
+            android:textColor="@color/base_text_color1"
+            />
+
+        <view.MySwitchButton
+            android:id="@+id/switch_button_text_shadow"
+            android:layout_width="55dp"
+            android:layout_height="35dp"
+            slideswitch:isOpen="false"
+            slideswitch:shape="circle"
+            slideswitch:themeColor="@color/button_color_switch" />
+    </LinearLayout>
+</LinearLayout>

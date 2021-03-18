@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rend_pic_function_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    app:layout_constraintHorizontal_chainStyle="packed">
+
+    <LinearLayout
+        android:id="@+id/rend_pic_cancel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/rend_pic_function_divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            style="@style/rendPicFunctionText"
+            android:text="@string/cancel" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/rend_pic_function_divider"
+        android:layout_width="2dp"
+        android:layout_marginTop="@dimen/margin_big"
+        android:layout_marginBottom="@dimen/margin_middle_x"
+        android:layout_height="match_parent"
+        android:background="#b0b0b0"
+        app:layout_constraintLeft_toRightOf="@id/rend_pic_cancel"
+        app:layout_constraintRight_toLeftOf="@id/rend_pic_finish"/>
+    <LinearLayout
+        android:id="@+id/rend_pic_finish"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintLeft_toRightOf="@+id/rend_pic_function_divider"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/rendPicFunctionText"
+            android:text="@string/finish" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

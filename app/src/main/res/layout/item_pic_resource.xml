@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <!--不要和本地图片共用布局-->
+    <!--   背景去掉，不用加，不让界面太挤
+     android:background="@drawable/bg_radius_white"-->
+    <!--margin在代码在设置了
+    android:layout_marginStart="@dimen/pic_resource_list_tietu_margin"
+    android:layout_marginTop="@dimen/pic_resource_list_tietu_margin_big"
+    android:layout_marginEnd="@dimen/pic_resource_list_tietu_margin"
+    android:layout_marginBottom="@dimen/pic_resource_list_tietu_margin_big"-->
+
+    <ImageView
+        android:id="@+id/picIv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:src="@mipmap/icon"
+        app:layout_constraintBottom_toTopOf="@+id/hotTv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/lockView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/AA_808080"
+        android:padding="@dimen/dp_2"
+        android:src="@drawable/ic_lock_outline"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+
+    <TextView
+        android:id="@+id/tagTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:lines="1"
+        android:padding="@dimen/dp_4"
+        android:textColor="@color/light_grey"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/hotTv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picIv"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/hotTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/heat"
+        android:drawablePadding="@dimen/dp_2"
+        android:drawableTint="@color/red"
+        android:gravity="end|center"
+        android:padding="@dimen/dp_4"
+        android:text="200"
+        android:textColor="@color/light_grey"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picIv"
+        tools:visibility="visible" />
+
+    <!--模板具有某种特殊功能，比如换暴走脸，点击这个进入-->
+<!--    <TextView-->
+<!--        android:id="@+id/item_function_tv"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:paddingTop="@dimen/dp_2"-->
+<!--        android:paddingBottom="@dimen/dp_2"-->
+<!--        android:paddingStart="@dimen/dp_4"-->
+<!--        android:paddingEnd="@dimen/dp_4"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="@dimen/sp_14"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:text="点我换脸"-->
+<!--        tools:visibility="visible" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

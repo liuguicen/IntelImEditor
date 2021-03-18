@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/hexagon_shadow7"
+        android:left="13dp"
+        android:top="13dp" />
+    <item
+        android:drawable="@drawable/hexagon_shadow6"
+        android:left="11dp"
+        android:top="11dp" />
+    <item
+        android:drawable="@drawable/hexagon_shadow5"
+        android:left="9dp"
+        android:top="9dp" />
+    <item
+        android:drawable="@drawable/hexagon_shadow4"
+        android:left="7dp"
+        android:top="7dp" />
+    <item
+        android:drawable="@drawable/hexagon_shadow3"
+        android:left="5dp"
+        android:top="5dp" />
+    <item
+        android:drawable="@drawable/hexagon_shadow1"
+        android:left="3dp"
+        android:top="3dp" />
+</layer-list>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="8dp"
+    android:paddingTop="8dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/vip_set_meal_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_middle_xx"
+        android:textColor="@color/text_light_light_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="一个月" />
+
+    <TextView
+        android:id="@+id/vip_set_meal_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:textSize="@dimen/text_size_middle"
+        android:textColor="@color/gray_light"
+        app:layout_constraintBaseline_toBaselineOf="@+id/vip_set_meal_name"
+        app:layout_constraintRight_toLeftOf="@+id/vip_set_meal_discount_price"
+        tool:text="¥9.99" />
+
+    <TextView
+        android:id="@+id/vip_set_meal_discount_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/text_light_light_black"
+        app:layout_constraintBaseline_toBaselineOf="@+id/vip_set_meal_name"
+        app:layout_constraintRight_toRightOf="parent"
+        tool:text="¥2.33" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,371 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'dexknifePlus' // 解决4.x以下多dex问题的
+//apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 29
+    /*兼容Android6.0系统所需，如果这句话报错，可在dependencies标签下使用compile 'cn.bmob.android:http-legacy:1.0'*/
+    useLibrary 'org.apache.http.legacy'
+    defaultConfig {
+        applicationId "com.mathandintell.intelimeditor"
+        minSdkVersion 17
+        // 从友盟新增用户机型上看，4.x的机型占1%左右，如果升级，应用商店还会是否会保持旧版本？
+        // 16对应  4.1.x  and 17 对应 4.2.x版本,详见 https://blog.csdn.net/huiguixian/article/details/39928027
+        // 注意Android 9加入了新变化，如果targetsdk >= 29,只能使用新的文件访问方式，
+        // 这种方式大概是只能使用Android提供的api访问文件，受到很大限制
+        targetSdkVersion 28 // 注意
+        versionCode 32
+        versionName "2.9.2"
+        multiDexEnabled true
+        /**
+         * 只支持中文，减小包大小
+         */
+        resConfigs "zh"
+
+        // opencv的，使用时需要吧jniLibs_rename改回jniLibs
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_shared", "-DANDROID_ARM_NEON=TRUE", "-DANDROID_PLATFORM=android-21",
+                        "-DMNN_OPENCL=true", "-DMNN_OPENGL=true"
+//                abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
+                abiFilters "armeabi-v7a"
+                // Android Studio 4.0 之后必须同时在这里设置过滤才行，估计是给cmake设置的，外面是给纯Android设置的
+            }
+        }
+
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your APK.
+            // 'armeabi' 这个新的NDK不支持了
+            // -mips / mips64 : 极少用于手机可以忽
+            // - x86 / x86_64: x86 架构的手机都会包含由 Intel 提供的称为 Houdini 的指令集动态转码工具，实现对 arm .so 的兼容，再考虑 x86 1% 以下的市场占有率，x86 相关的两个 .so 也是可以忽略的
+            // - armeabi: ARM v5 这是相当老旧的一个版本，缺少对浮点数计算的硬件支持，在需要大量计算时有性能瓶颈
+            // - armeabi-v7a: ARM v7 目前主流版本
+            // - arm64-v8a: 64位支持
+            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
+//            abiFilters 'armeabi-v7a'
+        }
+
+        //默认渠道包
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"]//添加一个默认渠道号
+    }
+
+// 编译C++时反注释下面代码
+    //编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
+    //如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
+//    externalNativeBuild {
+//        cmake {
+//            path "CMakeLists.txt"
+//        }
+//    }
+
+    sourceSets {
+        main {
+            // 1、 编译C++时用下面这个，这里要指定一个错误的路径才能编译成功，不知为何，原因是因为cmake里面包含了.so的路径，然后gradle又会自动添加，导致重复？？？
+            // jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
+
+            // 2、 使用so库时，用下面这个
+            // 编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
+            // 如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
+            jniLibs.srcDirs = ['src\\main\\jniLibs']
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("BaoZouPtu_key_19_9.jks")
+            storePassword "111111"
+            keyAlias "BaoZouPtu_key_19_9"
+            keyPassword "111111"
+        }
+    }
+    buildTypes {
+        //生产环境，开启混淆，无日志
+        release {
+            signingConfig signingConfigs.release
+            debuggable false  //true代表开启  false 关闭 用于release版安装包出错，看Log调试的
+            minifyEnabled true //开启代码混淆
+            shrinkResources true //  去除无用资源
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "SANBOX", "false"//关闭支付宝沙箱模式
+        }
+        // 测试环境，开启混淆，有日志
+        // alipay_debug {
+        //     signingConfig signingConfigs.release
+        //     debuggable true  // true代表开启  false 关闭 用于release版安装包出错，看Log调试的
+        //     jniDebuggable true
+        //     minifyEnabled true // 开启代码混淆
+        //     shrinkResources true //  去除无用资源
+        //     proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        //     buildConfigField "boolean", "SANBOX", "false"//关闭支付宝沙箱模式
+        // }
+
+        //开发环境，关闭混淆，有日志
+        debug {
+            signingConfig signingConfigs.release
+            debuggable true  //true代表开启  false 关闭 用于release版安装包出错，看Log调试的
+            jniDebuggable true
+//            minifyEnabled true //开启代码混淆
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "SANBOX", "true"//开启支付宝沙箱模式
+        }
+    }
+    //删除META-INF信息
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+//        人脸检测的原工程这里加了，但是这里这样用似乎不行，使用的是sourceSets
+//        pickFirst 'src/main/jniLibs/armeabi-v7a/libMNN.so'
+//        pickFirst 'src/main/jniLibs/armeabi-v7a/libMNN_CL.so'
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+        jumboMode = true
+        preDexLibraries = false
+    }
+
+    flavorDimensions "a"
+    //配置渠道
+    productFlavors {
+        // 测试版为了灰度发布，修bug用的，修bug的时候，就根据渠道过滤，而不是版本，
+        // 测试版可能要两版才能保证足够稳定，即加一个_test2
+        _test {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "_test"]
+        }
+
+        _test2 {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "_test2"]
+        }
+
+        yingyongbao {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "yingyongbao"]
+        }
+        huawei {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "huawei"]
+        }
+        xiaomi {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiaomi"]
+        }
+        oppo {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "oppo"]
+        }
+        vivo {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "vivo"]
+        }
+        _360 {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "_360"]
+        }
+        baidu {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "baidu"]
+        }
+        alibaba {
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "alibaba"]
+        }
+
+        chongchong { // 虫虫助手-一个游戏社区APP
+            dimension "a"
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "chongchong"]
+        }
+    }
+
+    /*支持Java 8语法*/
+    compileOptions {
+        targetCompatibility '1.8'
+        sourceCompatibility '1.8'
+        incremental false
+    }
+
+    repositories {
+        // 支付宝aar需要的
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    // 解决4.x以下多dex问题的
+    dexKnife {
+        //必选参数
+        enabled true //if false,禁用分包插件
+        //可选参数
+        //1.如果没有可选参数，将根据enabled决定是否分包。
+        //2.如果有可选参数，需满足必选参数和可选参数的条件才允许分包
+        productFlavor 'mock'
+        buildType 'debug'
+
+        /*
+        *eg:当前productFlavors = dev，buildType = debug，
+        *参数组合1：enabled = true，productFlavor = dev，buildType = debug 分包
+        *参数组合2：enabled = true，productFlavor = mock，buildType = debug 不分包
+        *参数组合1：enabled = true，buildType = debug 所有buildType = debug分包
+        *参数组合1：enabled = true，productFlavor = dev 所有productFlavor = dev分包
+        * */
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    testOptions { // 单元测试需要的
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    def lifecycle_version = "2.2.0"
+    def arch_version = "2.1.0"
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+
+    //官方的
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.exifinterface:exifinterface:1.3.1'
+    implementation 'androidx.fragment:fragment:1.2.5'
+
+    // 多dex
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    //框架
+
+    //    implementationOnly 'org.glassfish:javax.annotation:10.0-b28'
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+
+    // okhttp3 3.13.0之后不支持5.0以下的系统，目前不能使用
+    implementation 'com.squareup.okhttp3:okhttp:3.12.6'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.okio:okio:2.6.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //glide
+    implementation('com.github.bumptech.glide:glide:4.9.0') {
+        exclude group: "com.android.support"
+    }
+
+    // gif合成
+    implementation 'com.bilibili:burst-linker:0.0.13'
+
+    //其它库
+
+    //第三方服务的sdk
+
+    //腾讯qq开放平台的sdk
+    implementation files('libs/open_sdk_r6140_lite.jar')
+
+    // 微信开放平台，微信分享
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.6.5'
+
+    // 支付宝支付等
+    implementation(name: 'alipaySdk-15.6.5-20190718211148', ext: 'aar')
+
+    //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务，以下是最新的bmob-sdk:
+
+    //3.5.0：请务必查看下面注释[1]
+    implementation 'cn.bmob.android:bmob-sdk:3.7.8'
+
+    //如果你想应用能够兼容Android6.0，请添加此依赖(org.apache.http.legacy.jar)
+//    implementation 'cn.bmob.android:http-legacy:1.0' bmob 3.7.8 去掉
+
+    // compile fileTree(dir: "$buildDir/native-libs", include: 'native-libs.jar')
+    testImplementation 'junit:junit:4.12'
+
+    // 友盟统计
+
+    // 下面各SDK根据宿主App是否使用相关业务按需引入。
+    // OAID目前为目前国内市场主流的Android Q设备标识，可根据需要选择。
+    //基础组件库依赖(必须) Push 6.1.0版本必须升级新版本Common SDK
+    // 友盟统计SDK
+    implementation 'com.umeng.umsdk:common:9.1.6' // (必选)版本号
+    implementation 'com.umeng.umsdk:asms:1.1.3' // asms包依赖(必选)
+    implementation 'com.umeng.umsdk:crash:0.0.5' // native crash包依赖(必选)
+//    implementation 'com.umeng.umsdk:utdid:1.5.2'
+
+    implementation 'com.umeng.umsdk:oaid_lenovo:1.0.0' // (可选)
+    implementation 'com.umeng.umsdk:oaid_mi:1.0.0' // (可选)
+    implementation 'com.umeng.umsdk:oaid_oppo:1.0.4' // (可选)
+    implementation 'com.umeng.umsdk:oaid_vivo:1.0.0.1' // (可选)
+
+    //友盟push相关依赖(必须)
+//    implementation 'com.umeng.umsdk:push:6.1.0'
+//
+//    implementation 'com.umeng.umsdk:alicloud-httpdns:1.2.5'
+//    implementation 'com.umeng.umsdk:alicloud-utils:1.1.5'
+//    implementation 'com.umeng.umsdk:alicloud_beacon:1.0.1'
+//
+//    implementation 'com.umeng.umsdk:agoo-accs:3.3.8.8-open-fix2'
+//    implementation 'com.umeng.umsdk:agoo_networksdk:3.5.5'
+//    implementation 'com.umeng.umsdk:agoo_tlog:3.0.0.17'
+//    implementation 'com.umeng.umsdk:agoo_tnet4android:3.1.14.9'
+
+
+    //腾讯广点通
+    implementation(name: 'GDTSDK.tbsNormal.4.332.1202', ext: 'aar')
+//    implementation 'com.qq.e.union:tbs:+' // X5 内核版本 在线方式编译
+
+    //头条穿山甲广告
+    implementation(name: 'open_ad_sdk', ext: 'aar')
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.6'
+
+    // 铠甲广告
+    implementation(name: 'kaijia_ad_sdk_1.10.5.43', ext: 'aar')
+
+    // 百度的
+    implementation(name: 'Baidu_MobAds_SDK-release', ext: 'aar')
+
+    //内存泄漏库，需要时加上
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
+    implementation 'com.nex3z:flow-layout:1.3.0'
+
+    // 注释》
+    implementation 'com.google.android:flexbox:1.1.1'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+
+    // 双向seekbar,范围选择seekbar
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+
+    //下拉刷新
+    implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'
+
+
+    // pytorch 机器学习相关 暂时不用 包太大
+//    implementation 'org.pytorch:pytorch_android:1.6.0'
+//    implementation 'org.pytorch:pytorch_android_torchvision:1.6.0'
+
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.5.0'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}

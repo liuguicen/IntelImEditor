@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/function_total_layout">
+    <!--
+        <HorizontalScrollView
+            android:id="@+id/tietu_function_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_constraintHorizontal_chainStyle="spread">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_choose_base"
+                    style="@style/rend_function_layout"
+                    android:visibility="gone"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_property"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_text_image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/choose_base_pic"
+                        android:src="@mipmap/choose_base"
+                        app:layout_constraintBottom_toTopOf="@+id/rend_guideline_color"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/function_text"
+                        android:layout_width="72dp"
+                        android:layout_height="0dp"
+                        android:text="@string/choose_base_pic"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/rend_guideline_color" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/rend_guideline_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_property"
+                    style="@style/function_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@+id/tietu_function_choose_base"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_expression"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/main_function_cut_iv"
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+
+                        android:background="@drawable/function_background_tietu_green"
+                        android:contentDescription="@string/property"
+                        android:src="@mipmap/baojian"
+                        app:layout_constraintBottom_toTopOf="@+id/text_guideline_property"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_tietu_property_tv"
+                        style="@style/function_text"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="@string/property"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_guideline_property" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/text_guideline_property"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_expression"
+                    style="@style/function_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@+id/tietu_function_property"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_my"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/tietu_image_expression"
+                        style="@style/function_tietu_image"
+                        android:contentDescription="@string/expression"
+                        android:src="@mipmap/tietu"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_expression"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_tietu_expression_tv"
+                        style="@style/function_text"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:text="@string/expression"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_expression" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_expression"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_my"
+                    style="@style/function_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@id/tietu_function_expression"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_more"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/my_tietu"
+                        android:src="@mipmap/my_tietu"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_my"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_tietu_my_text"
+                        style="@style/function_text"
+                        android:text="@string/my_tietu"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_my" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_my"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_more"
+                    style="@style/function_layout"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@+id/tietu_function_my"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_rend"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/more"
+                        android:src="@drawable/outline_home"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_more"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_tietu_more_text"
+                        style="@style/function_text"
+                        android:text="@string/title_choose_local"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_more" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_rend"
+                    style="@style/function_layout"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@id/tietu_function_more"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_eraser"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/rend_pic"
+                        android:padding="5dp"
+                        android:src="@mipmap/rend_pic"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_rend"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_rend_text"
+                        style="@style/function_text"
+                        android:text="@string/rend_pic"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_rend" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_rend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_eraser"
+                    style="@style/function_layout"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@id/tietu_function_rend"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_make"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/rend_pic"
+                        android:padding="5dp"
+                        android:src="@mipmap/eraser"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_eraser"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_eraser_text"
+                        style="@style/function_text"
+                        android:text="@string/eraser"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_eraser" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_eraser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_make"
+                    style="@style/function_layout"
+
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@+id/tietu_function_eraser"
+                    app:layout_constraintRight_toLeftOf="@+id/tietu_function_tools"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/make"
+                        android:src="@drawable/tools"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_make"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_tietu_make_text"
+                        style="@style/function_text"
+                        android:text="@string/make"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_make" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_make"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_tools"
+                    style="@style/function_layout"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@+id/tietu_function_make"
+                    app:layout_constraintRight_toLeftOf="@id/tietu_function_fuse"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/tools"
+                        android:src="@drawable/tools"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_tools"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/function_text"
+                        android:text="@string/tools"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_tools" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_tools"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/tietu_function_fuse"
+                    style="@style/function_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintLeft_toRightOf="@+id/tietu_function_tools"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        style="@style/function_tietu_image"
+                        android:layout_width="0dp"
+                        android:contentDescription="@string/fuse"
+                        android:src="@mipmap/synthesis"
+                        app:layout_constraintBottom_toTopOf="@+id/tietu_guideline_synthesis"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/function_text"
+                        style="@style/function_text"
+                        android:text="@string/fuse"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tietu_guideline_synthesis" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/tietu_guideline_synthesis"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.666" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_hot_dot"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/dp_4"
+                        android:paddingTop="@dimen/dp_2"
+                        android:paddingEnd="@dimen/dp_4"
+                        android:paddingBottom="@dimen/dp_2"
+                        android:text="新"
+                        android:textColor="@color/white"
+                        android:textSize="8sp"
+                        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </HorizontalScrollView>
+
+        <include
+            layout="@layout/layout_rend_pic_function"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/layout_tietu_eraser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />-->
+</FrameLayout>
