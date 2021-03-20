@@ -29,7 +29,7 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

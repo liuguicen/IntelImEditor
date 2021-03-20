@@ -1,7 +1,7 @@
-package com.mathandintell.intelimedit.bean
+package com.mandi.intelimeditor.bean
 
+import com.mandi.intelimeditor.R
 import com.mandi.intelimeditor.ptu.PtuUtil
-import com.mathandintell.intelimeditor.R
 
 
 /**

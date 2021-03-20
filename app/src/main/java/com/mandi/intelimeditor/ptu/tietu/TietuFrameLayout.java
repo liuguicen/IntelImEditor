@@ -26,7 +26,7 @@ import com.mandi.intelimeditor.ptu.rendpic.RendPicGestureConfig;
 import com.mandi.intelimeditor.ptu.rendpic.RendState;
 import com.mandi.intelimeditor.ptu.tietu.tietuEraser.ViewEraser;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.Nullable;
 

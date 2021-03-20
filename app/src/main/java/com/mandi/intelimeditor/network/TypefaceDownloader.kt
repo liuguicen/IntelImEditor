@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.network
+package com.mandi.intelimeditor.network
 
 import android.app.AlertDialog
 import android.content.Context
@@ -9,7 +9,7 @@ import com.mandi.intelimeditor.bean.PtuTypeface
 import com.mandi.intelimeditor.common.dataAndLogic.AllData
 import com.mandi.intelimeditor.common.util.ToastUtils
 import com.mandi.intelimeditor.network.NetWorkState
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import java.io.File
 
 

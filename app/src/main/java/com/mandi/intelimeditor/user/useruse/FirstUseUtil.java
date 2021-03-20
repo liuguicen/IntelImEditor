@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.dialog.FirstUseDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

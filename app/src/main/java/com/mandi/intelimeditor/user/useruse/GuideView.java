@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.List;
 

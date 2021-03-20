@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.mandi.intelimeditor.common.BaseActivity
 import com.mandi.intelimeditor.common.appInfo.TheUserUtil
 import com.mandi.intelimeditor.common.dataAndLogic.AllData
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.activity_pay_problem_measure.*
 
 /**

@@ -17,7 +17,7 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.user.userSetting.SPConstants;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.HashMap;
 import java.util.HashSet;

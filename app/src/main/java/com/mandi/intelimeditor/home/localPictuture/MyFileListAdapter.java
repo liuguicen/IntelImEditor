@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.mandi.intelimeditor.home.data.PicDirInfo;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.List;
 

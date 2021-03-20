@@ -40,7 +40,7 @@ import com.mandi.intelimeditor.home.view.PopupMenu;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;

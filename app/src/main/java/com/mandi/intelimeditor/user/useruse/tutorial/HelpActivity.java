@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mandi.intelimeditor.common.BaseActivity;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 public class HelpActivity extends BaseActivity {

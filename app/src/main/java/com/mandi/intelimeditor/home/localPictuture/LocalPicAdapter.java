@@ -42,8 +42,8 @@ import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.view.TencentPicADHolder;
 import com.mandi.intelimeditor.home.viewHolder.HeaderHolder;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
-import com.mathandintell.intelimeditor.BuildConfig;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

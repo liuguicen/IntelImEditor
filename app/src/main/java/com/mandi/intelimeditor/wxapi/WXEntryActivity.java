@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.wxapi;// package a.baozouptu.wxapi;
+package com.mandi.intelimeditor.wxapi;// package com.mandi.intelimeditor.wxapi;
 //
 // import android.app.Activity;
 // import android.content.Intent;
@@ -32,12 +32,12 @@ package com.mandi.intelimeditor.wxapi;// package a.baozouptu.wxapi;
 // import java.io.UnsupportedEncodingException;
 // import java.lang.ref.WeakReference;
 //
-// import a.baozouptu.R;
-// import a.baozouptu.common.appInfo.AppConfig;
-// import a.baozouptu.user.userAccount.LocalUserInfo;
-// import a.baozouptu.user.userAccount.ThirdLoginCallback;
-// import a.baozouptu.user.userAccount.WXLogin.NetworkUtil;
-// import a.baozouptu.user.userAccount.WXLogin.WXLogin;
+// import com.mandi.intelimeditor.R;
+// import com.mandi.intelimeditor.common.appInfo.AppConfig;
+// import com.mandi.intelimeditor.user.userAccount.LocalUserInfo;
+// import com.mandi.intelimeditor.user.userAccount.ThirdLoginCallback;
+// import com.mandi.intelimeditor.user.userAccount.WXLogin.NetworkUtil;
+// import com.mandi.intelimeditor.user.userAccount.WXLogin.WXLogin;
 // import okhttp3.Response;
 //
 // /**

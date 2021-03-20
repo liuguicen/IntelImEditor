@@ -70,7 +70,7 @@
                 style="@style/setting_group_title"
                 android:text="@string/settings_quick_tools" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:id="@+id/showNotifyToolsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:id="@+id/exitDisplayNotify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:id="@+id/shareWithNoLabelView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 android:text="@string/settings_comment"
                 android:textColor="@color/text_middle_black" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -130,7 +130,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -145,7 +145,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -160,7 +160,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -171,7 +171,7 @@
                 style="@style/setting_group_title"
                 android:text="@string/settings_other" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -185,7 +185,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -199,7 +199,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/divider_setting_item" />
 
-            <a.intelimedit.common.view.SettingsItemView
+            <view.SettingsItemView
                 android:id="@+id/cacheView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

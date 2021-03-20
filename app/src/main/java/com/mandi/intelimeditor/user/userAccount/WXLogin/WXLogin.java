@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.user.userAccount.WXLogin;// package a.baozouptu.user.userAccount.WXLogin;
+package com.mandi.intelimeditor.user.userAccount.WXLogin;// package com.mandi.intelimeditor.user.userAccount.WXLogin;
 //
 // import android.content.BroadcastReceiver;
 // import android.content.Context;
@@ -12,8 +12,8 @@ package com.mandi.intelimeditor.user.userAccount.WXLogin;// package a.baozouptu.
 //
 // import org.jetbrains.annotations.NotNull;
 //
-// import a.baozouptu.common.appInfo.AppConfig;
-// import a.baozouptu.user.userAccount.ThirdLoginCallback;
+// import com.mandi.intelimeditor.common.appInfo.AppConfig;
+// import com.mandi.intelimeditor.user.userAccount.ThirdLoginCallback;
 //
 // /**
 //  * <pre>

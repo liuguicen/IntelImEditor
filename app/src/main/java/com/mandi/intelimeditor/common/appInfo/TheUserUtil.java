@@ -15,7 +15,7 @@ import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.user.userAccount.LocalUserInfo;
 import com.mandi.intelimeditor.user.userAccount.ServerLoginCallback;
 import com.mandi.intelimeditor.user.userAccount.UserConstant;
-import com.mathandintell.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.BuildConfig;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;

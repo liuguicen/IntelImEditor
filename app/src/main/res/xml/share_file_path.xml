@@ -4,20 +4,20 @@
     <!-- 多个路径名字不能一样 -->
 
     <!-- 物理路径相当于Environment.getExternalStorageDirectory() + /path/ -->
-    <external-path name="baozouptu_share_path" path="/"/>
+    <external-path name="intelimeditor_share_path" path="/"/>
 
     <!--物理路径相当于Context.getCacheDir() + /path/-->
     <!--这里直接分享了缓存文件，可能有风险，注意-->
-    <cache-path name="baozouptu_share_path_2" path="/"/>
+    <cache-path name="intelimeditor_share_path_2" path="/"/>
 
     <!-- 物理路径相当于Context.getExternalCacheDir() + /path/ -->
-    <external-cache-path name="baozouptu_share_path_3" path="/"/>
+    <external-cache-path name="intelimeditor_share_path_3" path="/"/>
 
     <!--物理路径相当于Context.getExternalFilesDir(String) + /path/  -->
-    <external-files-path name="baozouptu_share_path_4" path="/"/>
+    <external-files-path name="intelimeditor_share_path_4" path="/"/>
 
     <!--物理路径相当于Context.getFilesDir() + /path/-->
-    <files-path name="baozouptu_share_path_5" path="/"/>
+    <files-path name="intelimeditor_share_path_5" path="/"/>
 
-    <root-path name="baozouptu_share_path_6" path="data/data/a.intelimedit"/>
+    <root-path name="intelimeditor_share_path_6" path="data/data/com.mandi.intelimedit"/>
 </paths>

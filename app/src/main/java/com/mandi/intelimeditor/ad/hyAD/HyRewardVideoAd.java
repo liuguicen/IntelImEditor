@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.ad.hyAD;//package a.baozouptu.ad.hyAD;
+package com.mandi.intelimeditor.ad.hyAD;//package com.mandi.intelimeditor.ad.hyAD;
 //
 //import android.app.Activity;
 //import android.util.Log;
@@ -7,7 +7,7 @@ package com.mandi.intelimeditor.ad.hyAD;//package a.baozouptu.ad.hyAD;
 //import com.hytt.hyadxopensdk.hyadxopenad.HyAdXOpenMotivateVideoAd;
 //import com.hytt.hyadxopensdk.interfoot.HyAdXOpenListener;
 //
-//import a.baozouptu.ad.ttAD.videoAd.RewardVadListener;
+//import com.mandi.intelimeditor.ad.ttAD.videoAd.RewardVadListener;
 //
 //public class HyRewardVideoAd {
 //    public static final String TAG = "HyRewardVideoAd";

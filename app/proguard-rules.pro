@@ -124,7 +124,7 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
--keep public class a.intelimedit.R$*{
+-keep public class com.mandi.intelimeditor.R$*{
 public static final int *;
 }
 

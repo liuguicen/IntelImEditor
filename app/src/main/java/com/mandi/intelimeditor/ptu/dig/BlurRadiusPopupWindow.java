@@ -7,7 +7,7 @@ import android.widget.PopupWindow;
 
 import androidx.core.content.ContextCompat;
 
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

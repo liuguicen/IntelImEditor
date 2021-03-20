@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.ptu.view;//package a.baozouptu.ptu.view;
+package com.mandi.intelimeditor.ptu.view;//package com.mandi.intelimeditor.ptu.view;
 //
 //import android.content.Context;
 //import android.graphics.drawable.Drawable;
@@ -17,10 +17,10 @@ package com.mandi.intelimeditor.ptu.view;//package a.baozouptu.ptu.view;
 //import androidx.annotation.NonNull;
 //import androidx.annotation.Nullable;
 //
-//import a.baozouptu.R;
-//import a.baozouptu.common.dataAndLogic.AllData;
-//import a.baozouptu.common.util.Util;
-//import a.baozouptu.ptu.draw.DrawView;
+//import com.mandi.intelimeditor.R;
+//import com.mandi.intelimeditor.common.dataAndLogic.AllData;
+//import com.mandi.intelimeditor.common.util.Util;
+//import com.mandi.intelimeditor.ptu.draw.DrawView;
 //
 //public class SizePicker extends FrameLayout {
 //    private ImageView strokeImageView, strokeAlphaImage, strokeAbsorbColorIv;

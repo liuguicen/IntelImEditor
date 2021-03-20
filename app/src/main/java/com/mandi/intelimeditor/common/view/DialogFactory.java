@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.view.Window;
 
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.Nullable;
 

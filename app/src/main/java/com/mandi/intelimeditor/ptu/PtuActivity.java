@@ -88,7 +88,7 @@ import common.MainFunctionFragment;
 
 import com.mandi.intelimeditor.user.useruse.tutorial.GuideData;
 import com.mandi.intelimeditor.user.useruse.tutorial.Tutorial;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;

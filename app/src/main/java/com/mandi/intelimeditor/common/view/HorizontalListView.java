@@ -52,7 +52,7 @@ import android.widget.Scroller;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.EdgeEffectCompat;
 
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

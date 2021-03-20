@@ -15,7 +15,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

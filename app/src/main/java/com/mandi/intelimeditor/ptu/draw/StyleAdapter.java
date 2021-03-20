@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.ArrayList;
 import java.util.List;

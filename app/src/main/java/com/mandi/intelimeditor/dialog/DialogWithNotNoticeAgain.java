@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.mathandintell.intelimedit.dialog.IBaseDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.IBaseDialog;
+import com.mandi.intelimeditor.R;
 
 
 /**

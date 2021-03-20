@@ -19,7 +19,7 @@ import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.RepealRedoListener;
 import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -42,8 +42,8 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import com.mandi.intelimeditor.user.useruse.tutorial.GuideData;
-import com.mathandintell.intelimedit.home.search.SearchActivity;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.home.search.SearchActivity;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

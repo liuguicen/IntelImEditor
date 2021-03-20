@@ -41,8 +41,8 @@ import com.mandi.intelimeditor.home.viewHolder.FolderHolder;
 import com.mandi.intelimeditor.home.viewHolder.GroupHeaderHolder;
 import com.mandi.intelimeditor.home.viewHolder.NewFeatureHeaderHolder;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
-import com.mathandintell.intelimeditor.BuildConfig;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

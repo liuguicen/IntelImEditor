@@ -57,4 +57,4 @@ public class PictureSynthesis {
     private native int[] synthesisBm(Object under, Object above, int[] intersection_rect);
 
 }
-//javah -d ../jni  -encoding UTF-8  a.baozouptu.ptu.tietu.pictureSynthesis.PictureSynthesis
+//javah -d ../jni  -encoding UTF-8  com.mandi.intelimeditor.ptu.tietu.pictureSynthesis.PictureSynthesis

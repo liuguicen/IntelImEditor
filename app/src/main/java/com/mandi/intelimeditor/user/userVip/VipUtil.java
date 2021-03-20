@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.bean.VipSetMeal;
-import com.mathandintell.intelimedit.dialog.ToOpenVipDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.ToOpenVipDialog;
+import com.mandi.intelimeditor.R;
 
 import java.util.ArrayList;
 import java.util.List;

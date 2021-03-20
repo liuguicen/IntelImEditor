@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.home.data
+package com.mandi.intelimeditor.home.data
 
 import android.text.SpannableString
 import android.text.Spanned
@@ -8,7 +8,7 @@ import com.mandi.intelimeditor.common.util.FileTool
 import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.home.data.MediaInfoScanner
 import com.mandi.intelimeditor.home.data.PicDirInfo
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import java.io.File
 import java.util.*
 

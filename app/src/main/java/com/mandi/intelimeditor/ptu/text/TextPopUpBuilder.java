@@ -17,7 +17,7 @@ import com.mandi.intelimeditor.dialog.FirstUseDialog;
 import com.mandi.intelimeditor.ptu.common.SimpleEraser;
 import com.mandi.intelimeditor.ptu.threeLevelFunction.ThreeLevelToolUtil;
 import com.mandi.intelimeditor.ptu.view.ColorPicker;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import text.TypefacePopWindow;
 

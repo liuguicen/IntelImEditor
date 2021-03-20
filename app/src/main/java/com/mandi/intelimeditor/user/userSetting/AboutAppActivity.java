@@ -8,8 +8,8 @@ import android.widget.TextView;
 import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.ptu.draw.MosaicView;
 import com.mandi.intelimeditor.user.useruse.AppAgreementActivity;
-import com.mathandintell.intelimeditor.BuildConfig;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.R;
 import com.tencent.bugly.beta.Beta;
 
 

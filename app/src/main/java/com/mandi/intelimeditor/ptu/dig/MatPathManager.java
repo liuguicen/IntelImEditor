@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 import com.mandi.intelimeditor.common.util.Util;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

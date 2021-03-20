@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.dialog
+package com.mandi.intelimeditor.dialog
 
 import android.content.DialogInterface
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.user.userSetting.FeedBackActivity
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.dialog_rate_us.*
 
 class RateUsDialog : IBaseDialog() {

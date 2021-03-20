@@ -10,7 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.mandi.intelimeditor.common.util.BmobUtil
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * 专辑封面图片加载器

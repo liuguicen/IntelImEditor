@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.mandi.intelimeditor.bean.PtuTypeface
 import com.mandi.intelimeditor.common.util.Util
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * Created by caiyonglong on 2019/7/9.

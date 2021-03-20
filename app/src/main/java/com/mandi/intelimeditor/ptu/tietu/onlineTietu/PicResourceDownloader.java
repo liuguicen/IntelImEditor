@@ -16,7 +16,7 @@ import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.network.NetWorkState;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimedit.bean.GroupBean;
+import com.mandi.intelimeditor.bean.GroupBean;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;

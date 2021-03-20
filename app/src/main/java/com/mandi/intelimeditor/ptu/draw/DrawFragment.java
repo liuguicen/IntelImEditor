@@ -39,8 +39,8 @@ import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimedit.home.view.BottomFunctionView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.home.view.BottomFunctionView;
+import com.mandi.intelimeditor.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

@@ -20,7 +20,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 public abstract class BaseDrawView extends View {

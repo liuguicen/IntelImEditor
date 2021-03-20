@@ -35,7 +35,7 @@ import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceFeatureDetector;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;

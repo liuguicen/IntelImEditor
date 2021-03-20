@@ -72,10 +72,10 @@ import com.mandi.intelimeditor.user.userSetting.SettingActivity;
 import com.mandi.intelimeditor.user.userVip.OpenVipActivity;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.user.useruse.tutorial.HelpActivity;
-import com.mathandintell.intelimedit.bean.PicInfoEvent;
-import com.mathandintell.intelimedit.dialog.LoginDialog;
-import com.mathandintell.intelimedit.home.search.SearchActivity;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.PicInfoEvent;
+import com.mandi.intelimeditor.dialog.LoginDialog;
+import com.mandi.intelimeditor.home.search.SearchActivity;
+import com.mandi.intelimeditor.R;
 
 
 
@@ -239,7 +239,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
      */
     private void startBackgroundService(Activity initAc) {
         Intent intent = new Intent("start");
-        intent.setAction("a.baozouptu.common.appInfo.AppIntentService");
+        intent.setAction("com.mandi.intelimeditor.common.appInfo.AppIntentService");
         intent.setPackage(initAc.getPackageName());
         initAc.startService(intent);
     }

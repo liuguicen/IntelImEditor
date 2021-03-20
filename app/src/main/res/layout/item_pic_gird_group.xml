@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <a.intelimedit.home.view.PicGridView
+        <com.mandi.intelimeditor.home.view.PicGridView
             android:id="@+id/iv_pic_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,14 +42,14 @@
             android:layout_weight="1"
             android:src="@mipmap/rend_pic" />
 
-        <a.intelimedit.home.view.PicGridView
+        <com.mandi.intelimeditor.home.view.PicGridView
             android:id="@+id/iv_pic_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_weight="1" />
 
-        <a.intelimedit.home.view.PicGridView
+        <com.mandi.intelimeditor.home.view.PicGridView
             android:id="@+id/iv_pic_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

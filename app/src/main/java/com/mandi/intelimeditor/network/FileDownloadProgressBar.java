@@ -1,12 +1,12 @@
-package com.mandi.intelimeditor.network;//package a.baozouptu.network;
+package com.mandi.intelimeditor.network;//package com.mandi.intelimeditor.network;
 //
 //import android.app.Notification;
 //import android.app.NotificationManager;
 //import android.content.Context;
 //import android.widget.RemoteViews;
 //
-//import a.baozouptu.R;
-//import a.baozouptu.common.util.Util;
+//import com.mandi.intelimeditor.R;
+//import com.mandi.intelimeditor.common.util.Util;
 //
 ///**
 // * Created by Administrator on 2016/11/21 0021.

@@ -14,7 +14,7 @@ import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;

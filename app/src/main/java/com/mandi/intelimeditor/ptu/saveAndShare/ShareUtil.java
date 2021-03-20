@@ -118,7 +118,7 @@ class ShareUtil {
                     Uri contentUri;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         contentUri = FileProviderToShare.getUriForFile(context,
-                                "a.baozouptu.FileProviderToShare", imgFile);
+                                "com.mandi.intelimeditor.FileProviderToShare", imgFile);
                     } else {
                         contentUri = Uri.fromFile(imgFile);
                     }

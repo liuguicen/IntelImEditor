@@ -4,8 +4,8 @@ package com.mandi.intelimeditor.dialog;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.mathandintell.intelimedit.dialog.IBaseDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.IBaseDialog;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * 作者：yonglong
- * 包名：a.baozouptu.widget
+ * 包名：com.mandi.intelimeditor.widget
  * 时间：2019/4/3 13:21
  * 描述：
  */

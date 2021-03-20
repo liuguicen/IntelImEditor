@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.mandi.intelimeditor.bean.VipSetMeal
 import com.mandi.intelimeditor.common.util.Util
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * 会员列表

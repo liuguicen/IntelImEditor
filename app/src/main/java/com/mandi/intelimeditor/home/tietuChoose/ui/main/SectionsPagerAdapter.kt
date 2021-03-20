@@ -1,6 +1,6 @@
-//package a.baozouptu.home.tietuChoose.ui.main
+//package com.mandi.intelimeditor.home.tietuChoose.ui.main
 //
-//import a.baozouptu.ptu.tietu.onlineTietu.TietuListFragment
+//import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuListFragment
 //import androidx.fragment.app.Fragment
 //import androidx.fragment.app.FragmentManager
 //import androidx.fragment.app.FragmentPagerAdapter

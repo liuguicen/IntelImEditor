@@ -14,7 +14,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.GlobalSettings;
 
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.util.TimeDateUtil;
-import com.mathandintell.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.BuildConfig;
 import com.qq.e.comm.managers.GDTADManager;
 import com.qq.e.comm.managers.setting.GlobalSetting;
 import com.tencent.bugly.Bugly;

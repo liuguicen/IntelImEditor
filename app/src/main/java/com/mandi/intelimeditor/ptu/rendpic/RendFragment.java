@@ -41,8 +41,8 @@ import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimedit.bean.FunctionInfoBean;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.TestOnly;
 

@@ -17,7 +17,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

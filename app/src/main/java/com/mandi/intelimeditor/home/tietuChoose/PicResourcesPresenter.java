@@ -9,7 +9,7 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
-import com.mathandintell.intelimedit.home.tietuChoose.TietuChooseContract;
+import com.mandi.intelimeditor.home.tietuChoose.TietuChooseContract;
 
 import org.jetbrains.annotations.NotNull;
 

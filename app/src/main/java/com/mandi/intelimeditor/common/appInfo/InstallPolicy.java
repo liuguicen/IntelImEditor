@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
-import com.mathandintell.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.BuildConfig;
 
 
 /**

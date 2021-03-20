@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * 设置界面条目

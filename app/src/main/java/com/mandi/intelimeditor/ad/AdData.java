@@ -19,8 +19,8 @@ import com.mandi.intelimeditor.common.util.TimeDateUtil;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userSetting.SPConstants;
-import com.mathandintell.intelimeditor.BuildConfig;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.R;
 import com.umeng.analytics.AnalyticsConfig;
 
 import java.util.ArrayList;

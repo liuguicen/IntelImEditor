@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.home.tietuChoose
+package com.mandi.intelimeditor.home.tietuChoose
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mandi.intelimeditor.common.BaseActivity
 import com.mandi.intelimeditor.home.tietuChoose.PicResourcesFragment
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * 点击更多打开分组更多界面，增加一个界面，保留首页界面状态，避免点击分组打乱了上一列表状态

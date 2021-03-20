@@ -15,13 +15,13 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil
 import com.mandi.intelimeditor.common.util.LogUtil
 import com.mandi.intelimeditor.user.US
-import com.mathandintell.intelimedit.dialog.UnlockDialog
+import com.mandi.intelimeditor.dialog.UnlockDialog
 import com.mandi.intelimeditor.common.util.ToastUtils
 import com.mandi.intelimeditor.network.NetWorkState
 import com.mandi.intelimeditor.ptu.text.FloatTextView
 import com.mandi.intelimeditor.ptu.text.TextPopUpBuilder
-import com.mathandintell.intelimedit.network.TypefaceDownloader
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.network.TypefaceDownloader
+import com.mandi.intelimeditor.R
 import java.io.File
 import java.util.concurrent.TimeUnit
 

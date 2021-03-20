@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.Util;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.List;
 

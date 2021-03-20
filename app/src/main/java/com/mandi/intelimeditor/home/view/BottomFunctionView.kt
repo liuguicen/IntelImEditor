@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.home.view
+package com.mandi.intelimeditor.home.view
 
 import android.content.Context
 import android.os.Build
@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.item_func_list.view.*
 
 class BottomFunctionView : FrameLayout {

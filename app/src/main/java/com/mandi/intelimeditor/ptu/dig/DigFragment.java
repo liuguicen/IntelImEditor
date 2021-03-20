@@ -32,8 +32,8 @@ import com.mandi.intelimeditor.ptu.repealRedo.StepData;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimeditor.BuildConfig;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.R;
 
 
 import io.reactivex.Observable;

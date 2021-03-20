@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.home.tietuChoose;//package a.baozouptu.home.tietuChoose;
+package com.mandi.intelimeditor.home.tietuChoose;//package com.mandi.intelimeditor.home.tietuChoose;
 //
 //import android.content.Context;
 //import android.view.LayoutInflater;
@@ -12,8 +12,8 @@ package com.mandi.intelimeditor.home.tietuChoose;//package a.baozouptu.home.tiet
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import a.baozouptu.R;
-//import a.baozouptu.home.BasePicAdapter;
+//import com.mandi.intelimeditor.R;
+//import com.mandi.intelimeditor.home.BasePicAdapter;
 //
 ///**
 // * Created by liuguicen on 2016/8/31.

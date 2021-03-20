@@ -9,12 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/fl_boardcontainer">
-        <!--<a.baozouptu.ptu.draw.TuyaView-->
-        <!--android:id="@+id/tuya_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
-
-
 
     </FrameLayout>
 

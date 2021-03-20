@@ -13,7 +13,7 @@ import com.mandi.intelimeditor.home.ChoosePicContract;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.home.data.UsuPathManger;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimedit.home.data.PicDirInfoManager;
+import com.mandi.intelimeditor.home.data.PicDirInfoManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -89,7 +89,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <a.intelimedit.common.view.MenuItemView
+    <view.MenuItemView
         android:id="@+id/helpView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -97,28 +97,28 @@
         app:miv_icon="@drawable/ic_help_outline"
         app:miv_title="@string/title_help" />
 
-    <a.intelimedit.common.view.MenuItemView
+    <view.MenuItemView
         android:id="@+id/aboutView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:miv_icon="@drawable/ic_about"
         app:miv_title="@string/about_title" />
 
-    <a.intelimedit.common.view.MenuItemView
+    <view.MenuItemView
         android:id="@+id/feedbackView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:miv_icon="@drawable/ic_feedback"
         app:miv_title="@string/feedback_title" />
 
-    <a.intelimedit.common.view.MenuItemView
+    <view.MenuItemView
         android:id="@+id/settingsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:miv_icon="@drawable/ic_settings"
         app:miv_title="@string/setting" />
     <!--
-        <a.baozouptu.common.view.MenuItemView
+        <com.mandi.intelimeditor.common.view.MenuItemView
             android:id="@+id/tagsManagerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

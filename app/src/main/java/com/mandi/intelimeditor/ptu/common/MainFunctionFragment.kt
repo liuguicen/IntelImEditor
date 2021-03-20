@@ -10,8 +10,8 @@ import com.mandi.intelimeditor.ptu.PTuActivityInterface
 import com.mandi.intelimeditor.ptu.PtuUtil
 import com.mandi.intelimeditor.ptu.repealRedo.StepData
 import com.mandi.intelimeditor.user.US
-import com.mathandintell.intelimedit.bean.FunctionInfoBean
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.bean.FunctionInfoBean
+import com.mandi.intelimeditor.R
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

@@ -5,7 +5,7 @@ import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * 作者：yonglong
- * 包名：a.baozouptu.bean
+ * 包名：com.mandi.intelimeditor.bean
  * 时间：2019/7/25 10:06
  * 描述：
  */

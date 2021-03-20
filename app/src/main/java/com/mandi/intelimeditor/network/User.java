@@ -1,5 +1,5 @@
 package com.mandi.intelimeditor.network;/*
-package a.baozouptu.network;
+package com.mandi.intelimeditor.network;
 
 import cn.bmob.v3.BmobObject;
 

@@ -43,8 +43,8 @@ import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.saveAndShare.PTuResultData;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.AppGuideActivity;
-import com.mathandintell.intelimedit.dialog.PrivacyDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.PrivacyDialog;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.TestOnly;
 
@@ -442,7 +442,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
             if (sourceIntent != null && sourceIntent.getData() != null) { // 如果是从其它应用过来需要编辑图片的
                 intent.setData(sourceIntent.getData());
             } else {
-                intent.putExtra(Extras.START_CHOOSE_PIC, "a.baozouptu.startChoosePictureAC");
+                intent.putExtra(Extras.START_CHOOSE_PIC, "com.mandi.intelimeditor.startChoosePictureAC");
             }
             startActivity(intent);
             hadStartHomeAc = true;
@@ -482,7 +482,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
 
     private void startAppGuideAc() {
         Intent intent = new Intent(this, AppGuideActivity.class);
-        intent.putExtra(Extras.START_CHOOSE_PIC, "a.baozouptu.startChoosePictureAC");
+        intent.putExtra(Extras.START_CHOOSE_PIC, "com.mandi.intelimeditor.startChoosePictureAC");
         startActivityForResult(intent, REQUEST_CODE_APP_GUIDE);
     }
 

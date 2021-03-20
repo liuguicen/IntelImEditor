@@ -8,7 +8,7 @@ import android.widget.EditText;
 import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 import cn.bmob.v3.exception.BmobException;

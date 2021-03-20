@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.dialog
+package com.mandi.intelimeditor.dialog
 
 import android.content.Context
 import android.os.Bundle
@@ -20,7 +20,7 @@ import com.mandi.intelimeditor.common.util.LogUtil
 import com.mandi.intelimeditor.common.util.ToastUtils
 import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.user.US
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.dialog_unlock_layout.*
 import kotlinx.android.synthetic.main.layout_to_open_vip.*
 

@@ -21,7 +21,7 @@ import com.mandi.intelimeditor.user.userAccount.QQLogin;
 import com.mandi.intelimeditor.user.userAccount.ServerLoginCallback;
 import com.mandi.intelimeditor.user.userAccount.ThirdLoginCallback;
 import com.mandi.intelimeditor.user.userAccount.UserConstant;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;

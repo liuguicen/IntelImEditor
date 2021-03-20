@@ -8,7 +8,7 @@ import android.widget.PopupWindow;
 
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.user.userSetting.SettingActivity;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

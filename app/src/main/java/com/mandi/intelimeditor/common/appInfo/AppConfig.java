@@ -8,8 +8,8 @@ import android.util.Log;
 
 import com.mandi.intelimeditor.ad.AdStrategyUtil;
 import com.mandi.intelimeditor.user.userSetting.SPConstants;
-import com.mathandintell.intelimeditor.BuildConfig;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.R;
 
 
 /**

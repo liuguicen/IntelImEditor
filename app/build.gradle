@@ -9,7 +9,7 @@ android {
     /*兼容Android6.0系统所需，如果这句话报错，可在dependencies标签下使用compile 'cn.bmob.android:http-legacy:1.0'*/
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        applicationId "com.mathandintell.intelimeditor"
+        applicationId "com.mandi.intelimeditor"
         minSdkVersion 17
         // 从友盟新增用户机型上看，4.x的机型占1%左右，如果升级，应用商店还会是否会保持旧版本？
         // 16对应  4.1.x  and 17 对应 4.2.x版本,详见 https://blog.csdn.net/huiguixian/article/details/39928027

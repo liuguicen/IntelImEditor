@@ -2,7 +2,7 @@ package com.mandi.intelimeditor.common.util;
 
 import android.util.Log;
 
-import com.mathandintell.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.BuildConfig;
 
 import java.net.URL;
 import java.net.URLConnection;

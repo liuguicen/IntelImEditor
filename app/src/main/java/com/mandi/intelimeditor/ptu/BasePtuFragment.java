@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.mandi.intelimeditor.common.BaseFragment;
-import com.mathandintell.intelimedit.bean.FunctionInfoBean;
-import com.mathandintell.intelimedit.ptu.BottomFunctionAdapter;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.ptu.BottomFunctionAdapter;
+import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;

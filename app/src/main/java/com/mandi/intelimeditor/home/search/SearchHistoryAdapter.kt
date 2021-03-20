@@ -1,8 +1,8 @@
-package com.mathandintell.intelimedit.home.search
+package com.mandi.intelimeditor.home.search
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * 作者：yonglong

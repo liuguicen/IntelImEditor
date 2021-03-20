@@ -40,7 +40,7 @@ import com.mandi.intelimeditor.ptu.repealRedo.TextStepData;
 import com.mandi.intelimeditor.ptu.view.IconBitmapCreator;
 import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.ArrayList;
 import java.util.Random;

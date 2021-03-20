@@ -29,8 +29,8 @@ import com.mandi.intelimeditor.home.viewHolder.GroupHeaderHolder;
 import com.mandi.intelimeditor.home.viewHolder.NewFeatureHeaderHolder;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimedit.home.tietuChoose.TietuChooseContract;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.home.tietuChoose.TietuChooseContract;
+import com.mandi.intelimeditor.R;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.umeng.analytics.MobclickAgent;
 

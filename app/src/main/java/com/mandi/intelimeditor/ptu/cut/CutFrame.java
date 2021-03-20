@@ -14,7 +14,7 @@ import androidx.annotation.ColorInt;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.geoutil.GeoUtil;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.Locale;
 

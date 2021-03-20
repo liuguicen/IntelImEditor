@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <!--Viewpager2嵌套recyclerview，解决滑动冲突-->
-        <a.intelimedit.common.view.NestedScrollableHost
+        <view.NestedScrollableHost
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -23,7 +23,7 @@
                 android:layout_marginRight="@dimen/choose_pic_item_divider"
                 android:gravity="center" />
 
-        </a.intelimedit.common.view.NestedScrollableHost>
+        </view.NestedScrollableHost>
 
         <include layout="@layout/item_loading" />
 

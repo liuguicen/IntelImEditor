@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.home.data;//package a.baozouptu.home.data;
+package com.mandi.intelimeditor.home.data;//package com.mandi.intelimeditor.home.data;
 //
 //import android.text.SpannableString;
 //import android.text.Spanned;
@@ -14,9 +14,9 @@ package com.mandi.intelimeditor.home.data;//package a.baozouptu.home.data;
 //import java.util.Map;
 //import java.util.Set;
 //
-//import a.baozouptu.R;
-//import a.baozouptu.common.util.FileTool;
-//import a.baozouptu.common.util.Util;
+//import com.mandi.intelimeditor.R;
+//import com.mandi.intelimeditor.common.util.FileTool;
+//import com.mandi.intelimeditor.common.util.Util;
 //
 ///**
 // * Created by LiuGuicen on 2017/1/18 0018.

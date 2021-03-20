@@ -83,9 +83,9 @@ import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimedit.bean.FunctionInfoBean;
-import com.mathandintell.intelimedit.dialog.UnlockDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.dialog.UnlockDialog;
+import com.mandi.intelimeditor.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -111,7 +111,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class TietuFragment extends BasePtuFragment {
     //  注意！！！ 贴图Fragment不止贴图功能，还包含换脸，抠图选底图功能，开发，测试，修改时都需要考虑到
-    public static final String INTENT_EXTRA_CHOSE_TIETU_RES = "a.baozouptu.tietu_res";
+    public static final String INTENT_EXTRA_CHOSE_TIETU_RES = "com.mandi.intelimeditor.tietu_res";
 
     private static String TAG = "TietuFragment";
     private TietuFrameLayout tietuLayout;

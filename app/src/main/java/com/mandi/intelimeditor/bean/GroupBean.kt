@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.bean
+package com.mandi.intelimeditor.bean
 
 import android.os.Parcel
 import android.os.Parcelable

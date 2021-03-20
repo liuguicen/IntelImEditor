@@ -42,7 +42,7 @@ import com.mandi.intelimeditor.ptu.rendpic.SawtoothShapeController;
 import com.mandi.intelimeditor.ptu.tietu.tietuEraser.ViewEraser;
 import com.mandi.intelimeditor.ptu.view.IconBitmapCreator;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -13,7 +13,7 @@ import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.geoutil.GeoUtil;
 import com.mandi.intelimeditor.common.util.geoutil.MPoint;
 import com.mandi.intelimeditor.ptu.view.IconBitmapCreator;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

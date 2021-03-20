@@ -42,8 +42,8 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimedit.dialog.RateUsDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.RateUsDialog;
+import com.mandi.intelimeditor.R;
 import com.qq.e.ads.nativ.ADSize;
 
 import java.util.ArrayList;

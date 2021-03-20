@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.home.search
+package com.mandi.intelimeditor.home.search
 
 import android.app.Activity
 import android.content.Intent
@@ -33,8 +33,8 @@ import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
 import com.mandi.intelimeditor.home.tietuChoose.PicResourcesAdapter
 import com.mandi.intelimeditor.home.viewHolder.FolderHolder
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource
-import com.mathandintell.intelimedit.home.data.PicDirInfoManager
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.home.data.PicDirInfoManager
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.toolbar_search_layout.*
 import java.util.*

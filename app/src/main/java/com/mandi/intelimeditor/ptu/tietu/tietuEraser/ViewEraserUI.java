@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
 import com.mandi.intelimeditor.ptu.common.PTuUIUtil;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

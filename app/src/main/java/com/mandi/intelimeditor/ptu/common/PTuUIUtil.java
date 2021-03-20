@@ -9,7 +9,7 @@ import android.widget.PopupWindow;
 import androidx.core.content.ContextCompat;
 
 import com.mandi.intelimeditor.common.util.Util;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 public class PTuUIUtil {

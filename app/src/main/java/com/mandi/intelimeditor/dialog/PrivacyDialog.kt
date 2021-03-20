@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.dialog
+package com.mandi.intelimeditor.dialog
 
 import android.content.Intent
 import android.graphics.Typeface
@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication
 import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.user.useruse.AppAgreementActivity
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.dialog_privacy.*
 
 /**

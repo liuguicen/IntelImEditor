@@ -6,8 +6,8 @@ import android.view.View;
 import androidx.fragment.app.FragmentActivity;
 
 import com.mandi.intelimeditor.user.userSetting.SPConstants;
-import com.mathandintell.intelimedit.dialog.UnlockDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.UnlockDialog;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -19,13 +19,13 @@
         app:tabTextAppearance="@style/TabLayoutTextStyle1"
         app:tabTextColor="@color/half_transparent_black" />
 
-    <a.intelimedit.common.view.NestedScrollableHost
+    <view.NestedScrollableHost
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/choose_content_view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </a.intelimedit.common.view.NestedScrollableHost>
+    </view.NestedScrollableHost>
 
 </LinearLayout>

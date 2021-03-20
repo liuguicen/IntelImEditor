@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.home.tietuChoose
+package com.mandi.intelimeditor.home.tietuChoose
 
 import com.mandi.intelimeditor.BasePresenter
 import com.mandi.intelimeditor.BaseView

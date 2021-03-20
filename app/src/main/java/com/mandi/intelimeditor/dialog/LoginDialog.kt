@@ -1,13 +1,13 @@
-package com.mathandintell.intelimedit.dialog
+package com.mandi.intelimeditor.dialog
 
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 
 /**
  * 作者：yonglong
- * 包名：a.baozouptu.widget
+ * 包名：com.mandi.intelimeditor.widget
  * 时间：2019/4/3 13:21
  * 描述：
  */

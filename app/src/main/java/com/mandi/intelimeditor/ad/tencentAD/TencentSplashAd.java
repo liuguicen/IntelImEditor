@@ -12,7 +12,7 @@ import com.mandi.intelimeditor.ad.ISplashAdListener;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.constants.LoadAdParams;

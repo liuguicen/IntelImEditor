@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.ptu.text;//package a.baozouptu.ptu.text;
+package com.mandi.intelimeditor.ptu.text;//package com.mandi.intelimeditor.ptu.text;
 //
 //import android.app.Activity;
 //import android.graphics.Typeface;
@@ -14,15 +14,15 @@ package com.mandi.intelimeditor.ptu.text;//package a.baozouptu.ptu.text;
 //import java.io.File;
 //import java.util.ArrayList;
 //
-//import a.baozouptu.R;
-//import a.baozouptu.ad.tencentAD.InsertAd;
-//import a.baozouptu.common.dataAndLogic.AllData;
-//import a.baozouptu.common.util.Logcat;
-//import a.baozouptu.common.util.Util;
-//import a.baozouptu.common.view.HorizontalListView;
-//import a.baozouptu.network.FileDownloader;
-//import a.baozouptu.network.TypefaceDownloader;
-//import a.baozouptu.ptu.text.TextTypeAdapter;
+//import com.mandi.intelimeditor.R;
+//import com.mandi.intelimeditor.ad.tencentAD.InsertAd;
+//import com.mandi.intelimeditor.common.dataAndLogic.AllData;
+//import com.mandi.intelimeditor.common.util.Logcat;
+//import com.mandi.intelimeditor.common.util.Util;
+//import com.mandi.intelimeditor.common.view.HorizontalListView;
+//import com.mandi.intelimeditor.network.FileDownloader;
+//import com.mandi.intelimeditor.network.TypefaceDownloader;
+//import com.mandi.intelimeditor.ptu.text.TextTypeAdapter;
 //
 ///**
 // * Created by LiuGuicen on 2017/1/20 0020.

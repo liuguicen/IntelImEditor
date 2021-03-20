@@ -27,7 +27,7 @@ import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import java.util.List;
 import java.util.Map;

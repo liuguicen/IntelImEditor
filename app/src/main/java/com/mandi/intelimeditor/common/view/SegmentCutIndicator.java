@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.common.view;// package a.baozouptu.common.view;
+package com.mandi.intelimeditor.common.view;// package com.mandi.intelimeditor.common.view;
 //
 // import android.content.Context;
 // import android.content.res.TypedArray;
@@ -15,9 +15,9 @@ package com.mandi.intelimeditor.common.view;// package a.baozouptu.common.view;
 // import androidx.annotation.Nullable;
 // import androidx.annotation.RequiresApi;
 //
-// import a.baozouptu.R;
-// import a.baozouptu.common.util.geoutil.GeoUtil;
-// import a.baozouptu.common.util.Util;
+// import com.mandi.intelimeditor.R;
+// import com.mandi.intelimeditor.common.util.geoutil.GeoUtil;
+// import com.mandi.intelimeditor.common.util.Util;
 //
 // /**
 //  * <pre>

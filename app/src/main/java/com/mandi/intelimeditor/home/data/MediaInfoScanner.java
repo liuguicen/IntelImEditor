@@ -11,7 +11,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.home.localPictuture.LocalPicFragment;
-import com.mathandintell.intelimedit.home.data.PicDirInfoManager;
+import com.mandi.intelimeditor.home.data.PicDirInfoManager;
 
 import org.jetbrains.annotations.NotNull;
 

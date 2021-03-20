@@ -28,8 +28,8 @@ import view.SettingsItemView;
 
 import com.mandi.intelimeditor.user.userVip.OpenVipActivity;
 import com.mandi.intelimeditor.user.useruse.tutorial.HelpActivity;
-import com.mathandintell.intelimedit.dialog.LoginDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.dialog.LoginDialog;
+import com.mandi.intelimeditor.R;
 import com.umeng.analytics.AnalyticsConfig;
 
 import java.util.Arrays;

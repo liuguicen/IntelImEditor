@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.ptu
+package com.mandi.intelimeditor.ptu
 
 import android.content.Context
 import android.graphics.Color
@@ -9,9 +9,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.mandi.intelimeditor.R
 import com.mandi.intelimeditor.common.dataAndLogic.AllData
-import com.mathandintell.intelimedit.bean.FunctionInfoBean
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.bean.FunctionInfoBean
+
 
 /**
  * Created by caiyonglong on 2019/7/9.

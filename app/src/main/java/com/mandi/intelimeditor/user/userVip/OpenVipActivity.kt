@@ -28,8 +28,8 @@ import com.mandi.intelimeditor.user.US
 import com.mandi.intelimeditor.user.userSetting.SettingActivity
 import com.mandi.intelimeditor.user.userVip.PayVipPresenterImp
 import com.mandi.intelimeditor.user.useruse.AppAgreementActivity
-import com.mathandintell.intelimeditor.BuildConfig
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.BuildConfig
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.activity_open_vip.*
 
 /**

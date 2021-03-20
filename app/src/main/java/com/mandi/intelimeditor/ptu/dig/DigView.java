@@ -29,7 +29,7 @@ import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.view.ColorPicker;
 import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

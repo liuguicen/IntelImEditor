@@ -10,7 +10,7 @@ import androidx.annotation.ColorInt;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.mandi.intelimeditor.common.util.Util;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

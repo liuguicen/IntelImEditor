@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.home.view
+package com.mandi.intelimeditor.home.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import com.mandi.intelimeditor.common.dataAndLogic.AllData
 import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.item_pic_resource.view.*
 import util.CoverLoader
 

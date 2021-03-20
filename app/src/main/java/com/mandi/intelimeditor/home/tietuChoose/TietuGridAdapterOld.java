@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.home.tietuChoose;// package a.baozouptu.chosePicture.tietuChoose;
+package com.mandi.intelimeditor.home.tietuChoose;// package com.mandi.intelimeditor.chosePicture.tietuChoose;
 //
 // import android.content.Context;
 // import android.support.annotation.NonNull;
@@ -23,17 +23,17 @@ package com.mandi.intelimeditor.home.tietuChoose;// package a.baozouptu.chosePic
 // import java.util.ArrayList;
 // import java.util.List;
 //
-// import a.baozouptu.MyFrameLayout;
-// import a.baozouptu.R;
-// import a.baozouptu.ad.AdData;
-// import a.baozouptu.ad.tencentAD.AdUtil;
-// import a.baozouptu.ad.tencentAD.ListAdPool;
-// import a.baozouptu.ad.tencentAD.ListAdStrategyController;
-// import a.baozouptu.chosePicture.data.PicListItemType;
-// import a.baozouptu.chosePicture.view.TencentADHolder;
-// import a.baozouptu.common.util.Logcat;
-// import a.baozouptu.common.util.Util;
-// import a.baozouptu.ptu.tietu.PicResource;
+// import com.mandi.intelimeditor.MyFrameLayout;
+// import com.mandi.intelimeditor.R;
+// import com.mandi.intelimeditor.ad.AdData;
+// import com.mandi.intelimeditor.ad.tencentAD.AdUtil;
+// import com.mandi.intelimeditor.ad.tencentAD.ListAdPool;
+// import com.mandi.intelimeditor.ad.tencentAD.ListAdStrategyController;
+// import com.mandi.intelimeditor.chosePicture.data.PicListItemType;
+// import com.mandi.intelimeditor.chosePicture.view.TencentADHolder;
+// import com.mandi.intelimeditor.common.util.Logcat;
+// import com.mandi.intelimeditor.common.util.Util;
+// import com.mandi.intelimeditor.ptu.tietu.PicResource;
 //
 // /**
 //  * Created by liuguicen on 2016/8/31.

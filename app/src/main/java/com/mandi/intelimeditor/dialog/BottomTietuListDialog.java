@@ -30,8 +30,8 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceViewModel;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PtuTietuListFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.ViewPager2FragmentAdapter;
-import com.mathandintell.intelimedit.bean.GroupBean;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.GroupBean;
+import com.mandi.intelimeditor.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -30,9 +30,9 @@ import com.mandi.intelimeditor.ptu.tietu.TietuFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimedit.bean.FunctionInfoBean;
-import com.mathandintell.intelimedit.dialog.UnlockDialog;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.dialog.UnlockDialog;
+import com.mandi.intelimeditor.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

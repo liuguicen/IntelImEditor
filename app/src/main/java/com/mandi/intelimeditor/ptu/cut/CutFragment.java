@@ -31,8 +31,8 @@ import com.mandi.intelimeditor.ptu.repealRedo.StepData;
 import com.mandi.intelimeditor.ptu.threeLevelFunction.ThreeLevelToolUtil;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-import com.mathandintell.intelimedit.bean.FunctionInfoBean;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.R;
 
 import java.util.List;
 

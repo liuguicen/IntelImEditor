@@ -44,9 +44,9 @@ import com.mandi.intelimeditor.ptu.tietu.FloatImageView;
 import com.mandi.intelimeditor.ptu.view.ColorPicker;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimedit.bean.FunctionInfoBean;
-import com.mathandintell.intelimedit.ptu.FunctionAdapter;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.ptu.FunctionAdapter;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

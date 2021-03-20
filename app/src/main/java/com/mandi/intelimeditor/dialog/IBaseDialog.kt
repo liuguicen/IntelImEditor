@@ -1,4 +1,4 @@
-package com.mathandintell.intelimedit.dialog
+package com.mandi.intelimeditor.dialog
 
 import android.app.Dialog
 import android.content.Context
@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
  * 注意继承这个的对话框的根布局需要是FrameLayout不然没有对话框的效果，是全屏，估计是因为Fragement一般使用FramLayout的原因
 
  * 作者：yonglong
- * 包名：a.baozouptu.widget
+ * 包名：com.mandi.intelimeditor.widget
  * 时间：2019/4/3 13:20
  * 描述：基础对话框里
  */

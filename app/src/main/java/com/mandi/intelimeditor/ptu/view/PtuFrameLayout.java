@@ -20,7 +20,7 @@ import com.mandi.intelimeditor.common.util.geoutil.MRect;
 import com.mandi.intelimeditor.ptu.PicGestureListener;
 import com.mandi.intelimeditor.ptu.text.FloatTextView;
 import com.mandi.intelimeditor.ptu.tietu.TietuFrameLayout;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import view.TSRView;
 

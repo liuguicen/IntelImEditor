@@ -11,7 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.view.StatusBarUtil;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

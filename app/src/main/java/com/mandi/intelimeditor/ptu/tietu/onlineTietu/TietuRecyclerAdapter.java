@@ -25,7 +25,7 @@ import com.mandi.intelimeditor.common.util.BmobUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.view.TencentPicADHolder;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 

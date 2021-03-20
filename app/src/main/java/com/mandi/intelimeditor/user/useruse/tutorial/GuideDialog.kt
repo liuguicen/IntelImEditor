@@ -5,14 +5,14 @@ import android.view.View
 import com.mandi.intelimeditor.common.util.LogUtil
 import com.mandi.intelimeditor.user.useruse.tutorial.GuideAdapter
 import com.mandi.intelimeditor.user.useruse.tutorial.Tutorial
-import com.mathandintell.intelimedit.dialog.IBaseDialog
-import com.mathandintell.intelimeditor.R
+import com.mandi.intelimeditor.dialog.IBaseDialog
+import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.dialog_tutorial.*
 import util.CoverLoader
 
 /**
  * 作者：yonglong
- * 包名：a.baozouptu.widget
+ * 包名：com.mandi.intelimeditor.widget
  * 时间：2019/4/3 13:21
  * 描述：
  */

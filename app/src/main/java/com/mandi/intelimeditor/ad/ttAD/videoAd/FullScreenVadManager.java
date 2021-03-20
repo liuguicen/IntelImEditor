@@ -20,7 +20,7 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.dialog.LoadingDialog;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimedit.dialog.ToOpenVipDialog;
+import com.mandi.intelimeditor.dialog.ToOpenVipDialog;
 
 import org.jetbrains.annotations.Nullable;
 

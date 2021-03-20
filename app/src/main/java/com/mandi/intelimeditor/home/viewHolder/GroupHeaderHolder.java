@@ -5,8 +5,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mathandintell.intelimedit.home.view.PicGridView;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.home.view.PicGridView;
+import com.mandi.intelimeditor.R;
 
 /**
  * 分组列表viewHolder

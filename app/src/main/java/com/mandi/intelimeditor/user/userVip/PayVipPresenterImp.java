@@ -12,7 +12,7 @@ import com.mandi.intelimeditor.bean.ResponseResultData;
 import com.mandi.intelimeditor.bean.VipSetMeal;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.user.US;
-import com.mathandintell.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.BuildConfig;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

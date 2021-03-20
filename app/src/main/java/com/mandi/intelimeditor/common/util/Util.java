@@ -23,7 +23,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.R;
 
 
 /**

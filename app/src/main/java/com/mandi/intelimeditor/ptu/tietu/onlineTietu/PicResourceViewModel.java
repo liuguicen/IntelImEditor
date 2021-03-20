@@ -9,7 +9,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
-import com.mathandintell.intelimedit.bean.GroupBean;
+import com.mandi.intelimeditor.bean.GroupBean;
 
 import java.text.ParseException;
 import java.util.ArrayList;

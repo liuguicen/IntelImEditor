@@ -11,8 +11,8 @@ import com.mandi.intelimeditor.common.appInfo.HasReadConfig;
 import com.mandi.intelimeditor.ptu.changeFace.LevelsAdjuster;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
-import com.mathandintell.intelimedit.bean.GroupBean;
-import com.mathandintell.intelimeditor.R;
+import com.mandi.intelimeditor.bean.GroupBean;
+import com.mandi.intelimeditor.R;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -35,7 +35,7 @@ import java.util.Random;
 public class AllData {
 
     public static final String TAG = "暴走P图";
-    public static String PACKAGE_NAME = "a.baozouptu";
+    public static String PACKAGE_NAME = "com.mandi.intelimeditor";
     /**
      * 获取服务器数据更新时间，-1表示网络出错，需要重新获取，0表示没有数据，
      */
