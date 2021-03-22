@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 #set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -Wl,--gc-sections")
 
-include_directories(src/main/cpp/include
+include_directories(src/main/cpp/MNN
         src/main/cpp/)
 
 #add_library(lib_opencv STATIC IMPORTED ) #引入libopencv_java3.so文件

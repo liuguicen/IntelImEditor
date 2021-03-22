@@ -5,7 +5,7 @@ apply plugin: 'dexknifePlus' // 解决4.x以下多dex问题的
 //apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     /*兼容Android6.0系统所需，如果这句话报错，可在dependencies标签下使用compile 'cn.bmob.android:http-legacy:1.0'*/
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
@@ -15,7 +15,7 @@ android {
         // 16对应  4.1.x  and 17 对应 4.2.x版本,详见 https://blog.csdn.net/huiguixian/article/details/39928027
         // 注意Android 9加入了新变化，如果targetsdk >= 29,只能使用新的文件访问方式，
         // 这种方式大概是只能使用Android提供的api访问文件，受到很大限制
-        targetSdkVersion 28 // 注意
+        targetSdkVersion 27 // 注意
         versionCode 32
         versionName "2.9.2"
         multiDexEnabled true
@@ -45,8 +45,8 @@ android {
             // - armeabi: ARM v5 这是相当老旧的一个版本，缺少对浮点数计算的硬件支持，在需要大量计算时有性能瓶颈
             // - armeabi-v7a: ARM v7 目前主流版本
             // - arm64-v8a: 64位支持
-            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
-//            abiFilters 'armeabi-v7a'
+//            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
+            abiFilters 'armeabi-v7a'
         }
 
         //默认渠道包
@@ -56,21 +56,22 @@ android {
 // 编译C++时反注释下面代码
     //编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
     //如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
-//    externalNativeBuild {
-//        cmake {
-//            path "CMakeLists.txt"
-//        }
-//    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
 
     sourceSets {
         main {
-            // 1、 编译C++时用下面这个，这里要指定一个错误的路径才能编译成功，不知为何，原因是因为cmake里面包含了.so的路径，然后gradle又会自动添加，导致重复？？？
-            // jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
+            // 1、 编译C++时用下面这个，反注释externalNativeBuild节点 注释掉2中的，
+            // 这里要指定一个错误的路径才能编译成功，不知为何，原因是因为cmake里面包含了.so的路径，然后gradle又会自动添加，导致重复？？？
+            jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
 
-            // 2、 使用so库时，用下面这个
+            // 2、 使用so库时，用下面这个，注释掉1中的 和 externalNativeBuild节点
             // 编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
             // 如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
-            jniLibs.srcDirs = ['src\\main\\jniLibs']
+            // jniLibs.srcDirs = ['src\\main\\jniLibs']
         }
     }
 
@@ -360,7 +361,8 @@ dependencies {
 //    implementation 'org.pytorch:pytorch_android:1.6.0'
 //    implementation 'org.pytorch:pytorch_android_torchvision:1.6.0'
 
-    implementation 'com.tencent.bugly:crashreport_upgrade:1.5.0'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.5.0'
+//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
 }
 
 repositories {

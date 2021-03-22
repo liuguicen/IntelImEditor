@@ -9,13 +9,13 @@
 #include <android/bitmap.h>
 #include <jni.h>
 #include <string.h>
-#include <include/ImageProcess.hpp>
-#include <include/Interpreter.hpp>
-#include <include/Tensor.hpp>
+#include <MNN/ImageProcess.hpp>
+#include <MNN/Interpreter.hpp>
+#include <MNN/Tensor.hpp>
 #include <memory>
 
 extern "C" JNIEXPORT jintArray JNICALL
-Java_a_baozouptu_ml_mnn_MNNPortraitNative_nativeConvertMaskToPixelsMultiChannels(JNIEnv *env, jclass jclazz,
+Java_com_mandi_intelimeditor_mnn_MNNPortraitNative_nativeConvertMaskToPixelsMultiChannels(JNIEnv *env, jclass jclazz,
                                                                                      jfloatArray jmaskarray,
                                                                                      jint length) {
     float *scores = (float *)env->GetFloatArrayElements(jmaskarray, 0);

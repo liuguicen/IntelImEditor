@@ -42,9 +42,9 @@ class MorePicInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         position = intent.getIntExtra(TAG_POSITION, 0)
-        mFirstClass = intent.getStringExtra(PicResourcesFragment.FIRST_CLASS)
-        mSecondClass = intent.getStringExtra(PicResourcesFragment.SECOND_CLASS)
-        mCategory = intent.getStringExtra(PicResourcesFragment.CATEGORY_NAME)
+        mFirstClass = intent.getStringExtra(PicResourcesFragment.FIRST_CLASS).toString()
+        mSecondClass = intent.getStringExtra(PicResourcesFragment.SECOND_CLASS).toString()
+        mCategory = intent.getStringExtra(PicResourcesFragment.CATEGORY_NAME).toString()
 
 //        tagTitles = PicResourceDownloader.getTagListByCate(mSecondClass)
 

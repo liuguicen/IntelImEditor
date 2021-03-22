@@ -17,7 +17,7 @@ bool detection_sdk_init_ok = false;
 extern "C" {
 
 JNIEXPORT jboolean JNICALL
-Java_a_baozouptu_ptu_imageProcessing_FaceSDKNative_FaceDetectionModelInit(JNIEnv *env,
+Java_com_mandi_intelimeditor_ptu_imageProcessing_FaceSDKNative_FaceDetectionModelInit(JNIEnv *env,
                                                                           jobject instance,
                                                                           jstring faceDetectionModelPath_) {
     LOGD("JNI init native sdk");
@@ -59,7 +59,7 @@ Java_a_baozouptu_ptu_imageProcessing_FaceSDKNative_FaceDetectionModelInit(JNIEnv
 }
 
 JNIEXPORT jintArray JNICALL
-Java_a_baozouptu_ptu_imageProcessing_FaceSDKNative_FaceDetect(JNIEnv *env, jobject instance,
+Java_com_mandi_intelimeditor_ptu_imageProcessing_FaceSDKNative_FaceDetect(JNIEnv *env, jobject instance,
                                                               jbyteArray imageDate_,
                                                               jint imageWidth, jint imageHeight,
                                                               jint imageChannel) {
@@ -119,7 +119,7 @@ Java_a_baozouptu_ptu_imageProcessing_FaceSDKNative_FaceDetect(JNIEnv *env, jobje
 }
 
 JNIEXPORT jboolean JNICALL
-Java_a_baozouptu_ptu_imageProcessing_FaceSDKNative_FaceDetectionModelUnInit(JNIEnv *env,
+Java_com_mandi_intelimeditor_ptu_imageProcessing_FaceSDKNative_FaceDetectionModelUnInit(JNIEnv *env,
                                                                             jobject instance) {
 
     jboolean tDetectionUnInit = false;

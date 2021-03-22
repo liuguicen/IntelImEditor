@@ -78,7 +78,7 @@ Mat synthesisInSeamlessClone(JNIEnv *env, Mat Sunder, Mat Sabove, jintArray in_r
 
 extern "C"
 JNIEXPORT jintArray JNICALL
-Java_a_baozouptu_ptu_tietu_tietuImpact_PictureSynthesis_synthesisBm(JNIEnv *env,
+Java_com_mandi_intelimeditor_tietu_tietuImpact_PictureSynthesis_synthesisBm(JNIEnv *env,
                                                                          jobject instance,
                                                                          jobject under,
                                                                          jobject above,

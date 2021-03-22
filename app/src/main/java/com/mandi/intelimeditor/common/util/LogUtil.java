@@ -39,7 +39,7 @@ public final class LogUtil {
     public static final boolean debugRecommend = false;
     public static final boolean debugTietuGesture = false;
     public static boolean debugDeformation = false;
-    public static final boolean debugFace = false; // 人脸检测 对齐 相关的调试
+    public static final boolean debugFace = true; // 人脸检测 对齐 相关的调试
     public static boolean debugGif = false;
     public static boolean testSplashAd = false;
 

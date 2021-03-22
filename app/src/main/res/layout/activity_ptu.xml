@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<view.PtuConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mandi.intelimeditor.common.view.PtuConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ptu_layout"
@@ -14,7 +14,7 @@
         android:background="@color/base_toolbar_background"
         android:fitsSystemWindows="true">
 
-        <view.PtuToolbar
+        <com.mandi.intelimeditor.ptu.view.PtuToolbar
             android:id="@+id/ptu_toolbar_relative"
             android:layout_width="match_parent"
             android:layout_height="@dimen/ptu_top_bar_height"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <view.PtuFrameLayout
+    <com.mandi.intelimeditor.ptu.view.PtuFrameLayout
         android:id="@+id/ptu_frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -35,13 +35,13 @@
         app:layout_constraintTop_toBottomOf="@+id/ptu_appbar"
         app:layout_constraintVertical_weight="85">
 
-        <view.PtuSeeView
+        <com.mandi.intelimeditor.ptu.view.PtuSeeView
             android:id="@+id/ptu_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/default_ptu_bg" />
 
-    </view.PtuFrameLayout>
+    </com.mandi.intelimeditor.ptu.view.PtuFrameLayout>
 
     <FrameLayout
         android:id="@+id/banner_ad_container"
@@ -155,4 +155,4 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-</view.PtuConstraintLayout>
+</com.mandi.intelimeditor.common.view.PtuConstraintLayout>

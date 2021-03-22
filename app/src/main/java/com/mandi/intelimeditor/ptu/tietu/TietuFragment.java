@@ -68,6 +68,7 @@ import com.mandi.intelimeditor.ptu.gif.GifManager;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceAlign;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceFeature;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceFeatureDetector;
+import com.mandi.intelimeditor.ptu.imageProcessing.StyleTransfer;
 import com.mandi.intelimeditor.ptu.rendpic.RendDrawDate;
 import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
@@ -1423,9 +1424,11 @@ public class TietuFragment extends BasePtuFragment {
                             if (faceFeatureDetector == null) {
                                 faceFeatureDetector = new FaceFeatureDetector(mContext);
                                 GifManager gifManager = ptuActivityInterface.getGifManager();
-                                if (gifManager != null) {
-                                    gifManager.detectFaceLandmark(faceFeatureDetector);
-                                }
+//                                if (gifManager != null) {
+//                                    gifManager.detectFaceLandmark(faceFeatureDetector);
+//                                }
+                                StyleTransfer styleTransfer = new StyleTransfer(mContext);
+                                styleTransfer.mnnTransfer(gifManager.getFirstFrameBm(), gifManager.getFirstFrameBm());
                             }
                             // 检测贴图上面的人脸
                             if (fiv.faceBoxex == null) {

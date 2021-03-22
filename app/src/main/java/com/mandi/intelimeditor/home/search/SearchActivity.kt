@@ -78,7 +78,9 @@ class SearchActivity : BaseActivity() {
         updateHistoryPanel(true)
         var searchContent = intent.getStringExtra(INTENT_EXTRA_SEARCH_CONTENT)
         if (!TextUtils.isEmpty(searchContent)) {
-            search(searchContent)
+            if (searchContent != null) {
+                search(searchContent)
+            }
         }
     }
 
