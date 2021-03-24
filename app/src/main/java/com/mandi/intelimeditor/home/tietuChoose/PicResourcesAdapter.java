@@ -631,7 +631,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
         return groupedList;
     }
 
-    public void deleteTietuPic(String path) {
+    public void deleterecent_style(String path) {
         for (int i = groupedList.size() - 1; i >= 0; i--) {
             PicResource data = groupedList.get(i).data;
             if (data != null && data.getUrl() != null

@@ -60,10 +60,9 @@ public class PtuUtil {
     public static final int EDIT_REND = 6;
     public static final int EDIT_DEFORMATION = 7;
     public static final int EDIT_GIF = 8;
+    public static final int EDIT_TRANSFER = 9;
 
     // 一些特殊的P图功能，可能在某个二级功能下面，不一定是直接的二级功能
-    public static final int CHILD_FUNCTION_CHANGE_FACE = 101;
-    public static final int CHILD_FUNCTION_ERASE_FACE = 102;
     public static final int CHILD_FUNCTION_DIG_FACE = 103;
     public static final int CHILD_FUNCTION_GIF = 104;
 
@@ -494,6 +493,8 @@ public class PtuUtil {
 
     public static String getUSEventByType(int type) {
         switch (type) {
+            case EDIT_TRANSFER:
+                return US.MAIN_FUNCTION_EDIT;
             case EDIT_REND:
                 return US.MAIN_FUNCTION_REND;
             case EDIT_TEXT:

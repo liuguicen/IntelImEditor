@@ -123,7 +123,7 @@ package com.mandi.intelimeditor.home.tietuChoose;// package com.mandi.intelimedi
 //         }
 //     }
 //
-//     public void deleteTietuPic(String path) {
+//     public void deleterecent_style(String path) {
 //         for (int i = imageUrlList.size() - 1; i >= 0; i--) {
 //             PicResource data = imageUrlList.get(i).data;
 //             if (data != null && data.getUrl() != null

@@ -208,27 +208,27 @@ public class MyDatabase {
 
     /**
      * 加入一张贴图
-     * tietupic(path text primary key,time varchar(20))
+     * recent_style(path text primary key,time varchar(20))
      * inert时如果存在就替换，使用replace，不然就会出错，
      * 这样就不需要update了
      */
     public void insertMyTietu(String path, long time) {
-        db.execSQL("replace into tietupic(path,time) values(?,?) ", new Object[]{path, String.valueOf(time)});
+        db.execSQL("replace into recent_style(path,time) values(?,?) ", new Object[]{path, String.valueOf(time)});
     }
 
     /**
      * 删除加入的贴图
-     * tietupic(path text primary key,time varchar(20))
+     * recent_style(path text primary key,time varchar(20))
      *
      * @param path
      */
     public void deleteMyTietu(String path) {
-        db.execSQL("delete from tietupic where path = ?", new Object[]{path});
+        db.execSQL("delete from recent_style where path = ?", new Object[]{path});
     }
 
     /**
      * 更新加入的贴图
-     * tietupic(path text primary key,time varchar(20))
+     * recent_style(path text primary key,time varchar(20))
      *
      * @param path
      * @param time
@@ -238,7 +238,7 @@ public class MyDatabase {
     }
 
     public boolean isInMyTietu(String path) {
-        Cursor cursor = db.rawQuery("select * from tietupic where path = ? ", new String[]{path});
+        Cursor cursor = db.rawQuery("select * from recent_style where path = ? ", new String[]{path});
         boolean result = cursor.moveToNext();
         cursor.close();
         return result;
@@ -246,13 +246,13 @@ public class MyDatabase {
 
     /**
      * 获取存入数据库的所有加入的贴图
-     * tietupic(path text primary key,time varchar(20))
+     * recent_style(path text primary key,time varchar(20))
      *
      * @param pathList
      */
     //    有两个返回值，不能直接返回，传入应用获取
     public void queryAllMyTietu(List<String> pathList) {
-        Cursor cursor = db.rawQuery("select path from tietupic order by time desc ", new String[]{});
+        Cursor cursor = db.rawQuery("select path from recent_style order by time desc ", new String[]{});
         while (cursor.moveToNext()) {
             String path = cursor.getString(0);
             //从数据库读出文件路径时就检测是否已被删除，删除了则不添加，并且从数据库删除，
@@ -269,7 +269,7 @@ public class MyDatabase {
      * 查询贴图图片路径加上时间
      */
     public void queryAllMyTietuAndTime(List<String> pathList) {
-        Cursor cursor = db.rawQuery("select * from tietupic order by time desc ", new String[]{});
+        Cursor cursor = db.rawQuery("select * from recent_style order by time desc ", new String[]{});
         while (cursor.moveToNext()) {
             String path = cursor.getString(0);
             if (FileTool.urlType(path) != FileTool.UrlType.URL &&

@@ -120,6 +120,7 @@
     <string name="network_error_try_latter">网络或服务器出错，请稍后再试！</string>
 
     <string name="load_tietu_failed">加载贴图失败</string>
+    <string name="load_style_pic_failed">加载贴图失败</string>
     <string name="load_pic_failed">加载图片失败</string>
     <string name="rend_pic">撕图</string>
     <string name="finish">完成</string>
@@ -650,4 +651,7 @@ b) 在使用暴走P图网络服务进行网上交易时，您不可避免的要�
     <string name="auto_add_tietu_tips">双击贴图可进行调整哟</string>
     <string name="deformation_guide">在图片上滑动即可变形</string>
     <string name="gif_operation_notice">双击或长按，可选中部分帧进行编辑</string>
+    <string name="choose_style">选风格</string>
+    <string name="choose_pic">选照片</string>
+    <string name="stranfer_error_by_empty_content">生成出错了，内容为空</string>
 </resources>

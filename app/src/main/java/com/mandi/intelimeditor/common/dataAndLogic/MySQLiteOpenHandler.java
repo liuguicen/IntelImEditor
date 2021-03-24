@@ -27,7 +27,7 @@ public class MySQLiteOpenHandler extends SQLiteOpenHelper {
         db.execSQL("create table  IF NOT EXISTS prefer_share(packageName text,title text,time varchar(50))");
 
         //数据库第4版用到的
-        db.execSQL("create table  IF NOT EXISTS tietupic(path text primary key,time varchar(50))");
+        db.execSQL("create table  IF NOT EXISTS recent_style(path text primary key,time varchar(50))");
     }
 
     @Override
@@ -42,7 +42,7 @@ public class MySQLiteOpenHandler extends SQLiteOpenHelper {
         }
 
         if (newVersion == 4) {
-            db.execSQL("create table  IF NOT EXISTS tietupic(path text primary key,time varchar(50))");
+            db.execSQL("create table  IF NOT EXISTS recent_style(path text primary key,time varchar(50))");
         }
 
     }

@@ -212,13 +212,6 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
 //        new Handler().postDelayed(() -> mTvDownloadInfo.setText(R.string.download_pic_resources_note), 1200);
     }
 
-    /**
-     * 跳转到抠脸界面
-     */
-    private void toChangeFace() {
-        mActivity.toChangeFace(null);
-    }
-
     private void initPicListView() {
         initPicAdapter();
         //下拉刷新控件
@@ -315,8 +308,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             int position = itemHolder.getLayoutPosition();
             if (position == -1) return;
             if (itemHolder instanceof NewFeatureHeaderHolder) {
-                US.putChangeFaceEvent(US.CHANGE_FACE_FUNCTION_BTN_ENTER);
-                toChangeFace();
+
             } else if (itemHolder instanceof GroupHeaderHolder) {
                 if (view.getId() == R.id.tv_pic_header_more) {
                     curGroupPosition = position;

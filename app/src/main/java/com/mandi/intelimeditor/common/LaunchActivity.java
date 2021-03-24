@@ -109,7 +109,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //        test();
+//        test();
         readLocalAdData();
         initStatusBar();
 

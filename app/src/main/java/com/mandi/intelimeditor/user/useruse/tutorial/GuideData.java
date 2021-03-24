@@ -16,31 +16,6 @@ public class GuideData {
     public static List<Tutorial> allGuideUseData = new ArrayList<>();
 
     /**
-     * 本地引导数据
-     */
-//    public static List<Tutorial> allLocalGuideUseData = new ArrayList<>();
-
-    /**
-     * 根据功能名获取指定的功能引导数据。每个功能对应一个gif或者多个图片
-     */
-//    public static List<Tutorial> getGuideUseDataByTitle() {
-//        allLocalGuideUseData.clear();
-//        allLocalGuideUseData.add(new Tutorial("撕图", "撕图-P图", "双指按住图片，往外拉即可撕开图片哦"));
-//        allLocalGuideUseData.add(new Tutorial("图片列表-长按选择", "选图", "图片列表-长按选择\t长按图片多选，即可制作GIF，设为常用等哦"));
-//        allLocalGuideUseData.add(new Tutorial("GIF动图制作", "贴图-GIF", "下方是帧列表，双击选择单帧，长按选择多帧，可以只对选中帧P图哟"));
-//        allLocalGuideUseData.add(new Tutorial("文字-橡皮擦", "文字", "滑动即可擦除背景,可在左边选择颜色和粗细哟"));
-//        allLocalGuideUseData.add(new Tutorial("贴图橡皮", "贴图", "你还可以使用橡皮擦除部分贴图哦"));
-//        allLocalGuideUseData.add(new Tutorial("编辑", "编辑", "按住编辑框四周调整尺寸，按住中间即可移动"));
-//        allLocalGuideUseData.add(new Tutorial("抠脸-模糊半径", "扣脸", "调节模糊半径，可使抠图后贴图效果更逼真哦"));
-//        allLocalGuideUseData.add(new Tutorial("缩放", "贴图", "选图后，双指按住图片，即可缩放和旋转哦"));
-//        allLocalGuideUseData.add(new Tutorial("抠脸", "扣脸-P图", "绕着人脸画圈，即可实现智能抠脸哦"));
-//        allLocalGuideUseData.add(new Tutorial("文字", "选图", "选择本地图片或者搞笑模板进行P图吧"));
-//        allLocalGuideUseData.add(new Tutorial("选择图片", "选图", "点击右下角图标可选择文件夹内图片哦"));
-//        allLocalGuideUseData.add(new Tutorial("图片列表-添加收藏", "选图", "图片选择页长按图片即可收藏到我的贴图哦"));
-//        return allLocalGuideUseData;
-//    }
-
-    /**
      * 根据功能名获取指定的功能引导数据。每个功能对应一个gif或者多个图片
      * 使用关键字匹配的形式得到使用教程Item
      */
@@ -74,9 +49,6 @@ public class GuideData {
                 keywordList.add("文字");
                 break;
             case PtuUtil.EDIT_TIETU:
-                if (PtuUtil.CHILD_FUNCTION_CHANGE_FACE == childFunction) {
-                    keywordList.add("换脸");
-                }
                 keywordList.add("贴图");
                 break;
             case PtuUtil.EDIT_DRAW:

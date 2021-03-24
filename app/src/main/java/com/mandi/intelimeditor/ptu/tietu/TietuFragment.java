@@ -68,7 +68,7 @@ import com.mandi.intelimeditor.ptu.gif.GifManager;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceAlign;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceFeature;
 import com.mandi.intelimeditor.ptu.imageProcessing.FaceFeatureDetector;
-import com.mandi.intelimeditor.ptu.imageProcessing.StyleTransfer;
+import com.mandi.intelimeditor.ptu.imageProcessing.StyleTransferMnn;
 import com.mandi.intelimeditor.ptu.rendpic.RendDrawDate;
 import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
@@ -132,7 +132,7 @@ public class TietuFragment extends BasePtuFragment {
     private boolean isFirstShowTietu;
     private RecyclerView tietuRcv;
 
-    private PTuActivityInterface ptuActivityInterface;
+    private PTuActivityInterface pTuActivityInterface;
     private PtuBaseChooser ptuBaseChooser;
     private TietuController funcControl;
     private RepealRedoManager<List<FloatImageView>> rrManager;
@@ -255,7 +255,7 @@ public class TietuFragment extends BasePtuFragment {
     private void initFunctionIconList() {
         pFunctionList.clear();
         if (funcControl != null && funcControl.needChooseBase) {
-            ptuBaseChooser = new PtuBaseChooser(mContext, this, ptuActivityInterface, null);
+            ptuBaseChooser = new PtuBaseChooser(mContext, this, pTuActivityInterface, null);
             ptuBaseChooser.setIsUpdateHeat(false);
             ptuBaseChooser.show();
             pFunctionList.add(new FunctionInfoBean(R.string.choose_base_pic, R.mipmap.choose_base, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
@@ -326,8 +326,8 @@ public class TietuFragment extends BasePtuFragment {
     }
 
     private void init_changeFace_multiType(@NonNull TietuController funcControl) {
-        ptuActivityInterface.addUsedTags(false, null);
-        BitmapFactory.Options options = TietuSizeController.getFitWh(funcControl.tietuUrl, ptuActivityInterface.getGifManager() != null);
+        pTuActivityInterface.addUsedTags(false, null);
+        BitmapFactory.Options options = TietuSizeController.getFitWh(funcControl.tietuUrl, pTuActivityInterface.getGifManager() != null);
         if (options == null) {
             ToastUtils.show("获取贴图失败");
             return;
@@ -353,7 +353,7 @@ public class TietuFragment extends BasePtuFragment {
     }
 
     private void initFor_ChangeFace(@NonNull TietuController funcControl, Bitmap srcBitmap) {
-        faceChanger = new FaceChanger(getActivity(), funcControl, ptuActivityInterface);
+        faceChanger = new FaceChanger(getActivity(), funcControl, pTuActivityInterface);
         // 注意调用顺序，接口设置需要的贴图的ImageView初始化之后
         faceChanger.setListener(
                 new FaceChanger.FaceChangerListener() {
@@ -395,7 +395,7 @@ public class TietuFragment extends BasePtuFragment {
                     public void addClearBgView(SimpleEraser eraser) {
                         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ptuSeeView.getDstRect().width(), ptuSeeView.getDstRect().height());
                         params.setMargins(ptuSeeView.getDstRect().left, ptuSeeView.getDstRect().top, 0, 0);
-                        FrameLayout parent = (FrameLayout) ptuActivityInterface.getPtuSeeView().getParent();
+                        FrameLayout parent = (FrameLayout) pTuActivityInterface.getPtuSeeView().getParent();
                         parent.addView(eraser, params);
                         FloatImageView curChosenView = tietuLayout.getCurChosenView();
                         if (curChosenView != null) {
@@ -447,7 +447,7 @@ public class TietuFragment extends BasePtuFragment {
             add("熊猫头-无脸");
             addAll(ChangeFaceUtil.changeFaceTagList);
         }}; // 指定一张图， 再过滤出支持换年的图
-        ptuBaseChooser = new PtuBaseChooser(mContext, this, ptuActivityInterface, priorTagList);
+        ptuBaseChooser = new PtuBaseChooser(mContext, this, pTuActivityInterface, priorTagList);
         ptuBaseChooser.setIsUpdateHeat(false);
         ptuBaseChooser.setChooseBgAuto(isChoseAuto);
         ptuBaseChooser.show();
@@ -519,7 +519,7 @@ public class TietuFragment extends BasePtuFragment {
         }
         if (count == 0) return null;
 
-        GifManager gifManager = ptuActivityInterface.getGifManager();
+        GifManager gifManager = pTuActivityInterface.getGifManager();
         TietuStepData tsd = null;
         if (gifManager == null) {
             tsd = new TietuStepData(PtuUtil.EDIT_TIETU);
@@ -574,8 +574,8 @@ public class TietuFragment extends BasePtuFragment {
 
     }
 
-    public static void addBigStep(StepData sd, PTuActivityInterface ptuActivityInterface) {
-        PtuSeeView ptuSeeView = ptuActivityInterface.getPtuSeeView();
+    public static void addBigStep(StepData sd, PTuActivityInterface pTuActivityInterface) {
+        PtuSeeView ptuSeeView = pTuActivityInterface.getPtuSeeView();
         TietuStepData ttsd = (TietuStepData) sd;
         Iterator<TietuStepData.OneTietu> iterator = ttsd.iterator();
         while (iterator.hasNext()) {
@@ -650,7 +650,7 @@ public class TietuFragment extends BasePtuFragment {
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
-        this.ptuActivityInterface = ptuActivity;
+        this.pTuActivityInterface = ptuActivity;
         this.ptuSeeView = ptuActivity.getPtuSeeView();
         this.repealRedoListener = ptuActivity.getRepealRedoListener();
     }
@@ -686,8 +686,8 @@ public class TietuFragment extends BasePtuFragment {
 
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_BASE && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSE_BASE_PIC_RES);
-            ptuActivityInterface.replaceBase(picRes.getUrlString());
-            ptuActivityInterface.addUsedTags(true, picRes.getTag());
+            pTuActivityInterface.replaceBase(picRes.getUrlString());
+            pTuActivityInterface.addUsedTags(true, picRes.getTag());
         }
 
         // 开通会员解锁, 开通成功后隐藏列表，用户重新点击，重新将列表加入adapter，一尺排除广告数据
@@ -843,13 +843,13 @@ public class TietuFragment extends BasePtuFragment {
 
 
     public void addTietuByMultiType(final Object obj, @Nullable String tietuTags) {
-        ptuActivityInterface.addUsedTags(false, tietuTags);
+        pTuActivityInterface.addUsedTags(false, tietuTags);
         if (obj instanceof Bitmap) {
             initAndAddTietu((Bitmap) obj, tietuTags,
                     TietuSizeController.TIETU_POSITION_RANDOM, TietuSizeController.TIETU_POSITION_RANDOM,
                     -1, -1,
                     0,
-                    true, ptuActivityInterface.getGifManager() != null);
+                    true, pTuActivityInterface.getGifManager() != null);
             return;
         }
 
@@ -869,7 +869,7 @@ public class TietuFragment extends BasePtuFragment {
     }
 
     private void addTietuByPath(String path, @Nullable String tietuTags) {
-        BitmapFactory.Options options = TietuSizeController.getFitWh(path, ptuActivityInterface.getGifManager() != null);
+        BitmapFactory.Options options = TietuSizeController.getFitWh(path, pTuActivityInterface.getGifManager() != null);
         if (options == null) {
             ToastUtils.show("获取贴图失败");
             return;
@@ -888,7 +888,7 @@ public class TietuFragment extends BasePtuFragment {
                         -1, -1,
                         0,
                         true,
-                        ptuActivityInterface.getGifManager() != null);
+                        pTuActivityInterface.getGifManager() != null);
             }
 
             @Override
@@ -969,10 +969,10 @@ public class TietuFragment extends BasePtuFragment {
      */
     private void onLockTietu(@NotNull FloatImageView lockedView) {
         if (lockedView == null) return;
-        GifManager gifManager = ptuActivityInterface.getGifManager();
+        GifManager gifManager = pTuActivityInterface.getGifManager();
         if (!AllData.hasReadConfig.hasRead_fuseBaoZouFace() && gifManager == null) { // 对于暴走脸，让用户尝试融合效果
             if (lockedView.getTietuTags() != null && lockedView.getTietuTags().contains("暴走")) {
-                ptuActivityInterface.showGuideDialog(Collections.singletonList("融合"));
+                pTuActivityInterface.showGuideDialog(Collections.singletonList("融合"));
                 ToastUtils.show("试试融合功能，贴图效果更好哦");
                 fuseBaoZouFace();
                 AllData.hasReadConfig.put_fuseBaoZouFace(true);
@@ -1037,7 +1037,7 @@ public class TietuFragment extends BasePtuFragment {
         List<Integer> iconIdList = new ArrayList<>(Arrays.asList(R.mipmap.eraser,/* R.mipmap.synthesis,*/ R.mipmap.rend_pic,
                 R.drawable.make_tietu, R.drawable.flip, R.drawable.stretch_icon));
         List<Integer> nameIdList = new ArrayList<>(Arrays.asList(R.string.rubber, /*R.string.fuse,*/ R.string.rend_pic, R.string.make, R.string.cut_flip, R.string.stretch));
-        if (ptuActivityInterface.getGifManager() != null) {
+        if (pTuActivityInterface.getGifManager() != null) {
             if (isAutoAddWhenSure) {
                 if (SPUtil.get_isGifAutoAddOn()) {
                     iconIdList.add(R.drawable.on);
@@ -1108,7 +1108,7 @@ public class TietuFragment extends BasePtuFragment {
     private void onClickFuse() {
         US.putPTuTietuEvent(US.PTU_TIETU_FUSE);
         if (!AllData.hasReadConfig.hasRead_fuseBaoZouFace_1()) { // 对于暴走脸，让用户尝试融合效果
-            ptuActivityInterface.showGuideDialog(Collections.singletonList("融合教程"));
+            pTuActivityInterface.showGuideDialog(Collections.singletonList("融合教程"));
             AllData.hasReadConfig.put_fuseBaoZouFace_1(true);
         }
         if (faceChanger != null) {
@@ -1122,7 +1122,7 @@ public class TietuFragment extends BasePtuFragment {
         if (choseFiv != null) {
             choseFiv.fuseBaoZouFace(ptuSeeView);
         } else {
-            GifManager gifManager = ptuActivityInterface.getGifManager();
+            GifManager gifManager = pTuActivityInterface.getGifManager();
             if (rrManager != null && gifManager != null) {
                 fuseForGif();
             } else {
@@ -1132,7 +1132,7 @@ public class TietuFragment extends BasePtuFragment {
     }
 
     private void fuseForGif() {
-        ptuActivityInterface.showLoading("处理中...");
+        pTuActivityInterface.showLoading("处理中...");
         Observable
                 .create((ObservableOnSubscribe<List<Bitmap>>) emitter -> {
                     List<FloatImageView> fivList = rrManager.getCurrentStepDate();
@@ -1141,7 +1141,7 @@ public class TietuFragment extends BasePtuFragment {
                         return;
                     }
 
-                    GifFrame[] frames = ptuActivityInterface.getGifManager().getFrames();
+                    GifFrame[] frames = pTuActivityInterface.getGifManager().getFrames();
                     List<Bitmap> newBmList = new ArrayList<>();
                     for (int i = 0; i < fivList.size(); i++) {
                         FloatImageView gifFiv = fivList.get(i);
@@ -1164,7 +1164,7 @@ public class TietuFragment extends BasePtuFragment {
                 .subscribe(new SimpleObserver<List<Bitmap>>() {
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull List<Bitmap> bmList) {
-                        ptuActivityInterface.dismissLoading();
+                        pTuActivityInterface.dismissLoading();
                         List<FloatImageView> fivList = rrManager.getCurrentStepDate();
                         for (int i = 0; i < bmList.size(); i++) {
                             Bitmap bitmap = bmList.get(i);
@@ -1176,7 +1176,7 @@ public class TietuFragment extends BasePtuFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        ptuActivityInterface.dismissLoading();
+                        pTuActivityInterface.dismissLoading();
                         Log.e(TAG, "onError: gif自动添加的融合出错");
                         ToastUtils.show("融合出错了", Toast.LENGTH_SHORT);
                         e.printStackTrace();
@@ -1229,7 +1229,7 @@ public class TietuFragment extends BasePtuFragment {
             rendFunctionLayout.setVisibility(View.VISIBLE);
             if (!AllData.hasReadConfig.hasRead_rendGuide()) {
                 AllData.hasReadConfig.put_rendGuide(true);
-                ptuActivityInterface.showGuideDialog(Collections.singletonList("撕图"));
+                pTuActivityInterface.showGuideDialog(Collections.singletonList("撕图"));
             }
         } else { // 开启撕图失败
             LogUtil.e("开启贴图模式失败！");
@@ -1282,7 +1282,7 @@ public class TietuFragment extends BasePtuFragment {
         InsertAd.onClickTarget(getActivity());
         FirstUseUtil.rendGuide(mContext);
         US.putPTuTietuEvent(US.PTU_TIETU_ERASE);
-        if (tietuLayout != null && tietuLayout.startEraseTietu(ptuActivityInterface, isMakeBaozouFace)) {
+        if (tietuLayout != null && tietuLayout.startEraseTietu(pTuActivityInterface, isMakeBaozouFace)) {
             FloatImageView curChosenView = tietuLayout.getCurChosenView();
             if (curChosenView == null) return;
             eraserFunctionLayout.setVisibility(View.VISIBLE);
@@ -1335,7 +1335,7 @@ public class TietuFragment extends BasePtuFragment {
             ToastUtils.show("请选择一张贴图");
         }
         if (!AllData.hasReadConfig.hasRead_tietuErase()) {
-            ptuActivityInterface.showGuideDialog(Collections.singletonList("贴图橡皮"));
+            pTuActivityInterface.showGuideDialog(Collections.singletonList("贴图橡皮"));
             AllData.hasReadConfig.put_tietuErase(true);
         }
     }
@@ -1423,12 +1423,12 @@ public class TietuFragment extends BasePtuFragment {
                             // 检测gif底图里面的人脸
                             if (faceFeatureDetector == null) {
                                 faceFeatureDetector = new FaceFeatureDetector(mContext);
-                                GifManager gifManager = ptuActivityInterface.getGifManager();
+                                GifManager gifManager = pTuActivityInterface.getGifManager();
 //                                if (gifManager != null) {
 //                                    gifManager.detectFaceLandmark(faceFeatureDetector);
 //                                }
-                                StyleTransfer styleTransfer = new StyleTransfer(mContext);
-                                styleTransfer.mnnTransfer(gifManager.getFirstFrameBm(), gifManager.getFirstFrameBm());
+                                StyleTransferMnn styleTransferMnn = new StyleTransferMnn(mContext);
+                                styleTransferMnn.mnnTransfer(gifManager.getFirstFrameBm(), gifManager.getFirstFrameBm());
                             }
                             // 检测贴图上面的人脸
                             if (fiv.faceBoxex == null) {
@@ -1462,7 +1462,7 @@ public class TietuFragment extends BasePtuFragment {
             return null;
         }
         Bitmap tietuBm = fiv.getSrcBitmap();
-        GifManager gifManager = ptuActivityInterface.getGifManager();
+        GifManager gifManager = pTuActivityInterface.getGifManager();
         GifFrame[] frames = gifManager.getFrames();
 
         FaceFeature tietuFaceFeature = null;

@@ -160,6 +160,7 @@ public class US { // UseStatistic
 
     /*********  主功能统计 ******/
     public static final String MAIN_FUNCTION_EDIT = "edit";
+    public static final String MAIN_FUNCTION_STRANSFER = "transfer";
     public static final String MAIN_FUNCTION_TEXT = "text";
     public static final String MAIN_FUNCTION_TIETU = "tietu";
     public static final String MAIN_FUNCTION_DRAW = "draw";

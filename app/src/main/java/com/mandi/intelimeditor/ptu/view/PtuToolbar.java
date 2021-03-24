@@ -83,6 +83,13 @@ public class PtuToolbar extends FrameLayout {
         }
     }
 
+    public void switch2Transfer() {
+        rootView.setBackground(null);
+        rootView.findViewById(R.id.iv_help).setVisibility(GONE);
+        rootView.findViewById(R.id.iv_redo).setVisibility(GONE);
+        rootView.findViewById(R.id.iv_undo).setVisibility(GONE);
+    }
+
     /**
      * @param canRepeal 能否撤销
      */

@@ -445,8 +445,8 @@ public class TextFragment extends BasePtuFragment {
         return tsd;
     }
 
-    public static void addBigStep(StepData sd, PTuActivityInterface ptuActivityInterface) {
-        addBigStep((TextStepData) sd, sd.picPath == null ? null : BitmapUtil.getLosslessBitmap(sd.picPath), ptuActivityInterface);
+    public static void addBigStep(StepData sd, PTuActivityInterface pTuActivityInterface) {
+        addBigStep((TextStepData) sd, sd.picPath == null ? null : BitmapUtil.getLosslessBitmap(sd.picPath), pTuActivityInterface);
     }
 
     /**
@@ -454,11 +454,11 @@ public class TextFragment extends BasePtuFragment {
      *
      * @param textAddBm 要添加的图片
      */
-    private static void addBigStep(TextStepData tsd, Bitmap textAddBm, PTuActivityInterface ptuActivityInterface) {
-        PtuSeeView ptuSeeView = ptuActivityInterface.getPtuSeeView();
+    private static void addBigStep(TextStepData tsd, Bitmap textAddBm, PTuActivityInterface pTuActivityInterface) {
+        PtuSeeView ptuSeeView = pTuActivityInterface.getPtuSeeView();
         //擦除的东西添加上去
         ArrayList<Pair<Path, Paint>> pathPaintList = tsd.getRubberData();
-        GifManager gifManager = ptuActivityInterface.getGifManager();
+        GifManager gifManager = pTuActivityInterface.getGifManager();
         if (gifManager == null) {
             Canvas sourceCanvas = ptuSeeView.getSourceCanvas();
             drawRubber(sourceCanvas, pathPaintList);

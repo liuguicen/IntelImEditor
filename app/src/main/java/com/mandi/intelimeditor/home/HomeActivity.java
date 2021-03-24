@@ -59,7 +59,6 @@ import com.mandi.intelimeditor.home.tietuChoose.PicResourcesFragment;
 import com.mandi.intelimeditor.home.tietuChoose.TextureFragment;
 import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.PtuUtil;
-import com.mandi.intelimeditor.ptu.changeFace.ChangeFaceActivity;
 import com.mandi.intelimeditor.ptu.saveAndShare.PTuResultData;
 import com.mandi.intelimeditor.ptu.tietu.TietuFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
@@ -83,7 +82,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
@@ -1017,12 +1015,5 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         } else if ("delete".equals(event.getOp())) {
             deletePreferPath(event.getPath());
         }
-    }
-
-    public void toChangeFace(@Nullable PicResource chosenResource) {
-        Intent intent = new Intent(this, ChangeFaceActivity.class);
-        String urlString = chosenResource != null ? chosenResource.getUrlString() : null;
-        intent.putExtra(ChangeFaceActivity.INTENT_EXTRA_EXPRESSION_PATH, urlString);
-        startActivity(intent);
     }
 }

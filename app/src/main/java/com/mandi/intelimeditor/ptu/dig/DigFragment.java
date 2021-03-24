@@ -277,8 +277,8 @@ public class DigFragment extends BasePtuFragment {
         return pair.first;
     }
 
-    public static void addBigStep(StepData sd, PTuActivityInterface ptuActivityInterface) {
-        PtuSeeView ptuSeeView = ptuActivityInterface.getPtuSeeView();
+    public static void addBigStep(StepData sd, PTuActivityInterface pTuActivityInterface) {
+        PtuSeeView ptuSeeView = pTuActivityInterface.getPtuSeeView();
         Bitmap bitmap = AllData.getPTuBmPool().get(sd.picPath);
         if (bitmap == null) {
             bitmap = BitmapUtil.getLosslessBitmap(sd.picPath);

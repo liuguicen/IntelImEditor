@@ -50,11 +50,10 @@ public class PtuConstraintLayout extends ConstraintLayout {
         return super.dispatchTouchEvent(event);
     }
 
-    public void addPicResourceLv(RecyclerView tietuRecyclerView) {
+    public void addPicResourceLv(RecyclerView tietuRcv) {
         View fragmentView = findViewById(R.id.fragment_main_function);
-//        LogUtil.d("PtuConstraintLayout", "addPicResourceLv");
-        if (tietuRecyclerView != null) {
-            addView(tietuRecyclerView, getTietuListLayoutParams(fragmentView));
+        if (tietuRcv != null) {
+            addView(tietuRcv, getTietuListLayoutParams(fragmentView));
         }
     }
 

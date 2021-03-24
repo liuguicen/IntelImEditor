@@ -11,7 +11,6 @@
         android:id="@+id/ptu_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/base_toolbar_background"
         android:fitsSystemWindows="true">
 
         <com.mandi.intelimeditor.ptu.view.PtuToolbar

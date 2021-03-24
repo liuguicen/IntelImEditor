@@ -114,11 +114,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".ptu.changeFace.ChangeFaceActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/expression_change_face"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".home.tietuChoose.MorePicInfoActivity"
             android:label="@string/title_activity_more_pic_info"
             android:theme="@style/MyAppTheme.NoActionBar" /> <!-- 腾讯qq分享的 -->

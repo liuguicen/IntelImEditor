@@ -81,7 +81,6 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     @Override
     public PicResourcesAdapter createPicAdapter() {
         mPicResourceAdapter = new PicResourcesAdapter(mContext, mFirstClass);
-        mPicResourceAdapter.setAddNewFeatureHeader(PicResource.FIRST_CLASS_TEMPLATE.equals(mFirstClass));
         mPicResourceAdapter.initAdData(false);
         return mPicResourceAdapter;
     }
@@ -90,7 +89,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     public void deleteOneMyTietu(@NotNull String path) {
         MyDatabase.getInstance().deleteMyTietu(path);
         if (PicResource.SECOND_CLASS_MY.equals(mSecondClass)) {
-            mPicResourceAdapter.deleteTietuPic(path);
+            mPicResourceAdapter.deleterecent_style(path);
             mPicResourceAdapter.notifyDataSetChanged();
         }
     }

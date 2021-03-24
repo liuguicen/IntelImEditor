@@ -8,6 +8,8 @@ import com.mandi.intelimeditor.ptu.gif.GifManager;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 
 import org.jetbrains.annotations.NotNull;
+import org.pytorch.Tensor;
+import org.pytorch.torchvision.TensorImageUtils;
 
 import java.util.List;
 
@@ -57,4 +59,6 @@ public interface PTuActivityInterface {
     void addUsedTags(boolean isTemplate, String resTags);
 
     String getBasePicPath();
+
+    void transfer(Bitmap srcBitmap, boolean isStyle);
 }

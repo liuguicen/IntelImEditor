@@ -57,7 +57,7 @@ public class RendFragment extends BasePtuFragment {
     public static final String TIETU_PATH_KEY = "tietu_path";
 
     private static String TAG = "TietuFragment";
-    private PTuActivityInterface ptuActivityInterface;
+    private PTuActivityInterface pTuActivityInterface;
     private TietuFrameLayout tietuLayout;
     Context mContext;
 
@@ -90,7 +90,7 @@ public class RendFragment extends BasePtuFragment {
         super.initView();
         initFloatImageView(bmFromMain, mPicPath, null);
         mPTuBaseChooser = new PtuBaseChooser(mContext, this,
-                ptuActivityInterface, Collections.singletonList("撕图"));
+                pTuActivityInterface, Collections.singletonList("撕图"));
         mPTuBaseChooser.setIsUpdateHeat(false);
         mPTuBaseChooser.show();
     }
@@ -115,7 +115,7 @@ public class RendFragment extends BasePtuFragment {
      */
     @TestOnly
     private void addTietuByPath(String path) {
-        BitmapFactory.Options options = TietuSizeController.getFitWh(path, ptuActivityInterface.getGifManager() != null);
+        BitmapFactory.Options options = TietuSizeController.getFitWh(path, pTuActivityInterface.getGifManager() != null);
         Glide.with(IntelImEditApplication.appContext).asBitmap().load(path).into(new CustomTarget<Bitmap>(options.outWidth, options.outHeight) {
             @Override
             public void onResourceReady(@NonNull Bitmap srcBitmap, @Nullable Transition<? super Bitmap> transition) {
@@ -228,7 +228,7 @@ public class RendFragment extends BasePtuFragment {
         float rotateAngle = mFloatImageView.getRotation();
 
         // 绘制结果到ptuView内的底图
-        GifManager gifManager = ptuActivityInterface.getGifManager();
+        GifManager gifManager = pTuActivityInterface.getGifManager();
         if (gifManager == null) {
             PtuUtil.addBm2Canvas(ptuSeeView.getSourceCanvas(), rendBm, boundInPic, rotateAngle);
         } else {
@@ -238,8 +238,8 @@ public class RendFragment extends BasePtuFragment {
         return null; // 暂时不支持重做，重做需要底图，撕图两张图一起弄，复杂度比较高
     }
 
-    public static void addBigStep(StepData sd, PTuActivityInterface ptuActivityInterface) {
-        PtuSeeView ptuSeeView = ptuActivityInterface.getPtuSeeView();
+    public static void addBigStep(StepData sd, PTuActivityInterface pTuActivityInterface) {
+        PtuSeeView ptuSeeView = pTuActivityInterface.getPtuSeeView();
         Bitmap bm = BitmapUtil.getLosslessBitmap(sd.picPath);
         ptuSeeView.post(() -> ptuSeeView.replaceSourceBm(bm));
     }
@@ -257,7 +257,7 @@ public class RendFragment extends BasePtuFragment {
 
     @Override
     public boolean onBackPressed(boolean isFromKey) {
-        ptuActivityInterface.replaceBase(mPicPath);
+        pTuActivityInterface.replaceBase(mPicPath);
         return false; // 不消耗返回事件
     }
 
@@ -273,7 +273,7 @@ public class RendFragment extends BasePtuFragment {
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
-        this.ptuActivityInterface = ptuActivity;
+        this.pTuActivityInterface = ptuActivity;
         this.mRepealRedoListener = ptuActivity.getRepealRedoListener();
         mRepealRedoListener.canRepeal(false);
         mRepealRedoListener.canRedo(false);
@@ -295,8 +295,8 @@ public class RendFragment extends BasePtuFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_BASE && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSE_BASE_PIC_RES);
-            ptuActivityInterface.replaceBase(picRes.getUrlString());
-            ptuActivityInterface.addUsedTags(true, picRes.getTag());
+            pTuActivityInterface.replaceBase(picRes.getUrlString());
+            pTuActivityInterface.addUsedTags(true, picRes.getTag());
         }
     }
 

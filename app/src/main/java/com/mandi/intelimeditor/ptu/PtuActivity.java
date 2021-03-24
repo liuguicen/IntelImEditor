@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,7 +50,6 @@ import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.dialog.LoadingDialog;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.network.NetWorkState;
-import com.mandi.intelimeditor.ptu.changeFace.ChangeFaceActivity;
 import com.mandi.intelimeditor.ptu.common.DigController;
 import com.mandi.intelimeditor.ptu.common.DrawController;
 import com.mandi.intelimeditor.ptu.common.SecondFuncController;
@@ -76,6 +74,8 @@ import com.mandi.intelimeditor.ptu.text.FloatTextView;
 import com.mandi.intelimeditor.ptu.text.TextFragment;
 import com.mandi.intelimeditor.ptu.tietu.TietuFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
+import com.mandi.intelimeditor.ptu.transfer.StyleTransfer;
+import com.mandi.intelimeditor.ptu.transfer.TransferFragment;
 import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.ptu.view.PtuToolbar;
@@ -92,14 +92,17 @@ import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
+import org.pytorch.Tensor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_CUT;
@@ -111,6 +114,7 @@ import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_MAIN;
 import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_REND;
 import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_TEXT;
 import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_TIETU;
+import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_TRANSFER;
 
 
 /**
@@ -193,6 +197,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private DigFragment digFrag;
     private RendFragment rendFrag;
     private DeformationFragment deformationFrag;
+    private TransferFragment transferFrag;
     private GifEditFragment gifEditFrag;
 
     public PtuSeeView ptuSeeView;
@@ -249,6 +254,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private ArrayList<String> useTagsList = new ArrayList<>();
     private TxBannerAd bannerAd;
     private PopupWindow pop;
+    private Tensor contentFeature;
+    private Tensor styleFeature;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -503,12 +510,12 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     private void initFragment() {
-        mainFrag = new MainFunctionFragment();
-        mainFrag.setPTuActivityInterface(this);
-        currentFrag = mainFrag;
+        transferFrag = new TransferFragment();
+        transferFrag.setPTuActivityInterface(this);
+        currentFrag = transferFrag;
         fm = getSupportFragmentManager();
         fm.beginTransaction()
-                .replace(R.id.fragment_main_function, mainFrag)
+                .replace(R.id.fragment_main_function, transferFrag)
                 .commitAllowingStateLoss();
         repealRedoListener = new RepealRedoListener() {
             @Override
@@ -519,11 +526,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
             @Override
             public void canRepeal(boolean canRepeal) {
-                mPtuToolbar.updateRepealBtn(canRepeal);
+//                mPtuToolbar.updateRepealBtn(canRepeal);
             }
         };
     }
-
 
 /*****************************************图片加载部分*********************************************/
 //    ==============================================================================================
@@ -612,7 +618,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     }
 
                     if (picPath != null && picPath.equals(oldPath)) { // 相同路径，不加载了，减少消耗
-                        onLoadSuccess(isReplace);
+                        onLoadSuccess(isReplace, null);
                         emitter.onComplete();
                         return;
                     }
@@ -689,7 +695,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     }
 
                     @Override
-                    public void onNext(Bitmap bitmap) {
+                    public void onNext(@NotNull Bitmap bitmap) {
                         //TODO 图片内存泄漏
                         if (isDestroyed()) return;
                         ptuSeeView.setBitmapAndInit(bitmap, totalBound);
@@ -699,7 +705,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         } else {
                             LogUtil.e("设置PTuSeeView底图失败！");
                         }
-                        onLoadSuccess(isReplace);
+                        onLoadSuccess(isReplace, bitmap);
                         LogUtil.d("显示图片Bitmap完成");
                     }
                 });
@@ -771,7 +777,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     public void onNext(GifManager gifManager) {
                         if (isDestroyed()) return;
                         gifManager.initPtuSeeView(ptuSeeView, totalBound);
-                        onLoadSuccess(isReplace);
+                        onLoadSuccess(isReplace, null);
                     }
                 });
     }
@@ -807,33 +813,16 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
     }
 
-    private void onLoadSuccess(boolean isReplace) {
+    private void onLoadSuccess(boolean isReplace, Bitmap bm) {
         if (!isReplace) { // 跳转到子功能
             int toChildFunction = getIntent().getIntExtra(INTENT_EXTRA_TO_CHILD_FUNCTION, -1);
             if (PtuUtil.isSecondEditMode(toChildFunction)) {
                 switchFragment(toChildFunction, null);
-            } else if (PtuUtil.CHILD_FUNCTION_CHANGE_FACE == toChildFunction) {
-                TietuController secondFuncControl = new TietuController();
-                secondFuncControl.isChangeFace = true;
-                secondFuncControl.tietuUrl = getIntent().getStringExtra(PtuActivity.INTENT_EXTRA_SECOND_PIC_PATH);
-                secondFuncControl.needSaveTietu = getIntent().getBooleanExtra(ChangeFaceActivity.INTENT_EXTRA_NEED_SAVE_FACE, false);
-                secondFuncControl.needChooseBase = false;
-                secondFuncControl.needAdjustLevel = false;
-                switchFragment(EDIT_TIETU, secondFuncControl);
-            } else if (PtuUtil.CHILD_FUNCTION_ERASE_FACE == toChildFunction) {
-                DrawController secondFuncControl = new DrawController();
-                secondFuncControl.startWidthRatio = 1 / 8f;
-                secondFuncControl.startColor = Color.WHITE;
-                switchFragment(EDIT_DRAW, secondFuncControl);
-            } else if (PtuUtil.CHILD_FUNCTION_DIG_FACE == toChildFunction) {
-                DigController secondFuncControl = new DigController();
-                secondFuncControl.isShowChangeFace = false;
-                secondFuncControl.isShowChangeBase = false;
-                switchFragment(EDIT_DIG, secondFuncControl);
             } else if (PtuUtil.CHILD_FUNCTION_GIF == toChildFunction) {
                 switchFragment(EDIT_GIF, null);
             } else {
-                switchFragment(EDIT_MAIN, null);
+                switchFragment(EDIT_TRANSFER, null);
+                getVggFeature(bm, true);
             }
         }
         loadFinish();
@@ -864,7 +853,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             ToastUtils.show(this, msg);
         }
     }
-
 
     /**
      * 加载完成后必须被调用，不管成功失败
@@ -920,6 +908,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         if (function == currentEditMode) return;
         lastFrag = currentFrag;
         if (function == EDIT_MAIN) {
+            if (mainFrag == null) {
+                mainFrag = new MainFunctionFragment();
+                mainFrag.setPTuActivityInterface(this);
+            }
             fm.beginTransaction()
                     .setCustomAnimations(R.animator.slide_bottom_in, R.animator.slide_bottom_out,
                             R.animator.slide_bottom_in, R.animator.slide_bottom_out)
@@ -956,6 +948,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     break;
                 case EDIT_GIF:
                     switch2GifEdit();
+                    break;
+                case EDIT_TRANSFER:
+                    switch2Transfer();
+                    break;
             }
         }
         //        PTuLog.d(TAG, "switchFragment完成");
@@ -1142,6 +1138,86 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         currentFrag = deformationFrag;
         currentEditMode = EDIT_DEFORMATION;
     }
+
+
+    private void switch2Transfer() {
+        if (transferFrag == null) {
+            transferFrag = new TransferFragment();
+            transferFrag.setPTuActivityInterface(this);
+        }
+        //更换底部导航栏
+        fm.beginTransaction()
+                .setCustomAnimations(R.animator.slide_bottom_in, R.animator.slide_bottom_out,
+                        R.animator.slide_bottom_in, R.animator.slide_bottom_out)
+                .replace(R.id.fragment_main_function, transferFrag);
+        currentFrag = transferFrag;
+        currentEditMode = EDIT_DRAW;
+        ptuSeeView.switchStatus2Main();
+    }
+
+    private void getVggFeature(Bitmap bm, boolean isContent) {
+        Observable
+                .create(new ObservableOnSubscribe<List<String>>() {
+                    @Override
+                    public void subscribe(@NotNull ObservableEmitter<List<String>> emitter) throws Exception {
+                        if (bm != null) {
+                            StyleTransfer transfer = StyleTransfer.getInstance();
+                            if (isContent) {
+                                PtuActivity.this.contentFeature = transfer.getVggFeature(bm);
+                            } else {
+                                PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
+                            }
+                            emitter.onComplete();
+                        }
+
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<List<String>>() {
+                    @Override
+                    public void onNext(@NonNull List<String> strings) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void transfer(Bitmap bm, boolean isStyle) {
+        showLoading("正在生成中...");
+        Observable
+                .create(new ObservableOnSubscribe<Bitmap>() {
+                    @Override
+                    public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
+                        if (bm != null) {
+                            StyleTransfer transfer = StyleTransfer.getInstance();
+                            if (isStyle) {
+                                PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
+                            }
+                            if (contentFeature != null && styleFeature != null) {
+                                Bitmap rstBm = transfer.transfer(contentFeature, styleFeature, 1f);
+                                emitter.onNext(rstBm);
+                                emitter.onComplete();
+                            } else {
+                                emitter.onError(new Exception(getString(R.string.stranfer_error_by_empty_content)));
+                            }
+                        }
+
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<Bitmap>() {
+
+                    @Override
+                    public void onNext(@NonNull Bitmap bitmap) {
+                        ptuSeeView.replaceSourceBm(bitmap);
+                        dismissLoading();
+                    }
+                });
+
+    }
+
 
     private void switch2GifEdit() {
         if (gifEditFrag == null) {
