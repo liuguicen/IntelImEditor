@@ -43,8 +43,6 @@ class ShareUtil {
         try {
             myDatabase.queryAllPreferShare(preferShare);
         } catch (Exception e) {
-        } finally {
-            myDatabase.close();
         }
         return ShareUtil.sortAndClearAcData(context, preferShare, resolveInfos);
     }
@@ -54,6 +52,7 @@ class ShareUtil {
      * 将resolveInfos的Item按照preferApps的顺序排列
      * 也就是preferApps前面的在resolveInfos也在前面，preferApps中不存在的放到后面
      * preferApps中存在，但是resolveInfos中不存在的会从数据库
+     *
      * @param preferApps 优先选择的应用Activity的title，越前面，优先级越高
      */
     public static List<ShareItemData> sortAndClearAcData(Context context, List<Pair<String, String>> preferApps, List<ResolveInfo> resolveInfos) {
@@ -165,7 +164,7 @@ class ShareUtil {
     }
 
     /**
-     * @return  for代码共用，没找到更好方式，暂时这样
+     * @return for代码共用，没找到更好方式，暂时这样
      */
     public static MyQQShare share(AppCompatActivity ac, ResolveInfo resolveInfo, String savePath) {
         // 将优先信息添加到数据库

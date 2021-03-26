@@ -252,6 +252,9 @@ public class MyDatabase {
      */
     //    有两个返回值，不能直接返回，传入应用获取
     public void queryAllMyTietu(List<String> pathList) {
+        if (db == null) {
+
+        }
         Cursor cursor = db.rawQuery("select path from recent_style order by time desc ", new String[]{});
         while (cursor.moveToNext()) {
             String path = cursor.getString(0);

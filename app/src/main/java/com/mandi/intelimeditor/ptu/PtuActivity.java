@@ -385,6 +385,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             pop.dismiss();
             pop = null;
         }
+        MyDatabase.getInstance().close();
         FirstUseUtil.release(this);
     }
 
@@ -1185,36 +1186,42 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     @Override
     public void transfer(Bitmap bm, boolean isStyle) {
         showLoading("正在生成中...");
-        Observable
-                .create(new ObservableOnSubscribe<Bitmap>() {
-                    @Override
-                    public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
-                        if (bm != null) {
-                            StyleTransfer transfer = StyleTransfer.getInstance();
-                            if (isStyle) {
-                                PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
-                            }
-                            if (contentFeature != null && styleFeature != null) {
-                                Bitmap rstBm = transfer.transfer(contentFeature, styleFeature, 1f);
-                                emitter.onNext(rstBm);
-                                emitter.onComplete();
-                            } else {
-                                emitter.onError(new Exception(getString(R.string.stranfer_error_by_empty_content)));
-                            }
-                        }
-
-                    }
-                })
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<Bitmap>() {
-
-                    @Override
-                    public void onNext(@NonNull Bitmap bitmap) {
-                        ptuSeeView.replaceSourceBm(bitmap);
-                        dismissLoading();
-                    }
-                });
+        StyleTransfer transfer = StyleTransfer.getInstance();
+        Util.showMemoryStatus();
+        Bitmap rstBm = transfer.transfer(repealRedoManager.getBaseBitmap(), bm, 1f);
+        Util.showMemoryStatus();
+        ptuSeeView.replaceSourceBm(rstBm);
+        dismissLoading();
+//        Observable
+//                .create(new ObservableOnSubscribe<Bitmap>() {
+//                    @Override
+//                    public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
+//                        if (bm != null) {
+//                            StyleTransfer transfer = StyleTransfer.getInstance();
+//                            if (isStyle) {
+//                                PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
+//                            }
+////                            if (contentFeature != null && styleFeature != null) {
+//                                Bitmap rstBm = transfer.transfer(ptuSeeView.getSourceBm(), bm, 1f);
+//                                emitter.onNext(rstBm);
+//                                emitter.onComplete();
+////                            } else {
+////                                emitter.onError(new Exception(getString(R.string.stranfer_error_by_empty_content)));
+////                            }
+//                        }
+//
+//                    }
+//                })
+//                .subscribeOn(Schedulers.computation())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new SimpleObserver<Bitmap>() {
+//
+//                    @Override
+//                    public void onNext(@NonNull Bitmap bitmap) {
+//                        ptuSeeView.replaceSourceBm(bitmap);
+//                        dismissLoading();
+//                    }
+//                });
 
     }
 
@@ -1834,6 +1841,12 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         dialog.showIt(this);
     }
 
+    public void dismissLoading() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismissAllowingStateLoss();
+        }
+    }
+
     @Nullable
     public static Intent getStartAcIntent(Context context, PicResource picResource) {
         if (picResource.getUrl() != null) {
@@ -1849,12 +1862,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, path);
         intent.putExtra(PtuActivity.INTENT_EXTRA_CHOSEN_TAGS, picResource.getTag());
         return intent;
-    }
-
-    public void dismissLoading() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismissAllowingStateLoss();
-        }
     }
 
     @Override

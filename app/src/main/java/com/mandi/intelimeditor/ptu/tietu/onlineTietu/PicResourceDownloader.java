@@ -222,9 +222,8 @@ public class PicResourceDownloader {
      * @return emitter 是否 调用过出错
      */
     public static void queryMyTietu(ObservableEmitter<List<PicResource>> emitter) {
-        MyDatabase myDb = MyDatabase.getInstance();
         ArrayList<String> myTietuPathList = new ArrayList<>();
-        myDb.queryAllMyTietu(myTietuPathList);
+        MyDatabase.getInstance().queryAllMyTietu(myTietuPathList);
         List<PicResource> picResourceList = new ArrayList<>();
         for (String s : myTietuPathList) {
             PicResource PicResource = new PicResource();

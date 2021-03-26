@@ -17,8 +17,6 @@ public class ShareDBUtil {
             mdb.deletePreferShare(packageName, title);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mdb.close();
         }
     }
 
@@ -29,8 +27,6 @@ public class ShareDBUtil {
                 mdb.deletePreferShare(aci.first, aci.second);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mdb.close();
         }
     }
 
@@ -42,8 +38,6 @@ public class ShareDBUtil {
                 mdb.insertPreferShare(aci.first, aci.second, System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mdb.close();
         }
     }
 
@@ -53,8 +47,6 @@ public class ShareDBUtil {
             mdb.insertPreferShare(packageName, title, System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mdb.close();
         }
     }
 }

@@ -2,8 +2,12 @@ package com.mandi.intelimeditor.ptu.transfer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 
@@ -23,6 +27,7 @@ public class StyleTransfer {
     private static final String TAG = "StyleTransfer";
     private Module vgg_encoder = null;
     private Module decoder = null;
+    private Context context;
 
     private static class InnerClass {
         private static StyleTransfer staticInnerClass = new StyleTransfer(IntelImEditApplication.appContext);
@@ -35,9 +40,8 @@ public class StyleTransfer {
 
     private StyleTransfer(Context context) {
         try {
-            // app/src/model/assets/model.pt
+            this.context = context;
             vgg_encoder = Module.load(assetFilePath(context, "vgg_encoder.pt"));
-            // adain = Module.load(assetFilePath(this, "adain.pt"));
             decoder = Module.load(assetFilePath(context, "adain_decoder.pt"));
 
         } catch (IOException e) {
@@ -87,6 +91,81 @@ public class StyleTransfer {
         }
         Log.d(TAG, "图像格式控制耗时" + (System.currentTimeMillis() - time));
         return rstBm;
+    }
+
+
+    public Bitmap transfer(Bitmap contentBm, Bitmap styleBm, float alpha) {
+        Log.e(TAG, "transfer: Content w = " + contentBm.getWidth() + ", h = " + contentBm.getHeight());
+        Log.e(TAG, "transfer: style w = " + styleBm.getWidth() + ", h = " + styleBm.getHeight());
+
+        Module vgg_encoder = null;
+        // Module adain = null;
+        Module decoder = null;
+        try {
+            // loading serialized torchscript vgg_encoder from packaged into app android asset model.pt,
+            // app/src/model/assets/model.pt
+            vgg_encoder = Module.load(assetFilePath(context, "vgg_encoder.pt"));
+            // adain = Module.load(assetFilePath(this, "adain.pt"));
+            decoder = Module.load(assetFilePath(context, "adain_decoder.pt"));
+        } catch (IOException e) {
+            Log.e("PytorchHelloWorld", "Error reading assets", e);
+        }
+
+
+        // preparing input tensor
+        final Tensor contentTensor = TensorImageUtils.bitmapToFloat32Tensor(contentBm,
+                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
+        final Tensor styleTensor = TensorImageUtils.bitmapToFloat32Tensor(styleBm,
+                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
+
+        // running the model
+        // VGG提取特征
+        long time = System.currentTimeMillis();
+        long startTime = time;
+        final Tensor cFeature = vgg_encoder.forward(IValue.from(contentTensor)).toTensor();
+        String msg = "获取特征晚完 time " + (System.currentTimeMillis() - time);
+
+        Log.d(TAG, "onCreate: " + msg);
+        time = System.currentTimeMillis();
+        final Tensor sFeature = vgg_encoder.forward(IValue.from(styleTensor)).toTensor();
+        msg = "获取特征完 time " + (System.currentTimeMillis() - time);
+        Log.d(TAG, "onCreate: " + msg);
+
+        time = System.currentTimeMillis();
+
+        // 执行adain
+        // Tensor res = adain.forward(IValue.from(cFeature), IValue.from(sFeature)).toTensor();
+        Map<String, IValue> outTensors = decoder.forward(IValue.from(cFeature), IValue.from(sFeature), IValue.from(alpha)).toDictStringKey();
+        final Tensor imTensor = outTensors.get("im").toTensor();
+        Tensor whTensor = outTensors.get("wh").toTensor();
+        int[] rstwh = whTensor.getDataAsIntArray();
+        Log.d(TAG, "adain 和 decoder 用时 " + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
+
+
+        // 图像会调整到卷积核长度的整数倍，比如4
+        int rstW = rstwh[0];
+        int rstH = rstwh[1];
+        Bitmap rstBm = Bitmap.createBitmap(rstW, rstH, contentBm.getConfig());
+        int[] imArray = imTensor.getDataAsIntArray();
+        for (int i = 0; i < rstH; i++) {
+            for (int j = 0; j < rstW; j++) {
+                int id = i * rstW + j;
+                if (id * 3 + 2 < imArray.length) {
+                    rstBm.setPixel(j, i, Color.rgb(imArray[id * 3], imArray[id * 3 + 1], imArray[id * 3 + 2]));
+                }
+            }
+        }
+
+//        rstBm.setPixels(intArray, 0, rstBm.getWidth(), 0, 0,
+//                rstBm.getWidth(), rstBm.getHeight());
+
+        Log.d(TAG, "图像格式控制耗时" + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
+        msg = "adain完成 time= " + (System.currentTimeMillis() - time);
+        Log.d(TAG, msg);
+        Log.d(TAG, "总耗时: " + (System.currentTimeMillis() - startTime));
+		return rstBm;
     }
 
     /**

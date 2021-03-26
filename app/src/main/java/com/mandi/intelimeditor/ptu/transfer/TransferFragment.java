@@ -150,11 +150,6 @@ public class TransferFragment extends BasePtuFragment {
                     FirstUseUtil.tietuGuide(mContext);
                     prepareTransfer(url, oneTietu.getTag());
                     MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
-                    // 移除选择列表视图
-                    // 这里一开始出了bug，视频播放可能长达30秒，出现变化，直接getParent为空了
-                    if (parent != null) {
-                        parent.removeView(chooseRcv);
-                    }
                 } else {
                     Log.e(this.getClass().getSimpleName(), "点击贴图后获取失败");
                 }
@@ -221,11 +216,10 @@ public class TransferFragment extends BasePtuFragment {
         switch (pFunctionList.get(position).getTitleResId()) {
             case R.string.choose_pic:
                 US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-                showExampleList();
+
                 break;
             case R.string.choose_style:
                 US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-                showSizeWindow();
                 break;
         }
     }
@@ -302,25 +296,6 @@ public class TransferFragment extends BasePtuFragment {
             }
             PtuUtil.onNoPicResource(msg);
         }
-    }
-
-
-    private void showExampleList() {
-        if (ptuBaseChooser == null) {
-            ptuBaseChooser = new PtuBaseChooser(mContext, this,
-                    pTuActivityInterface, Collections.singletonList("撕图"));
-            ptuBaseChooser.setIsUpdateHeat(false);
-            ptuBaseChooser.setShowMoreBtn(false);
-            ptuBaseChooser.setChooseBgAuto(false);
-            ptuBaseChooser.setSecondClass(PicResource.SECOND_CLASS_DEFORMATION);
-            ptuBaseChooser.setOnItemClickListener(new PtuBaseChooser.ItemClickListener() {
-                @Override
-                public void onClickItem(PicResource picRes) {
-                    ToastUtils.show(picRes.getTag());
-                }
-            });
-        }
-        ptuBaseChooser.show();
     }
 
     private void showSizeWindow() {

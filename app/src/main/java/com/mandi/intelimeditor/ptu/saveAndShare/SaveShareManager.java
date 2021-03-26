@@ -127,9 +127,6 @@ public class SaveShareManager {
         try {
             myDatabase.queryAllPreferShare(preferShare);
         } catch (Exception e) {
-
-        } finally {
-            myDatabase.close();
         }
         resolveInfos = ShareUtil.getAcInfo_SupportShare(mContext, ShareUtil.Type.Image);
         acInfo_SupportShare = ShareUtil.sortAndClearAcData(mContext, preferShare, resolveInfos);
