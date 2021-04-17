@@ -88,6 +88,7 @@ public class TransferFragment extends BasePtuFragment {
     private boolean isChooseStyle;
     private TietuRecyclerAdapter chooseListAdapter;
     private boolean isFirstShowChooseRcv;
+    private PtuBaseChooser mPTuBaseChooser;
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
@@ -114,8 +115,8 @@ public class TransferFragment extends BasePtuFragment {
     @Override
     public List<FunctionInfoBean> getFunctionList() {
         pFunctionList.clear();
-        pFunctionList.add(new FunctionInfoBean(R.string.choose_pic, R.drawable.icon_deformation, R.drawable.function_background_text_yellow, PtuUtil.EDIT_TRANSFER));
-        pFunctionList.add(new FunctionInfoBean(R.string.choose_style, R.drawable.ic_gif, R.drawable.function_background_draw_pink, PtuUtil.EDIT_TRANSFER));
+        pFunctionList.add(new FunctionInfoBean(R.string.choose_pic, R.drawable.ic_image, PtuUtil.EDIT_TRANSFER));
+        pFunctionList.add(new FunctionInfoBean(R.string.choose_style, R.drawable.ic_baseline_style_24, PtuUtil.EDIT_TRANSFER));
         return pFunctionList;
     }
 
@@ -209,6 +210,15 @@ public class TransferFragment extends BasePtuFragment {
     }
 
     @Override
+    public void initView() {
+        super.initView();
+        mPTuBaseChooser = new PtuBaseChooser(mContext, this,
+                pTuActivityInterface, Collections.singletonList("撕图"));
+        mPTuBaseChooser.setIsUpdateHeat(false);
+        mPTuBaseChooser.show();
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         super.onItemClick(adapter, view, position);
         InsertAd.onClickTarget(getActivity());
@@ -216,7 +226,7 @@ public class TransferFragment extends BasePtuFragment {
         switch (pFunctionList.get(position).getTitleResId()) {
             case R.string.choose_pic:
                 US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-
+                mPTuBaseChooser.switchPtuBaseChooseView();
                 break;
             case R.string.choose_style:
                 US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
@@ -252,7 +262,7 @@ public class TransferFragment extends BasePtuFragment {
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.bottomToTop = R.id.fragment_main_function;
             layoutParams.setMargins(0, 0, 0, Util.dp2Px(4f));
-            ptuFrameLayout.addView(chooseRcv, layoutParams);
+//            ptuFrameLayout.addView(chooseRcv, layoutParams);
             chooseRcv.setAdapter(chooseListAdapter);
         }
         Observable

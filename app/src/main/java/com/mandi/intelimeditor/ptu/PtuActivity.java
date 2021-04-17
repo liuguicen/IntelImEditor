@@ -84,7 +84,8 @@ import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 
 import USeruse.tutorial.GuideDialog;
-import common.MainFunctionFragment;
+
+import com.mandi.intelimeditor.ptu.common.MainFunctionFragment;
 
 import com.mandi.intelimeditor.user.useruse.tutorial.GuideData;
 import com.mandi.intelimeditor.user.useruse.tutorial.Tutorial;
@@ -267,7 +268,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         initFragment();
         analysisPicPath(null); // 开始图片加载流程
         LogUtil.d(TAG, "onCreate()");
-//        test();
     }
 
     private void initBaseData() {
@@ -511,12 +511,12 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     private void initFragment() {
-        transferFrag = new TransferFragment();
-        transferFrag.setPTuActivityInterface(this);
-        currentFrag = transferFrag;
+        mainFrag = new MainFunctionFragment();
+        mainFrag.setPTuActivityInterface(this);
+        currentFrag = mainFrag;
         fm = getSupportFragmentManager();
         fm.beginTransaction()
-                .replace(R.id.fragment_main_function, transferFrag)
+                .replace(R.id.fragment_main_function, mainFrag)
                 .commitAllowingStateLoss();
         repealRedoListener = new RepealRedoListener() {
             @Override
@@ -527,7 +527,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
             @Override
             public void canRepeal(boolean canRepeal) {
-//                mPtuToolbar.updateRepealBtn(canRepeal);
+                mPtuToolbar.updateRepealBtn(canRepeal);
             }
         };
     }
@@ -1150,10 +1150,11 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         fm.beginTransaction()
                 .setCustomAnimations(R.animator.slide_bottom_in, R.animator.slide_bottom_out,
                         R.animator.slide_bottom_in, R.animator.slide_bottom_out)
-                .replace(R.id.fragment_main_function, transferFrag);
+                .replace(R.id.fragment_main_function, transferFrag)
+                .commitAllowingStateLoss();
         currentFrag = transferFrag;
-        currentEditMode = EDIT_DRAW;
-        ptuSeeView.switchStatus2Main();
+        currentEditMode = EDIT_TRANSFER;
+//        ptuSeeView.switchStatus2Main();
     }
 
     private void getVggFeature(Bitmap bm, boolean isContent) {

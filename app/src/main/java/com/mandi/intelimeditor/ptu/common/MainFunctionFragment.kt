@@ -1,4 +1,4 @@
-package common
+package com.mandi.intelimeditor.ptu.common
 
 import android.graphics.Bitmap
 import android.view.View
@@ -55,7 +55,7 @@ class MainFunctionFragment : BasePtuFragment() {
      */
     override fun onItemClick(adapter: BaseQuickAdapter<*, *>, view: View, position: Int) {
         super.onItemClick(adapter, view, position)
-        LogUtil.d(TAG, "mFunctions[position] =${pFunctionList[position].toString()}")
+        LogUtil.d(TAG, "mFunctions =${pFunctionList[position].type} ${resources.getString(pFunctionList[position].iconResId)} ")
         var key = PtuUtil.getUSEventByType(pFunctionList[position].type);
         if (pTuActivityInterface?.gifManager != null) {
             key += US.MAIN_FUNCTION_GIF_SUFFIX
@@ -92,6 +92,8 @@ class MainFunctionFragment : BasePtuFragment() {
         if (!isGif) {
             pFunctionList.add(FunctionInfoBean(R.string.deformation, R.drawable.icon_deformation,
                     R.drawable.function_background_text_yellow, PtuUtil.EDIT_DEFORMATION));
+            pFunctionList.add(FunctionInfoBean(R.string.fun_transfer, R.drawable.ic_baseline_style_24,
+                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_TRANSFER));
         }
 
         pFunctionList.add(FunctionInfoBean(R.string.draw, R.mipmap.draw, R.drawable.function_background_draw_pink, PtuUtil.EDIT_DRAW))
