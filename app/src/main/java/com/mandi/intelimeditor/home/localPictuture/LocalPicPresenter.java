@@ -309,6 +309,9 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
         mView.onTogglePicList(picAdapter);
     }
 
+    public List<String> getCurrentPicPathList() {
+        return currentPicPathList;
+    }
 
     @Override
     @Nullable

@@ -1,6 +1,7 @@
 package com.mandi.intelimeditor.ptu.transfer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,9 +29,11 @@ import com.jaygoo.widget.RangeSeekBar;
 import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.ad.tencentAD.InsertAd;
 import com.mandi.intelimeditor.bean.FunctionInfoBean;
+import com.mandi.intelimeditor.common.CommonConstant;
 import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
+import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
@@ -41,14 +43,14 @@ import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
+import com.mandi.intelimeditor.home.HomeActivity;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
 import com.mandi.intelimeditor.ptu.PTuActivityInterface;
+import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.RepealRedoListener;
-import com.mandi.intelimeditor.ptu.common.DrawController;
 import com.mandi.intelimeditor.ptu.common.PTuUIUtil;
 import com.mandi.intelimeditor.ptu.common.PtuBaseChooser;
-import com.mandi.intelimeditor.ptu.deformation.DeformationFragment;
 import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
@@ -56,7 +58,6 @@ import com.mandi.intelimeditor.ptu.tietu.TietuSizeController;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
-import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
@@ -64,17 +65,19 @@ import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.pytorch.Tensor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
-public class TransferFragment extends BasePtuFragment {
+public class StyleTransferFragment extends BasePtuFragment {
+    public static final String ALL_STYLE = "all_style";
+    public static final String ALL_PIC = "all_pic";
     private String TAG = "DrawFragment";
     public static final int EDIT_MODE = PtuUtil.EDIT_DRAW;
     private Context mContext;
@@ -83,12 +86,10 @@ public class TransferFragment extends BasePtuFragment {
     private PtuSeeView ptuSeeView;
     private RepealRedoListener repealRedoListener;
     private PtuBaseChooser ptuBaseChooser;
-    private DeformationFragment.DeforActionListener deforActionListener;
     private RecyclerView chooseRcv;
-    private boolean isChooseStyle;
+    private boolean isChooseStyle = true;
     private TietuRecyclerAdapter chooseListAdapter;
     private boolean isFirstShowChooseRcv;
-    private PtuBaseChooser mPTuBaseChooser;
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
@@ -135,14 +136,23 @@ public class TransferFragment extends BasePtuFragment {
         isChooseStyle = true;
         chooseListAdapter = new TietuRecyclerAdapter(mContext, true);
         chooseListAdapter.setOnItemClickListener(chooseRcvListener);
-        prepareShowChooseRcv(view);
+        prepareShowChooseRcv(view, isChooseStyle);
     }
 
     private RcvItemClickListener1 chooseRcvListener = new RcvItemClickListener1() {
         @Override
         public void onItemClick(RecyclerView.ViewHolder itemHolder, View view) {
             int position = itemHolder.getLayoutPosition();
-            if (position == -1) return;
+            if (position < 0) return;
+            if (position == 0) {
+                US.putPTuTietuEvent(US.PTU_TIETU_MORE);
+                Intent intent = new Intent(mContext, HomeActivity.class);
+                intent.setAction(HomeActivity.INTENT_ACTION_ONLY_CHOSE_PIC);
+                intent.addCategory(isChooseStyle ? HomeActivity.CHOOSE_PIC_CATEGORY_STYLE : HomeActivity.CHOOSE_PIC_CATEGORY_CONTENT);
+                intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, HomeActivity.TEMPLATE_FRAG_ID);
+                startActivityForResult(intent, isChooseStyle ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
+                return;
+            }
             if (chooseListAdapter != null) {
                 PicResource oneTietu = chooseListAdapter.get(position).data;
                 if (oneTietu != null && oneTietu.getUrl() != null) {
@@ -210,15 +220,6 @@ public class TransferFragment extends BasePtuFragment {
     }
 
     @Override
-    public void initView() {
-        super.initView();
-        mPTuBaseChooser = new PtuBaseChooser(mContext, this,
-                pTuActivityInterface, Collections.singletonList("撕图"));
-        mPTuBaseChooser.setIsUpdateHeat(false);
-        mPTuBaseChooser.show();
-    }
-
-    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         super.onItemClick(adapter, view, position);
         InsertAd.onClickTarget(getActivity());
@@ -226,26 +227,20 @@ public class TransferFragment extends BasePtuFragment {
         switch (pFunctionList.get(position).getTitleResId()) {
             case R.string.choose_pic:
                 US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-                mPTuBaseChooser.switchPtuBaseChooseView();
+                isChooseStyle = false;
+                prepareShowChooseRcv(view, isChooseStyle);
                 break;
             case R.string.choose_style:
                 US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
+                isChooseStyle = true;
+                prepareShowChooseRcv(view, isChooseStyle);
                 break;
         }
     }
 
 
-    private void prepareShowChooseRcv(View view) {
+    private void prepareShowChooseRcv(View view, boolean isChooseStyle) {
         FirstUseUtil.myTietuGuide(mContext);
-        prepareShow(view, PicResource.SECOND_CLASS_MY);
-        if (isFirstShowChooseRcv) { // 本地贴图第一次加载显示不了，尝试多种办法不行，目前只能用这个
-            view.post(() -> prepareShow(view, PicResource.SECOND_CLASS_MY));
-            view.post(() -> prepareShow(view, PicResource.SECOND_CLASS_MY));
-        }
-        isFirstShowChooseRcv = false;
-    }
-
-    private void prepareShow(View view, String category) {
         ViewParent parent = view.getParent();
         while (parent != null && !(parent instanceof PtuConstraintLayout)) {
             parent = parent.getParent();
@@ -262,11 +257,32 @@ public class TransferFragment extends BasePtuFragment {
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.bottomToTop = R.id.fragment_main_function;
             layoutParams.setMargins(0, 0, 0, Util.dp2Px(4f));
-//            ptuFrameLayout.addView(chooseRcv, layoutParams);
+            ptuFrameLayout.addView(chooseRcv, layoutParams);
             chooseRcv.setAdapter(chooseListAdapter);
         }
+        if (isChooseStyle) {
+            prepareShowStyle(view);
+        } else {
+            showStyleOrContenList(AllData.styleList);
+        }
+        if (isFirstShowChooseRcv) { // 本地贴图第一次加载显示不了，尝试多种办法不行，目前只能用这个
+            view.post(() -> prepareShowStyle(view));
+            view.post(() -> prepareShowStyle(view));
+        }
+        isFirstShowChooseRcv = false;
+    }
+
+    private void showStyleOrContenList(List<PicResource> styleList) {
+        if (styleList == null) styleList = new ArrayList<>();
+        chooseListAdapter.setList(styleList);
+        chooseListAdapter.add(0, PicResource.path2PicResource(ALL_STYLE));
+    }
+
+    private void prepareShowStyle(View view) {
         Observable
-                .create(PicResourceDownloader::queryMyTietu)
+                .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
+                    PicResourceDownloader.queryPicResByCategory("", PicResource.category_style, emitter);
+                })
                 .subscribe(new SimpleObserver<List<PicResource>>() {
 
                     @Override
@@ -274,9 +290,9 @@ public class TransferFragment extends BasePtuFragment {
                         if (isDetached()) {
                             return;
                         }
-                        onNoStylePic(category);
+                        onNoStylePic();
                         LogUtil.e(throwable.getMessage());
-                        chooseListAdapter.setList(new ArrayList<>());
+                        showStyleOrContenList(null);
                     }
 
                     @Override
@@ -286,24 +302,21 @@ public class TransferFragment extends BasePtuFragment {
                         }
                         int size = tietumaterials.size();
                         if (size == 0) {
-                            onNoStylePic(category);
+                            onNoStylePic();
                             return;
                         }
                         Log.d("TAG", "onNext: 获取到的贴图数量" + size);
-                        chooseListAdapter.setList(tietumaterials);
+                        showStyleOrContenList(tietumaterials);
                     }
                 });
     }
 
-    private void onNoStylePic(String category) {
+
+    private void onNoStylePic() {
         if (chooseListAdapter != null) { // 这个方法会异步回调，此时tietuListAdapter已经回收置空了，原来自己就没处理，GG
             chooseListAdapter.setList(new ArrayList<>());
             String msg;
-            if (PicResource.SECOND_CLASS_MY.equals(category)) {
-                msg = mContext.getString(R.string.no_my_tietu_notice);
-            } else {
-                msg = mContext.getString(R.string.no_network_tietu_notice);
-            }
+            msg = mContext.getString(R.string.no_network_style_notice);
             PtuUtil.onNoPicResource(msg);
         }
     }
@@ -341,10 +354,34 @@ public class TransferFragment extends BasePtuFragment {
         PTuUIUtil.addPopOnFunctionLayout(mContext, contentView, pFunctionRcv);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {
+            PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
+            transferByPath(picRes.getUrlString(), picRes.getTag());
+            showStyleOrContenList(AllData.styleList);
+        }
+
+        if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_CONTENT && data != null) {
+            PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSE_BASE_PIC_RES);
+            transferByPath(picRes.getUrlString(), picRes.getTag());
+            showStyleOrContenList(AllData.contentList);
+        }
+
+        // 开通会员解锁, 开通成功后隐藏列表，用户重新点击，重新将列表加入adapter，一尺排除广告数据
+        if (resultCode == CommonConstant.RESULT_CODE_OPEN_VIP_SUCCESS) {
+            if (AllData.isVip) {
+                // TODO: 2020/10/22 隐藏贴图列表对话框
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if (ptuSeeView != null) {
             ptuSeeView.setCanDoubleClick(false);
         }
@@ -451,10 +488,6 @@ public class TransferFragment extends BasePtuFragment {
         int isVisible = EventBusConstants.GIF_PLAY_CHOSEN.equals(event)
                 ? View.VISIBLE : View.INVISIBLE;
 
-    }
-
-    public void setDeforActionListener(DeformationFragment.DeforActionListener deforActionListener) {
-        this.deforActionListener = deforActionListener;
     }
 
     public interface DeforActionListener {

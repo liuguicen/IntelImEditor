@@ -381,7 +381,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                     US.putEditPicEvent(US.EDIT_PIC_FROM_TIETU);
                 }
             }
-            mActivity.choosePic(chosenResource, false);
+            mActivity.choosePic(chosenResource, null);
         }
     }
 

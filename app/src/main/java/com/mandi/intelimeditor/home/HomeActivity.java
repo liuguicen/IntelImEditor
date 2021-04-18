@@ -77,11 +77,11 @@ import com.mandi.intelimeditor.home.search.SearchActivity;
 import com.mandi.intelimeditor.R;
 
 
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
@@ -103,8 +103,11 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
     private String TAG = "HomeActivity";
 
+    // 下面这两个可以合并复用
     public static final String PTU_ACTION_CHOOSE_TIETU = "choose_tietu";
     public static final String PTU_ACTION_CHOOSE_BASE = "action_choose_base";
+    public static final String CHOOSE_PIC_CATEGORY_STYLE = "action_choose_base";
+    public static final String CHOOSE_PIC_CATEGORY_CONTENT = "action_choose_base";
 
     public static final int REQUEST_CODE_NORMAL = 0;
     public static final int REQUEST_CODE_CHOOSE_PIC_FROM_SYSTEM = 12;
@@ -126,6 +129,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     public static final int TIETU_FRAG_ID = 2;
 
     boolean mIsFromCreate = false;
+    static String intentAction = "";
     private boolean isChooseTietu = false;
     private boolean isChooseBase = false;
     private boolean isMakeTietu = false;
@@ -203,10 +207,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 finish();
                 return;
             }
-            String action = sourceIntent.getAction();
-            if (PTU_ACTION_CHOOSE_TIETU.equals(action)) {
+            intentAction = sourceIntent.getAction();
+            if (PTU_ACTION_CHOOSE_TIETU.equals(intentAction)) {
                 isChooseTietu = true;
-            } else if (PTU_ACTION_CHOOSE_BASE.equals(action)) {
+            } else if (PTU_ACTION_CHOOSE_BASE.equals(intentAction)) {
                 isChooseBase = true;
             }
         }
@@ -535,14 +539,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 //                }
             }
         }
-        if (requestCode == PtuActivity.REQUEST_CODE_MAKE_TIETU) {
-            if (resultCode == PtuActivity.RESULT_CODE_NORMAL_RETURN || data == null) {
-                finish();
-            } else if (resultCode == PtuActivity.RESULT_CODE_INTERMEDIATE_PTU) {
-                setResult(resultCode, data);
-                finish();
-            }
-        }
+
         if (requestCode == REQUEST_CODE_DIG_FACE || requestCode == REQUEST_CODE_ERASE_EXPRESSION) {
             setResult(resultCode, data);
             finish();
@@ -560,7 +557,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 PicResource picResource = (PicResource) data.getSerializableExtra(SearchActivity.Companion.getINTENT_EXTRA_SEARCH_PIC_RES());
                 US.putEditPicEvent(US.EDIT_PIC_FROM_SEARCH);
                 if (picResource != null) {
-                    choosePic(picResource, false);
+                    choosePic(picResource, null);
                 }
             }
             return;
@@ -665,25 +662,31 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         }
     }
 
-    public void choosePic(@NotNull PicResource picResource, boolean isVideo) {
+    /**
+     * @param categoryList 选择的图片所属的类别或者文件夹下面的图片列表
+     */
+    public void choosePic(@NotNull PicResource picResource, @Nullable List<PicResource> categoryList) {
         BmobFile bmobFile = picResource.getUrl();
         if (bmobFile == null) {
             return; // 无动作
         }
         String path = bmobFile.getUrl();
+        String action = getIntent().getAction();
         if (isChooseTietu || isChooseBase) {//选择贴图,不是一般的选择图片
-            if (!isVideo) { // 不要到了这里才提醒用户，一开始就隐藏才好
-                onChosenTietuOrBase(picResource, path);
-            } else {
-                showToast(R.string.not_yet_support_video_make);
+
+        } else if (INTENT_ACTION_ONLY_CHOSE_PIC.equals(action)) {
+            if (getIntent().getCategories().contains(CHOOSE_PIC_CATEGORY_STYLE)) {
+                AllData.styleList = categoryList;
             }
-        } else if (INTENT_ACTION_ONLY_CHOSE_PIC.equals(getIntent().getAction())) {
+            if (getIntent().getCategories().contains((CHOOSE_PIC_CATEGORY_STYLE))) {
+                AllData.contentList = categoryList;
+            }
             Intent data = new Intent();
             data.putExtra(INTENT_EXTRA_CHOSEN_PIC_RES, picResource);
             setResult(RESULT_OK, data);
             finish();
         } else {
-            startPTuActivity(path, picResource, isVideo);
+            startPTuActivity(path, picResource);
         }
     }
 
@@ -768,28 +771,16 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         //        }
     }
 
-    private void startPTuActivity(String chosenPath, PicResource picResource, boolean isVideo) {
+    private void startPTuActivity(String chosenPath, PicResource picResource) {
         Intent intent = new Intent(this, PtuActivity.class);
         String action = getIntent().getAction();
         mLocalPicFragment.addUsedPath(chosenPath);
-        if (PtuActivity.PTU_ACTION_MAKE_TIETU.equals(action)) {
-            intent.setAction(PtuActivity.PTU_ACTION_AS_INTERMEDIATE_PTU);
-            intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, chosenPath);
-            startActivityForResult(intent, PtuActivity.REQUEST_CODE_MAKE_TIETU);
-        } else {
-            if (isVideo) {
-                intent.setAction(PtuActivity.PTU_ACTION_VIDEO_MAKE_GIF);
-                intent.putExtra(PtuActivity.INTENT_EXTRA_VIDEO_PATH, chosenPath);
-                intent.putExtra(PtuActivity.INTENT_EXTRA_TO_CHILD_FUNCTION, PtuUtil.CHILD_FUNCTION_GIF);
-                US.putGifEvent(US.SHORT_VIDEO_MAKE_GIF);
-            } else {
-                intent.setAction(PtuActivity.PTU_ACTION_NORMAL);
-                intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, chosenPath);
-                intent.putExtra(PtuActivity.INTENT_EXTRA_CHOSEN_TAGS, picResource.getTag());
-            }
-            // intent.putExtra(PtuActivity.PTU_DATA_PIC_INFO, picResource);
-            startActivityForResult(intent, HomeActivity.REQUEST_CODE_NORMAL);
-        }
+        intent.setAction(PtuActivity.PTU_ACTION_NORMAL);
+        intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, chosenPath);
+        intent.putExtra(PtuActivity.INTENT_EXTRA_CHOSEN_TAGS, picResource.getTag());
+
+        // intent.putExtra(PtuActivity.PTU_DATA_PIC_INFO, picResource);
+        startActivityForResult(intent, HomeActivity.REQUEST_CODE_NORMAL);
     }
 
     /**

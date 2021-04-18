@@ -99,7 +99,7 @@ public class IntelImEditApplication extends MultiDexApplication {
         //重置域名，必须在初始化前重置
         Bmob.resetDomain("http://ptusdk.musiclake.cn/8/");
         //初始化bmob
-        Bmob.initialize(this, "3000c4af659e92854854c5b10f0824a2"); // 再是网络初始化
+        Bmob.initialize(this, "0a8e8278e37dc785c7657d2a28555d12"); // 再是网络初始化
         //BmobDatabaseUtil.getServiceUpdateTime("PicResource",null); // 不能放到异步线程中，不然线程中运行bmob初始化没完成而出错，
         new InstallPolicy().processPolicy();  //执行第一次安装或更新新版本所需的东西
         //Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());//设置APP运行异常捕捉器，不用了，目前使用友盟的

@@ -677,12 +677,6 @@ public class TietuFragment extends BasePtuFragment {
             PicResource picResource = (PicResource) data.getSerializableExtra(INTENT_EXTRA_CHOSE_TIETU_RES);
             addTietuByMultiType(picResource.getUrlString(), picResource.getTag());
         }
-        if (requestCode == PtuActivity.REQUEST_CODE_MAKE_TIETU && resultCode == PtuActivity.RESULT_CODE_INTERMEDIATE_PTU
-                && data != null) {
-            String picPath = data.getStringExtra(PTuResultData.NEW_PIC_PATH);
-            MyDatabase.getInstance().insertMyTietu(picPath, System.currentTimeMillis());
-            addTietuByMultiType(picPath, null);
-        }
 
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_BASE && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSE_BASE_PIC_RES);
@@ -1069,7 +1063,6 @@ public class TietuFragment extends BasePtuFragment {
                         toFlipTietu();
                         break;
                     case R.string.make:
-                        toMakeTietu();
                         break;
                     case R.string.stretch:
                         stretchTietu();
@@ -1185,11 +1178,6 @@ public class TietuFragment extends BasePtuFragment {
                 });
     }
 
-    private void toMakeTietu() {
-        US.putPTuTietuEvent(US.PTU_TIETU_MAKE);
-        startActivity2make();
-    }
-
     /**
      * 翻转贴图
      */
@@ -1208,12 +1196,6 @@ public class TietuFragment extends BasePtuFragment {
         } else {
             ToastUtils.show("请选择一张贴图");
         }
-    }
-
-    private void startActivity2make() {
-        Intent intent = new Intent(mContext, HomeActivity.class);
-        intent.setAction(PtuActivity.PTU_ACTION_MAKE_TIETU);
-        startActivityForResult(intent, PtuActivity.REQUEST_CODE_MAKE_TIETU);
     }
 
     private void toRendTietu() {

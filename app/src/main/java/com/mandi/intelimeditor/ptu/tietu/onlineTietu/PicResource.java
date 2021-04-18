@@ -8,6 +8,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.TimeDateUtil;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,13 +28,14 @@ import cn.bmob.v3.listener.UpdateListener;
  */
 public class PicResource extends BmobObject {
     public static final String SECOND_CLASS_EXPRESSION = "expression"; // 名称不能改了，要和后台一致
-//    public static final String SECOND_CLASS_NAME_EXPRESSION = "表情";
+    //    public static final String SECOND_CLASS_NAME_EXPRESSION = "表情";
     public static final String SECOND_CLASS_PROPERTY = "property"; // 名称不能改了，要和后台一致
-//    public static final String CATEGORY_NAME_PROPERTY = "道具";
+    public static final String category_style = "style"; // 名称不能改了，要和后台一致
+    //    public static final String CATEGORY_NAME_PROPERTY = "道具";
     public static final String SECOND_CLASS_MY = "my";
     public static final String SECOND_CLASS_MY_NAME = "我的";
     public static final String SECOND_CLASS_BASE = "base";
-//    public static final String SECOND_CLASS_NAME_BASE = "基本";
+    //    public static final String SECOND_CLASS_NAME_BASE = "基本";
     public static final String SECOND_CLASS_DEFORMATION = "deformation"; // 人脸等变形需要的
 
     public static final String FIRST_CLASS_TIETU = "tietu";  // 名称不能改了，要和后台一致
@@ -189,4 +191,29 @@ public class PicResource extends BmobObject {
         }
         return false;
     }
+
+    public static PicResource path2PicResource(String path) {
+        PicResource picResource = new PicResource();
+        picResource.initForNonnull();
+        BmobFile url = new BmobFile();
+        url.setUrl(path);
+        picResource.setUrl(url);
+        return picResource;
+    }
+
+    public static List<PicResource> pathList2PicResList(List<String> pathList) {
+        if (pathList == null) return null;
+        List<PicResource> picResourceList = new ArrayList<>(pathList.size());
+        for (String path : pathList) {
+            picResourceList.add(path2PicResource(path));
+        }
+        return picResourceList;
+    }
+
+    private void initForNonnull() {
+        tag = "";
+        category = "";
+        heat = 0;
+    }
+
 }

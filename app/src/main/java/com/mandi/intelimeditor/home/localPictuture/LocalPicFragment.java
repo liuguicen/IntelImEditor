@@ -47,6 +47,7 @@ import java.util.List;
 
 
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.listener.FetchUserInfoListener;
 
 /**
  * 本地图片列表
@@ -159,7 +160,10 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
                 if (position == -1) return;
                 if (!isInMultiChoose) {
                     LocalGroupedItemData chosenItem = mPresenter.getCurrentPath(position);
-                    chooseItem(chosenItem);
+                    List<String> currentPicPathList = mPresenter.getCurrentPicPathList();
+                    int min = Math.max(currentPicPathList.size(), 200);
+                    currentPicPathList = currentPicPathList.subList(0, min);
+                    chooseItem(chosenItem, PicResource.pathList2PicResList(currentPicPathList));
                 } else {
                     mPresenter.switchChooseItem(position);
                 }
@@ -238,7 +242,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
         }
     }
 
-    private void chooseItem(@Nullable LocalGroupedItemData chosenItem) {
+    private void chooseItem(@Nullable LocalGroupedItemData chosenItem, List<PicResource> categoryList) {
         if (mActivity == null) {
             ToastUtils.show(R.string.no_momery_notice);
             MobclickAgent.reportError(mContext, new NullPointerException(this.getClass().getSimpleName() + ".mInteractListener is null"));
@@ -248,7 +252,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
             PicResource picResource = new PicResource();
             picResource.setUrl(bmobFile); // 包装一下，方便统一处理
             US.putEditPicEvent(US.EDIT_PIC_FROM_LOCAL);
-            mActivity.choosePic(picResource, chosenItem.mediaType == LocalGroupedItemData.MEDIA_SHORT_VIDEO);
+            mActivity.choosePic(picResource, categoryList);
         }
     }
 
@@ -469,7 +473,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
             if (uri == null) return;
             US.putOtherEvent(US.CHOOSE_PIC_FROM_SYSTEM);
             String filePath = FileTool.getImagePathFromUri((Activity) mContext, uri);
-            chooseItem(new LocalGroupedItemData(filePath, PicResourceItemData.PicListItemType.ITEM));
+            chooseItem(new LocalGroupedItemData(filePath, PicResourceItemData.PicListItemType.ITEM), null);
         }
     }
 
