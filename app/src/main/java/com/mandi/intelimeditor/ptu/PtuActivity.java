@@ -75,7 +75,7 @@ import com.mandi.intelimeditor.ptu.text.TextFragment;
 import com.mandi.intelimeditor.ptu.tietu.TietuFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.transfer.StyleTransfer;
-import com.mandi.intelimeditor.ptu.transfer.TransferFragment;
+import com.mandi.intelimeditor.ptu.transfer.StyleTransferFragment;
 import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.ptu.view.PtuToolbar;
@@ -124,7 +124,6 @@ import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_TRANSFER;
  * P完图之后，不是保存分享，而是将结果路径或bm设置看，返回原来的功能，
  */
 public class PtuActivity extends BaseActivity implements PTuActivityInterface, ProgressCallback, PTuContract.View {
-    public static final int REQUEST_CODE_MAKE_TIETU = 201;
     public static final int REQUEST_CODE_CHOOSE_TIETU = 11;
     public static final int REQUEST_CODE_CHOOSE_BASE = 1001;
 
@@ -135,6 +134,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public static final int RESULT_CODE_CHOSE_BASE = 203;
     // 注意多种不同的请求都有可能返回这个result code，判断的时候要结合request code 一起判断
     public static final int RESULT_CODE_INTERMEDIATE_PTU = 202;
+
+    public static final int REQUEST_CODE_CHOOSE_STYLE = 303;
+    public static final int REQUEST_CODE_CHOOSE_CONTENT = 304;
+
     // 正常返回，多种可能
     public static final int RESULT_CODE_NORMAL_RETURN = 0;
 
@@ -143,7 +146,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public static final String PTU_ACTION_LATEST_PIC = "latest_pic";
     public static final String PTU_ACTION_PICS_MAKE_GIF = "pics_make_gif";
     public static final String PTU_ACTION_VIDEO_MAKE_GIF = "video_make_gif";
-    public static final String PTU_ACTION_MAKE_TIETU = "tools";
     /**
      * 第二种模式：作为其它功能需要P图的一个中间步骤，这个中间步骤可能需要先进入P图界面的某个子功能，
      * P完图之后，不是保存分享，而是将结果路径或bm设置看，返回原来的功能，
@@ -174,6 +176,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public static final String INTENT_EXTRA_INTERMEDIATE_PTU_NAME = AllData.PACKAGE_NAME + ".intermediate_ptu_name";
     // PTu作为中间步骤结束时的名字 比如完成或者下一步
     public static final String INTENT_EXTRA_INTERMEDIATE_PTU_FINISH_NAME = AllData.PACKAGE_NAME + ".intermediate_ptu_finish_name";
+    public static final String INTENT_EXTRA_CHOSEN_PIC_RES = AllData.PACKAGE_NAME + ".chose_pic_res";
     // 保证传递的图片路径是本地路径
     public static final String PTU_DATA_GIF_PIC_LIST = AllData.PACKAGE_NAME + "ptu_data_gif_pic_list";
     private static final String TAG = "PtuActivity";
@@ -197,7 +200,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private DigFragment digFrag;
     private RendFragment rendFrag;
     private DeformationFragment deformationFrag;
-    private TransferFragment transferFrag;
+    private StyleTransferFragment transferFrag;
     private GifEditFragment gifEditFrag;
 
     public PtuSeeView ptuSeeView;
@@ -511,7 +514,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     private void initFragment() {
-        transferFrag = new TransferFragment();
+        transferFrag = new StyleTransferFragment();
         transferFrag.setPTuActivityInterface(this);
         currentFrag = transferFrag;
         fm = getSupportFragmentManager();
@@ -1143,7 +1146,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     private void switch2Transfer() {
         if (transferFrag == null) {
-            transferFrag = new TransferFragment();
+            transferFrag = new StyleTransferFragment();
             transferFrag.setPTuActivityInterface(this);
         }
         //更换底部导航栏

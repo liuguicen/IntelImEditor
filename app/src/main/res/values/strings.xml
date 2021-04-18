@@ -27,7 +27,7 @@
     <string name="permission_use_statement">"·关于定位权限：我们只会基于定位推荐您感兴趣的内容，不会用作其它用途并严格保护您的隐私！\n\n"
                 "·关于通话权限：我们需要根据电话状态码区分您和其他用户，不会使用电话短信相关功能，请您放心！\n"</string>
 
-    <string name="app_name">暴走P图</string>
+    <string name="app_name">艺术美图</string>
     <string name="version_name">v%1$s</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">设置</string>
@@ -654,4 +654,5 @@ b) 在使用暴走P图网络服务进行网上交易时，您不可避免的要�
     <string name="choose_style">选风格</string>
     <string name="choose_pic">选照片</string>
     <string name="stranfer_error_by_empty_content">生成出错了，内容为空</string>
+    <string name="no_network_style_notice">暂时无法下载风格图片，网络或者服务器出错！您可以使用本机图片</string>
 </resources>

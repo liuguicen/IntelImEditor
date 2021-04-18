@@ -261,6 +261,10 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.rowNumber = num;
     }
 
+    public void add(int id, PicResource picRes) {
+        groupedList.add(id, new PicResourceItemData(picRes, PicResourceItemData.PicListItemType.ITEM));
+    }
+
     public interface ItemClickListener {
         void onItemClick(MyItemHolder itemHolder, int position);
     }

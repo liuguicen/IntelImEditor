@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,8 @@ public class AllData {
     public static Map<String, List<GroupBean>> mAllGroupList = new HashMap<>();
     public static Map<String, List<PicResource>> mAllCategoryList = new HashMap<>();
     public static boolean hasLoadGuide = false;
+    public static List<PicResource> styleList = new ArrayList<>();
+    public static List<PicResource> contentList = new ArrayList<>();
     private static BitmapPool sPTuBmPool;
 
 
