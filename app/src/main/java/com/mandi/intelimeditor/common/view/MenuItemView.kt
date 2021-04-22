@@ -1,4 +1,4 @@
-package view
+package com.mandi.intelimeditor.common.view
 
 
 import android.content.Context

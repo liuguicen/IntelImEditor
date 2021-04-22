@@ -68,6 +68,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -116,8 +117,8 @@ public class StyleTransferFragment extends BasePtuFragment {
     @Override
     public List<FunctionInfoBean> getFunctionList() {
         pFunctionList.clear();
-        pFunctionList.add(new FunctionInfoBean(R.string.choose_pic, R.drawable.icon_deformation, R.drawable.function_background_text_yellow, PtuUtil.EDIT_TRANSFER));
-        pFunctionList.add(new FunctionInfoBean(R.string.choose_style, R.drawable.ic_gif, R.drawable.function_background_draw_pink, PtuUtil.EDIT_TRANSFER));
+        pFunctionList.add(new FunctionInfoBean(R.string.choose_pic, R.drawable.ic_image, PtuUtil.EDIT_TRANSFER));
+        pFunctionList.add(new FunctionInfoBean(R.string.choose_style, R.drawable.ic_baseline_style_24, PtuUtil.EDIT_TRANSFER));
         return pFunctionList;
     }
 

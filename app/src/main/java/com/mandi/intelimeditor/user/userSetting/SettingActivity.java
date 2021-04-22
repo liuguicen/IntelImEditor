@@ -24,7 +24,7 @@ import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userAccount.LocalUserInfo;
 
 import util.CoverLoader;
-import view.SettingsItemView;
+import com.mandi.intelimeditor.common.view.SettingsItemView;
 
 import com.mandi.intelimeditor.user.userVip.OpenVipActivity;
 import com.mandi.intelimeditor.user.useruse.tutorial.HelpActivity;

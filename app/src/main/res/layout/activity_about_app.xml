@@ -94,7 +94,7 @@
     </LinearLayout>
 
 
-    <view.SettingsItemView
+    <com.mandi.intelimeditor.common.view.SettingsItemView
         android:id="@+id/ll_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

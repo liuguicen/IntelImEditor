@@ -12,7 +12,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <view.BottomFunctionView
+        <com.mandi.intelimeditor.home.view.BottomFunctionView
             android:id="@+id/draw_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
             app:bfv_icon_bg="@drawable/function_background_draw_pink"
             app:bfv_title="@string/paint" />
 
-        <view.BottomFunctionView
+        <com.mandi.intelimeditor.home.view.BottomFunctionView
             android:id="@+id/draw_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             app:bfv_icon="@drawable/color"
             app:bfv_title="@string/paint_color" />
 
-        <view.BottomFunctionView
+        <com.mandi.intelimeditor.home.view.BottomFunctionView
             android:id="@+id/draw_eraser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

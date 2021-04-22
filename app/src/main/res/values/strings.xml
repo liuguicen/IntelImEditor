@@ -655,4 +655,5 @@ b) 在使用暴走P图网络服务进行网上交易时，您不可避免的要�
     <string name="choose_pic">选照片</string>
     <string name="stranfer_error_by_empty_content">生成出错了，内容为空</string>
     <string name="no_network_style_notice">暂时无法下载风格图片，网络或者服务器出错！您可以使用本机图片</string>
+    <string name="fun_transfer">风格</string>
 </resources>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     app:layout_constraintHorizontal_chainStyle="spread">
 
-    view.BottomFunctionView
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/rend_function_choose_base"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -13,7 +13,7 @@
         app:bfv_icon="@mipmap/choose_base"
         app:bfv_title="@string/choose_base_pic" />
 
-    <view.BottomFunctionView
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/rend_scale"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -22,7 +22,7 @@
         app:bfv_icon="@mipmap/scale"
         app:bfv_title="缩放" />
 
-    <view.BottomFunctionView
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/rend_add_text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -30,7 +30,7 @@
         app:bfv_icon="@mipmap/text"
         app:bfv_title="加文字" />
 
-    <view.BottomFunctionView
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/rend_go_edit"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -38,7 +38,7 @@
         app:bfv_icon="@mipmap/edit"
         app:bfv_title="去裁剪" />
 
-    <view.BottomFunctionView
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/rend_once_again"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
