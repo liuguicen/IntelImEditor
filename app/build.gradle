@@ -30,7 +30,8 @@ android {
                 arguments "-DANDROID_STL=c++_shared", "-DANDROID_ARM_NEON=TRUE", "-DANDROID_PLATFORM=android-21",
                         "-DMNN_OPENCL=true", "-DMNN_OPENGL=true"
 //                abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
-                abiFilters "armeabi-v7a"
+//                abiFilters "armeabi-v7a"
+                abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
                 // Android Studio 4.0 之后必须同时在这里设置过滤才行，估计是给cmake设置的，外面是给纯Android设置的
             }
         }
@@ -42,10 +43,10 @@ android {
             // -mips / mips64 : 极少用于手机可以忽
             // - x86 / x86_64: x86 架构的手机都会包含由 Intel 提供的称为 Houdini 的指令集动态转码工具，实现对 arm .so 的兼容，再考虑 x86 1% 以下的市场占有率，x86 相关的两个 .so 也是可以忽略的
             // - armeabi: ARM v5 这是相当老旧的一个版本，缺少对浮点数计算的硬件支持，在需要大量计算时有性能瓶颈
-            // - armeabi-v7a: ARM v7 目前主流版本
+            // - armeabi-v7a: ARM v7
             // - arm64-v8a: 64位支持
 //            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
-            abiFilters 'armeabi-v7a'
+            abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
         }
 
         //默认渠道包
@@ -55,22 +56,22 @@ android {
 // 编译C++时反注释下面代码
     //编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
     //如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
-//    externalNativeBuild {
-//        cmake {
-//            path "CMakeLists.txt"
-//        }
-//    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
 
     sourceSets {
         main {
             // 1、 编译C++时用下面这个，反注释externalNativeBuild节点 注释掉2中的，
             // 这里要指定一个错误的路径才能编译成功，不知为何，原因是因为cmake里面包含了.so的路径，然后gradle又会自动添加，导致重复？？？
-//            jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
+            jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
 
             // 2、 使用so库时，用下面这个，注释掉1中的 和 externalNativeBuild节点
             // 编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
             // 如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
-             jniLibs.srcDirs = ['src\\main\\jniLibs']
+//             jniLibs.srcDirs = ['src\\main\\jniLibs']
         }
     }
 

@@ -139,7 +139,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     private ViewPager2 mViewPager;
     private TabLayout mTabLayout;
     private ViewPager2FragmentAdapter mViewPagerFragmentAdapter;
-    private TextureFragment mTietuChooseFragment;
     private PicResourcesFragment mTemplateChooseFragment;
     private LocalPicFragment mLocalPicFragment;
     private DrawerLayout mDrawerLayout;
@@ -401,8 +400,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
             mFilterIv.setVisibility(View.INVISIBLE);
         } else if (mViewPager.getCurrentItem() == 1) {
             mFilterIv.setVisibility(View.VISIBLE);
-        } else if (mViewPager.getCurrentItem() == 2 && mTietuChooseFragment.getCurrentItem() != 2) {
-            mFilterIv.setVisibility(View.VISIBLE);
         } else {
             mFilterIv.setVisibility(View.INVISIBLE);
         }
@@ -431,14 +428,9 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         }
 
         Log.e(TAG, "启动了 mTietuChooseFragment == null:" + (mLocalPicFragment == null));
-        if (mTietuChooseFragment == null) {
-            mTietuChooseFragment = TextureFragment.newInstance(PicResource.FIRST_CLASS_TIETU,
-                    isOnlyChoosePic());
-        }
         mViewPagerFragmentAdapter = new ViewPager2FragmentAdapter(this);
+        mViewPagerFragmentAdapter.addFragment(mTemplateChooseFragment, "风格");
         mViewPagerFragmentAdapter.addFragment(mLocalPicFragment, "本地");
-        mViewPagerFragmentAdapter.addFragment(mTemplateChooseFragment, "模板");
-        mViewPagerFragmentAdapter.addFragment(mTietuChooseFragment, "贴图");
         mViewPager.setAdapter(mViewPagerFragmentAdapter);
         mViewPager.setOffscreenPageLimit(3);
         //使用viewpager+tabLayout界面切换
@@ -488,10 +480,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 mViewPager.setCurrentItem(TEMPLATE_FRAG_ID);
                 currentFrag = mTemplateChooseFragment;
                 return;
-            case TIETU_FRAG_ID:
-                mViewPager.setCurrentItem(TIETU_FRAG_ID);
-                currentFrag = mTietuChooseFragment;
-                return;
         }
     }
 
@@ -501,8 +489,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 return mLocalPicFragment;
             case TEMPLATE_FRAG_ID:
                 return mTemplateChooseFragment;
-            case TIETU_FRAG_ID:
-                return mTietuChooseFragment;
         }
         return mLocalPicFragment;
     }

@@ -28,6 +28,7 @@ public class StyleTransfer {
     private Module vgg_encoder = null;
     private Module decoder = null;
     private Context context;
+    public static int MAX_SUPPORT_SIZE = 90000;
 
     private static class InnerClass {
         private static StyleTransfer staticInnerClass = new StyleTransfer(IntelImEditApplication.appContext);
@@ -43,7 +44,7 @@ public class StyleTransfer {
             this.context = context;
             vgg_encoder = Module.load(assetFilePath(context, "vgg_encoder.pt"));
             decoder = Module.load(assetFilePath(context, "adain_decoder.pt"));
-
+            Log.d(TAG, "StyleTransfer: 模型加载完成");
         } catch (IOException e) {
             Log.e("PytorchHelloWorld", "Error reading assets", e);
         }

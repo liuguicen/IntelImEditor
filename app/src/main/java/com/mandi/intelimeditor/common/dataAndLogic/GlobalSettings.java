@@ -22,6 +22,11 @@ public class GlobalSettings {
      */
     public int performanceYear;
     public int maxSupportBmSize;
+    /**
+     * 难以保证各个机型的适配，通过实际使用不爆内存来设置
+     */
+    public int contentMaxSupportBmSize;
+    public float styleContentRatio = 1.5f;
     public int maxSupportGifBmSize;
 
     public GlobalSettings() {
@@ -31,18 +36,27 @@ public class GlobalSettings {
     }
 
     private void updateOther(int performanceYear) {
+        contentMaxSupportBmSize = 800 * 800;
         if (performanceYear >= YearClass.PERFORMANCE_8G_UP) {
             maxSupportBmSize = 6000 * 4000;
         } else if (performanceYear >= YearClass.PERFORMANCE_6G_8G) {
             maxSupportBmSize = 5000 * 4000;
+            contentMaxSupportBmSize *= 16f / 25;
         } else if (performanceYear >= YearClass.PERFORMANCE_4G_6G) {
             maxSupportBmSize = 4000 * 3000;
+            contentMaxSupportBmSize *= 9f / 25;
         } else if (performanceYear >= YearClass.PERFORMANCE_2G_4G) {
             maxSupportBmSize = 3000 * 2000;
+            contentMaxSupportBmSize *= 4f / 25;
         } else {
             maxSupportBmSize = 2000 * 1000;
+            contentMaxSupportBmSize *= 4f / 25;
         }
         maxSupportGifBmSize = maxSupportBmSize / 16;
+        // 难以保证各个机型的适配，通过实际使用不爆内存来设置
+        SPUtil.putContentMaxSupportBmSize(-1);
+        int experimental_size = SPUtil.getStyleMaxSupportBmSize();
+        contentMaxSupportBmSize = experimental_size <= 0 ? contentMaxSupportBmSize : experimental_size;
     }
 
     public void saveSendShortCutNotify(boolean isSend) {

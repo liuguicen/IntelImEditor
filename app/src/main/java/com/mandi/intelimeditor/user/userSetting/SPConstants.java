@@ -73,5 +73,6 @@ public class SPConstants {
         public static final String GIF_AUTO_ADD = "gif_auto_add";
         public static final String PERFORMANCE_YEAR_CLASS = "performance_year_class"; // 设备性能分级
         public static final int PERFORMANCE_YEAR_CLASS_UNREAD = -1000;
+        public static final String CONTENT_MAX_SUPPORT_BM_SIZE = "CONTENT_MAX_SUPPORT_BM_SIZE";
     }
 }

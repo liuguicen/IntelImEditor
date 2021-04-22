@@ -51,6 +51,8 @@ public interface PTuActivityInterface {
 
     void showGuideDialog(List<String> keyWord);
 
+    void transfer(Object obj, boolean isStyle);
+
     /**
      * 收集用户使用过的tag，用于推荐P图素材
      *
@@ -59,6 +61,4 @@ public interface PTuActivityInterface {
     void addUsedTags(boolean isTemplate, String resTags);
 
     String getBasePicPath();
-
-    void transfer(Bitmap srcBitmap, boolean isStyle);
 }

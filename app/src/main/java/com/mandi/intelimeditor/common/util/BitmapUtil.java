@@ -128,7 +128,7 @@ public class BitmapUtil {
      * 解析出指定大小的图片 ，返回其Bitmap对象
      *
      * @param path     String 图片，
-     * @param needSize 需要的size
+     * @param needSize 需要的size = w * h
      * @return Bitmap 路径下适应大小的图片
      */
     public static @Nullable
@@ -140,7 +140,7 @@ public class BitmapUtil {
      * 解析出指定大小的图片 ，返回其Bitmap对象
      *
      * @param path      String 图片，
-     * @param needSize 需要的size
+     * @param needSize 需要的size = w * h
      * @param config    格式配置
      * @return Bitmap 路径下适应大小的图片
      */
@@ -153,7 +153,7 @@ public class BitmapUtil {
 
         optsa.inJustDecodeBounds = false;
         /** 不同尺寸图片的缩放比例 */
-        optsa.inSampleSize = (int) Math.ceil(height * width / needSize);
+        optsa.inSampleSize = (int) Math.ceil(Math.sqrt(height * width / needSize));
         if (optsa.inSampleSize < 1) { // 如果小于1，系统会当成1，这里直接变成1，避免后面处理出问题
             optsa.inSampleSize = 1;
         }

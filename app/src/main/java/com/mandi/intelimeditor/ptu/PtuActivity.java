@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import com.mandi.intelimeditor.ad.ttAD.videoAd.FullScreenVadManager;
 import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
+import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.device.YearClass;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
@@ -97,12 +99,14 @@ import org.pytorch.Tensor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_CUT;
@@ -176,7 +180,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public static final String INTENT_EXTRA_INTERMEDIATE_PTU_NAME = AllData.PACKAGE_NAME + ".intermediate_ptu_name";
     // PTu作为中间步骤结束时的名字 比如完成或者下一步
     public static final String INTENT_EXTRA_INTERMEDIATE_PTU_FINISH_NAME = AllData.PACKAGE_NAME + ".intermediate_ptu_finish_name";
-    public static final String INTENT_EXTRA_CHOSEN_PIC_RES = AllData.PACKAGE_NAME + ".chose_pic_res";
     // 保证传递的图片路径是本地路径
     public static final String PTU_DATA_GIF_PIC_LIST = AllData.PACKAGE_NAME + "ptu_data_gif_pic_list";
     private static final String TAG = "PtuActivity";
@@ -258,6 +261,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private TxBannerAd bannerAd;
     private PopupWindow pop;
     private Tensor contentFeature;
+    private Bitmap styleBm;
     private Tensor styleFeature;
 
     @Override
@@ -685,7 +689,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private void loadBitmapData(boolean isReplace) {
         Observable
                 .create((ObservableOnSubscribe<Bitmap>) emitter -> {
-                    emitter.onNext(BitmapUtil.decodeLossslessInSize(picPath, AllData.globalSettings.maxSupportBmSize));
+                    emitter.onNext(BitmapUtil.decodeLossslessInSize(picPath, AllData.globalSettings.contentMaxSupportBmSize));
                     LogUtil.d("加载图片的Bitmap完成");
                     emitter.onComplete();
                 })
@@ -704,8 +708,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         if (isDestroyed()) return;
                         ptuSeeView.setBitmapAndInit(bitmap, totalBound);
                         if (ptuSeeView.getSourceBm() != null) { // 这里为空概率应该很小很小
-                            repealRedoManager.setBaseBm(ptuSeeView.getSourceBm()
-                                    .copy(Bitmap.Config.ARGB_8888, true));
+                            repealRedoManager.setBaseBm(bitmap.copy(Bitmap.Config.ARGB_8888, true));
                         } else {
                             LogUtil.e("设置PTuSeeView底图失败！");
                         }
@@ -826,7 +829,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 switchFragment(EDIT_GIF, null);
             } else {
                 switchFragment(EDIT_TRANSFER, null);
-                getVggFeature(bm, true);
+//                getVggFeature(bm, true);
             }
         }
         loadFinish();
@@ -1169,6 +1172,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                             if (isContent) {
                                 PtuActivity.this.contentFeature = transfer.getVggFeature(bm);
                             } else {
+                                styleBm = bm;
                                 PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
                             }
                             emitter.onComplete();
@@ -1187,45 +1191,126 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     @Override
-    public void transfer(Bitmap bm, boolean isStyle) {
-        showLoading("正在生成中...");
-        StyleTransfer transfer = StyleTransfer.getInstance();
-        Util.showMemoryStatus();
-        Bitmap rstBm = transfer.transfer(repealRedoManager.getBaseBitmap(), bm, 1f);
-        Util.showMemoryStatus();
-        ptuSeeView.replaceSourceBm(rstBm);
-        dismissLoading();
-//        Observable
-//                .create(new ObservableOnSubscribe<Bitmap>() {
-//                    @Override
-//                    public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
-//                        if (bm != null) {
-//                            StyleTransfer transfer = StyleTransfer.getInstance();
-//                            if (isStyle) {
-//                                PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
-//                            }
-////                            if (contentFeature != null && styleFeature != null) {
-//                                Bitmap rstBm = transfer.transfer(ptuSeeView.getSourceBm(), bm, 1f);
-//                                emitter.onNext(rstBm);
-//                                emitter.onComplete();
-////                            } else {
-////                                emitter.onError(new Exception(getString(R.string.stranfer_error_by_empty_content)));
-////                            }
-//                        }
-//
-//                    }
-//                })
-//                .subscribeOn(Schedulers.computation())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new SimpleObserver<Bitmap>() {
-//
-//                    @Override
-//                    public void onNext(@NonNull Bitmap bitmap) {
-//                        ptuSeeView.replaceSourceBm(bitmap);
-//                        dismissLoading();
-//                    }
-//                });
+    public void transfer(Object obj, boolean isStyle) {
+       showProgress(0);
+//      关于
+        Observable
+                .create(new ObservableOnSubscribe<Bitmap>() {
+                    @Override
+                    public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
+                        if (obj instanceof Bitmap) {
+                            emitter.onNext((Bitmap) obj);
+                            emitter.onComplete();
+                            return;
+                        }
 
+                        AtomicReference<String> path = new AtomicReference<>((String) obj);
+                        if (obj instanceof String) {
+                            if (FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) { // 判断是否是url
+                                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {
+                                    if (!TextUtils.isEmpty(inner_path)) {
+                                        path.set(inner_path);
+                                    } else {
+                                        ToastUtils.show(R.string.load_tietu_failed);
+                                        emitter.onError(new Exception(""));
+                                    }
+                                });
+                            }
+                        }
+                        int decodeSize = isStyle ? (int) (AllData.globalSettings.contentMaxSupportBmSize *
+                                AllData.globalSettings.styleContentRatio)
+                                : AllData.globalSettings.contentMaxSupportBmSize;
+                        Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
+                        emitter.onNext(bitmap);
+                        emitter.onComplete();
+                    }
+                })
+                .map(new Function<Bitmap, Bitmap>() {
+                    @Override
+                    public Bitmap apply(@NotNull Bitmap bm) throws Exception {
+                        StyleTransfer transfer = StyleTransfer.getInstance();
+                        Log.e(TAG, "创建迁移模型完成");
+                        Bitmap rstBm = null;
+                        int testSize = 5;
+                        while (testSize > 0) { // 尝试找到合适的尺寸
+                            try {
+                                rstBm = realTransfer(bm, transfer, isStyle);
+                                runOnUiThread(() -> showProgress(90));
+                                testSize = -1;
+                            } catch (Exception e) {
+                                if (e instanceof RuntimeException) { // 尺寸太大，主动调小
+                                    AllData.globalSettings.contentMaxSupportBmSize *= 0.80f;
+                                    Bitmap contentBm = repealRedoManager.getBaseBitmap();
+                                    double ratio = Math.sqrt(AllData.globalSettings.contentMaxSupportBmSize * 1f / (contentBm.getWidth() * contentBm.getHeight()));
+                                    contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
+                                            (int) (ratio * contentBm.getHeight()), true);
+                                    repealRedoManager.setBaseBm(contentBm);
+                                    contentFeature = null;
+                                    styleFeature = null;
+                                    Log.e(TAG, "风格迁移失败，最大尺寸 = " + AllData.globalSettings.contentMaxSupportBmSize);
+                                    testSize--;
+                                } else {
+                                    testSize = -1;
+                                }
+                                e.printStackTrace();
+                            }
+                        }
+                        // 第一次成功，放入合适的尺寸
+                        if (SPUtil.getStyleMaxSupportBmSize() <= 0) {
+                            SPUtil.putContentMaxSupportBmSize(AllData.globalSettings.contentMaxSupportBmSize);
+                            Log.e(TAG, "放入风格尺寸，最大尺寸 = " + AllData.globalSettings.contentMaxSupportBmSize);
+                        }
+                        Log.e(TAG, "通过Adain和解码器");
+                        return rstBm;
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<Bitmap>() {
+                    @Override
+                    public void onNext(@NonNull Bitmap bitmap) {
+                        ptuSeeView.replaceSourceBm(bitmap);
+                        dismissProgress();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                    }
+                });
+
+    }
+
+    private Bitmap realTransfer(@NotNull Bitmap bm, StyleTransfer transfer, boolean isStyle) {
+        Bitmap contentBm = repealRedoManager.getBaseBitmap();
+        if (!isStyle) {
+            contentFeature = transfer.getVggFeature(bm);
+            runOnUiThread(() -> showProgress(33));
+            Log.e(TAG, "内容图片通过VGG, size = " + bm.getWidth() + " * " + bm.getHeight());
+            repealRedoManager.setBaseBm(bm);
+            // 风格特征不存在，或者风格特征大小不够
+            if (styleBm != null && (styleFeature == null || styleBm.getByteCount() <
+                    contentBm.getByteCount() * AllData.globalSettings.styleContentRatio)) {
+                styleFeature = transfer.getVggFeature(styleBm);
+                runOnUiThread(() -> showProgress(66));
+            }
+        } else {
+            if (contentBm != null && contentFeature == null) {
+                contentFeature = transfer.getVggFeature(contentBm);
+                Log.e(TAG, "内容图片通过vgg, size = " + contentBm.getWidth()
+                        + " * " + contentBm.getHeight());
+                runOnUiThread(() -> showProgress(33));
+            }
+            // 比例不对的
+            styleBm = bm;
+            if (styleBm.getByteCount() < contentBm.getByteCount() * AllData.globalSettings.styleContentRatio) {
+                styleBm = Bitmap.createScaledBitmap(styleBm, styleBm.getWidth(), styleBm.getHeight(), true);
+            }
+            PtuActivity.this.styleFeature = transfer.getVggFeature(styleBm);
+            Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
+            runOnUiThread(() -> showProgress(66));
+        }
+        return transfer.transfer(contentFeature, styleFeature, 1f);
     }
 
 

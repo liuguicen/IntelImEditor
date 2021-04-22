@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -151,6 +152,8 @@ public class StyleTransferFragment extends BasePtuFragment {
                 intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, HomeActivity.TEMPLATE_FRAG_ID);
                 startActivityForResult(intent, isChooseStyle ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
                 return;
+//                String thePath = Environment.getExternalStorageDirectory() + "/test1.jpg";
+//                pTuActivityInterface.transfer(thePath, true);
             }
             if (chooseListAdapter != null) {
                 PicResource oneTietu = chooseListAdapter.get(position).data;
@@ -158,7 +161,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     String url = oneTietu.getUrl().getUrl();
                     ViewGroup parent = (ViewGroup) chooseRcv.getParent();
                     FirstUseUtil.tietuGuide(mContext);
-                    prepareTransfer(url, oneTietu.getTag());
+                    pTuActivityInterface.transfer(url, isChooseStyle);
                     MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
                 } else {
                     Log.e(this.getClass().getSimpleName(), "点击贴图后获取失败");
@@ -166,52 +169,6 @@ public class StyleTransferFragment extends BasePtuFragment {
             }
         }
     };
-
-    private void prepareTransfer(Object obj, String tags) {
-        if (obj instanceof Bitmap) {
-            pTuActivityInterface.transfer((Bitmap) obj, true);
-            return;
-        }
-
-        if (obj instanceof String) {
-            if (FileTool.urlType((String) obj).equals(FileTool.UrlType.OTHERS)) { // 判断是否是本地图片路径
-                transferByPath((String) obj, tags);
-                return;
-            }
-        }
-        BitmapUtil.getBmPathInGlide(obj, (path, msg) -> {
-            if (!TextUtils.isEmpty(path)) {
-                transferByPath(path, tags);
-            } else {
-                ToastUtils.show(R.string.load_style_pic_failed);
-            }
-        });
-    }
-
-
-    private void transferByPath(String path, String tietuTags) {
-        BitmapFactory.Options options = TietuSizeController.getFitWh(path, pTuActivityInterface.getGifManager() != null);
-        if (options == null) {
-            ToastUtils.show("获取贴图失败");
-            return;
-        }
-        Glide.with(IntelImEditApplication.appContext).asBitmap().load(path).into(new CustomTarget<Bitmap>(options.outWidth, options.outHeight) {
-            @Override
-            public void onResourceReady(@NonNull Bitmap srcBitmap, @Nullable Transition<? super Bitmap> transition) {
-                Log.d(TAG, "onResourceReady: " + srcBitmap.getWidth() + " " + srcBitmap.getHeight());
-                if (srcBitmap == null || srcBitmap.getWidth() == 0 || srcBitmap.getHeight() == 0) {
-                    ToastUtils.show("获取贴图失败");
-                    return;
-                }
-                pTuActivityInterface.transfer(srcBitmap, true);
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-        });
-    }
 
     @Override
     public void initData() {
@@ -356,14 +313,14 @@ public class StyleTransferFragment extends BasePtuFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {
-            PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
-            transferByPath(picRes.getUrlString(), picRes.getTag());
+            PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
+            pTuActivityInterface.transfer(picRes.getUrlString(), true);
             showStyleOrContenList(AllData.styleList);
         }
 
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_CONTENT && data != null) {
-            PicResource picRes = (PicResource) data.getSerializableExtra(PtuActivity.INTENT_EXTRA_CHOSE_BASE_PIC_RES);
-            transferByPath(picRes.getUrlString(), picRes.getTag());
+            PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
+            pTuActivityInterface.transfer(picRes.getUrlString(), false);
             showStyleOrContenList(AllData.contentList);
         }
 
