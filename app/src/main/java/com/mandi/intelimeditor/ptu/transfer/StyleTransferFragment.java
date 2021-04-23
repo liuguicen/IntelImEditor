@@ -2,6 +2,7 @@ package com.mandi.intelimeditor.ptu.transfer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -31,6 +32,7 @@ import com.mandi.intelimeditor.bean.FunctionInfoBean;
 import com.mandi.intelimeditor.common.CommonConstant;
 import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
+import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
@@ -195,10 +197,11 @@ public class StyleTransferFragment extends BasePtuFragment {
     }
 
     public void onChosenBm(Bitmap bm, boolean isStyle) {
-        if (isStyle)
-            chooseStyleBtn.setBackground(new BitmapDrawable(getResources(), getCircleBitmap(bm)));
-        else
-            chooseContenBtn.setBackground(new BitmapDrawable(getResources(), getCircleBitmap(bm)));
+        Resources resources = IntelImEditApplication.appContext.getResources();
+        if (isStyle) {
+            chooseStyleBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(bm)));
+        } else
+            chooseContenBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(bm)));
     }
 
     private void choosePic(View view) {
