@@ -177,6 +177,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * 然后进入P图页面时会直接跳转到该子功能}
      **/
     public static final String INTENT_EXTRA_TO_CHILD_FUNCTION = AllData.PACKAGE_NAME + ".ptu_to_child_function";
+    public static final String INTENT_EXTRA_IS_STYLE = AllData.PACKAGE_NAME + ".is_style";
     // PTu作为中间步骤的名字
     public static final String INTENT_EXTRA_INTERMEDIATE_PTU_NAME = AllData.PACKAGE_NAME + ".intermediate_ptu_name";
     // PTu作为中间步骤结束时的名字 比如完成或者下一步
@@ -264,6 +265,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private Tensor contentFeature;
     private Bitmap styleBm;
     private Tensor styleFeature;
+    private boolean isStyle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -285,6 +287,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         if (PTU_ACTION_AS_INTERMEDIATE_PTU.equals(intent.getAction())) {
             isIntermediatePtu = true;
         }
+        isStyle = intent.getBooleanExtra(INTENT_EXTRA_IS_STYLE, false);
         addUsedTags(true, intent.getStringExtra(INTENT_EXTRA_CHOSEN_TAGS));
     }
 
@@ -1158,8 +1161,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         R.animator.slide_bottom_in, R.animator.slide_bottom_out)
                 .replace(R.id.fragment_main_function, transferFrag)
                 .commitAllowingStateLoss();
+
         currentFrag = transferFrag;
         currentEditMode = EDIT_TRANSFER;
+        transferFrag.onChosenBm(isStyle ? styleBm : repealRedoManager.getBaseBitmap(), isStyle);
 //        ptuSeeView.switchStatus2Main();
     }
 
@@ -1193,7 +1198,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @Override
     public void transfer(Object obj, boolean isStyle) {
-       showProgress(0);
+        showProgress(0);
 //      关于
         Observable
                 .create(new ObservableOnSubscribe<Bitmap>() {
@@ -1222,6 +1227,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                                 AllData.globalSettings.styleContentRatio)
                                 : AllData.globalSettings.contentMaxSupportBmSize;
                         Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
+                        runOnUiThread(() -> {
+                            showProgress(10);
+                            transferFrag.onChosenBm(bitmap, isStyle);
+                        });
                         emitter.onNext(bitmap);
                         emitter.onComplete();
                     }
@@ -1265,7 +1274,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         return rstBm;
                     }
                 })
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Bitmap>() {
                     @Override
@@ -1854,12 +1863,18 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      */
     @Override
     public void onBackPressed() {
-        if (currentEditMode != EDIT_MAIN) {
+        if (currentEditMode != EDIT_MAIN && currentEditMode != EDIT_TRANSFER) {
             if (currentFrag.onBackPressed(true)) return;
             returnMain();
+        } else if (currentEditMode == EDIT_MAIN) {
+            returnTransfer();
         } else {
             certainLeavePage();
         }
+    }
+
+    private void returnTransfer() {
+        switchFragment(EDIT_TRANSFER, null);
     }
 
     private void test() {

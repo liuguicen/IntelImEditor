@@ -91,9 +91,7 @@ class MainFunctionFragment : BasePtuFragment() {
 
         if (!isGif) {
             pFunctionList.add(FunctionInfoBean(R.string.deformation, R.drawable.icon_deformation,
-                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_DEFORMATION));
-            pFunctionList.add(FunctionInfoBean(R.string.fun_transfer, R.drawable.ic_baseline_style_24,
-                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_TRANSFER));
+                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_DEFORMATION))
         }
 
         pFunctionList.add(FunctionInfoBean(R.string.draw, R.mipmap.draw, R.drawable.function_background_draw_pink, PtuUtil.EDIT_DRAW))

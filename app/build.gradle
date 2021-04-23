@@ -56,22 +56,22 @@ android {
 // 编译C++时反注释下面代码
     //编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
     //如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
-    }
+//    externalNativeBuild {
+//        cmake {
+//            path "CMakeLists.txt"
+//        }
+//    }
 
     sourceSets {
         main {
             // 1、 编译C++时用下面这个，反注释externalNativeBuild节点 注释掉2中的，
             // 这里要指定一个错误的路径才能编译成功，不知为何，原因是因为cmake里面包含了.so的路径，然后gradle又会自动添加，导致重复？？？
-            jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
+//            jniLibs.srcDirs = ['F:\\androidProject\\BaoZouPTu\\app\\src\\main\\jniLibs']
 
             // 2、 使用so库时，用下面这个，注释掉1中的 和 externalNativeBuild节点
             // 编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
             // 如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
-//             jniLibs.srcDirs = ['src\\main\\jniLibs']
+             jniLibs.srcDirs = ['src\\main\\jniLibs']
         }
     }
 

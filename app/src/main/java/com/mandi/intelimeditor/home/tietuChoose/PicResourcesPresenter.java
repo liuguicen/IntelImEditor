@@ -9,7 +9,6 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
-import com.mandi.intelimeditor.home.tietuChoose.TietuChooseContract;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -135,7 +134,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     }
 
     public void getTagsByCate(String secondClass) {
-        List<PicResourceItemData> data = PicResourceDownloader.getTagsByCate(secondClass);
+        List<PicResourceItemData> data = PicResourceDownloader.getTagsGroupByCategory(secondClass);
         mView.setCategoryList(data);
     }
 

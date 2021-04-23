@@ -153,7 +153,6 @@ public class PtuBaseChooser {
         mTemplateRcv.setAdapter(templateListAdapter);
         mMoreBtn.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, HomeActivity.class);
-            intent.setAction(HomeActivity.PTU_ACTION_CHOOSE_BASE);
             mBasePtuFragment.startActivityForResult(intent, PtuActivity.REQUEST_CODE_CHOOSE_BASE);
         });
     }

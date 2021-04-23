@@ -252,7 +252,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
             PicResource picResource = new PicResource();
             picResource.setUrl(bmobFile); // 包装一下，方便统一处理
             US.putEditPicEvent(US.EDIT_PIC_FROM_LOCAL);
-            mActivity.choosePic(picResource, categoryList);
+            mActivity.choosePic(picResource, categoryList, false);
         }
     }
 

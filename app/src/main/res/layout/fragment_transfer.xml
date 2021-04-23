@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/selectBgBtn"
+        android:id="@+id/choose_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -18,14 +18,24 @@
 
 
     <Button
-        android:id="@+id/selectStyleBtn"
+        android:id="@+id/choose_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/dp_16"
         android:text="@string/choose_style"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/go_ptu"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/go_ptu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/go_ptu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

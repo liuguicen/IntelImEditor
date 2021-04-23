@@ -126,7 +126,7 @@ public class PicResourceDownloader {
                                                     AllData.allResList = resultList;
                                                 }
                                             }
-                                            updateAllTagAndGroup(secondClass, resultList);
+                                            groupByTag(secondClass, resultList);
                                             emitter.onNext(resultList); // 更新视图
                                             long lastQueryTime = SPUtil.getQueryTimeOfTietuWithCategory(secondClass);
                                             // 要更新
@@ -257,9 +257,9 @@ public class PicResourceDownloader {
     }
 
     /**
-     * 获取分类下的所有标签，然后根据标签将图片列表分组
+     * 根据标签将图片列表分组
      */
-    public static List<PicResourceItemData> updateAllTagAndGroup(String secondClass, List<PicResource> data) {
+    public static List<PicResourceItemData> groupByTag(String secondClass, List<PicResource> data) {
         long start = System.currentTimeMillis();
         if (data == null) return new ArrayList<>();
         Map<String, List<PicResource>> map = new HashMap<>();
@@ -356,9 +356,9 @@ public class PicResourceDownloader {
     /**
      * 根据分类获取分类下的所有分组列表(标题+图片)
      */
-    public static List<PicResourceItemData> getTagsByCate(String secondClass) {
+    public static List<PicResourceItemData> getTagsGroupByCategory(String secondClass) {
         List<PicResource> picResources = queryFormGlobalData(secondClass);
-        return updateAllTagAndGroup(secondClass, picResources);
+        return groupByTag(secondClass, picResources);
     }
 
     /**
@@ -405,7 +405,7 @@ public class PicResourceDownloader {
             public void onNext(List<PicResource> picResources) {
                 if (picResources != null) {
                     LogUtil.d(TAG, "queryTietuTagList 获取贴图成功 = " + picResources.size());
-                    PicResourceDownloader.updateAllTagAndGroup(PicResource.ALL_STICKER_LIST, picResources);
+                    PicResourceDownloader.groupByTag(PicResource.ALL_STICKER_LIST, picResources);
                     List<GroupBean> data = AllData.mAllGroupList.get(PicResource.ALL_STICKER_LIST);
                     //分组排序
                     Collections.sort(data, new Comparator<GroupBean>() {

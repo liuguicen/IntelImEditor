@@ -3,16 +3,19 @@ package com.mandi.intelimeditor.ptu.transfer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,26 +24,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
 import com.mandi.intelimeditor.R;
-import com.mandi.intelimeditor.ad.tencentAD.InsertAd;
 import com.mandi.intelimeditor.bean.FunctionInfoBean;
 import com.mandi.intelimeditor.common.CommonConstant;
 import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
-import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
-import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
@@ -55,7 +51,6 @@ import com.mandi.intelimeditor.ptu.common.PtuBaseChooser;
 import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
-import com.mandi.intelimeditor.ptu.tietu.TietuSizeController;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
@@ -68,7 +63,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -91,6 +85,9 @@ public class StyleTransferFragment extends BasePtuFragment {
     private boolean isChooseStyle = true;
     private TietuRecyclerAdapter chooseListAdapter;
     private boolean isFirstShowChooseRcv;
+    private Button chooseContenBtn;
+    private Button chooseStyleBtn;
+    static final int bottonWidth = Util.dp2Px(20);
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
@@ -111,17 +108,19 @@ public class StyleTransferFragment extends BasePtuFragment {
      */
     @Override
     public int getLayoutResId() {
-        return R.layout.fragment_first_function_normal;
+        return R.layout.fragment_transfer;
     }
 
     @Override
     public List<FunctionInfoBean> getFunctionList() {
         pFunctionList.clear();
-        pFunctionList.add(new FunctionInfoBean(R.string.choose_pic, R.drawable.ic_image, PtuUtil.EDIT_TRANSFER));
-        pFunctionList.add(new FunctionInfoBean(R.string.choose_style, R.drawable.ic_baseline_style_24, PtuUtil.EDIT_TRANSFER));
         return pFunctionList;
     }
 
+    @Override
+    public void initBottomFun() {
+
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -138,6 +137,25 @@ public class StyleTransferFragment extends BasePtuFragment {
         chooseListAdapter = new TietuRecyclerAdapter(mContext, true);
         chooseListAdapter.setOnItemClickListener(chooseRcvListener);
         prepareShowChooseRcv(view, isChooseStyle);
+
+        chooseStyleBtn = rootView.findViewById(R.id.choose_style);
+        chooseStyleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseStyle(v);
+            }
+        });
+        chooseContenBtn = rootView.findViewById(R.id.choose_pic);
+        chooseContenBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choosePic(v);
+            }
+        });
+
+        rootView.findViewById(R.id.go_ptu).setOnClickListener(v -> {
+            pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
+        });
     }
 
     private RcvItemClickListener1 chooseRcvListener = new RcvItemClickListener1() {
@@ -176,23 +194,23 @@ public class StyleTransferFragment extends BasePtuFragment {
         super.initData();
     }
 
-    @Override
-    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        super.onItemClick(adapter, view, position);
-        InsertAd.onClickTarget(getActivity());
-        pFunctionAdapter.updateSelectIndex(position);
-        switch (pFunctionList.get(position).getTitleResId()) {
-            case R.string.choose_pic:
-                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-                isChooseStyle = false;
-                prepareShowChooseRcv(view, isChooseStyle);
-                break;
-            case R.string.choose_style:
-                US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-                isChooseStyle = true;
-                prepareShowChooseRcv(view, isChooseStyle);
-                break;
-        }
+    public void onChosenBm(Bitmap bm, boolean isStyle) {
+        if (isStyle)
+            chooseStyleBtn.setBackground(new BitmapDrawable(getResources(), getCircleBitmap(bm)));
+        else
+            chooseContenBtn.setBackground(new BitmapDrawable(getResources(), getCircleBitmap(bm)));
+    }
+
+    private void choosePic(View view) {
+        US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
+        isChooseStyle = false;
+        prepareShowChooseRcv(view, isChooseStyle);
+    }
+
+    private void chooseStyle(View view) {
+        US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
+        isChooseStyle = true;
+        prepareShowChooseRcv(view, isChooseStyle);
     }
 
 
@@ -449,5 +467,37 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     public interface DeforActionListener {
         void deforComposeGif(List<GifFrame> bmList);
+    }
+
+    /**
+     * 获取圆角位图的方法
+     *
+     * @param bitmap 需要转化成圆角的位图
+     * @param pixels 圆角的度数，数值越大，圆角越大
+     * @return 处理后的圆角位图
+     */
+    private Bitmap getCircleBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bottonWidth, bottonWidth, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        final int color = 0xff424242;
+        final Rect dstRect = new Rect(0, 0, bottonWidth, bottonWidth);
+        int w = bitmap.getWidth(), h = bitmap.getHeight();
+        final Rect srcRect = new Rect(0, (h - w) / 2, w, (h - w) / 2 + w);
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            srcRect.set((w - h) / 2, 0, (w - h) / 2, h);
+        }
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        int x = bottonWidth;
+        //这是圆drawCircle
+        canvas.drawCircle(x / 2f, x / 2f, x / 2f, paint);
+        //这是圆角drawRoundRect
+//        canvas.drawRoundRect(new RectF(rect), pixels, pixels, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
+        return output;
+
     }
 }

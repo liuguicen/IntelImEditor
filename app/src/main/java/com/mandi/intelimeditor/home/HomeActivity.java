@@ -86,6 +86,7 @@ import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import cn.bmob.v3.datatype.BmobFile;
 import io.reactivex.Observable;
@@ -105,7 +106,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
     // 下面这两个可以合并复用
     public static final String PTU_ACTION_CHOOSE_TIETU = "choose_tietu";
-    public static final String PTU_ACTION_CHOOSE_BASE = "action_choose_base";
     public static final String CHOOSE_PIC_CATEGORY_STYLE = "action_choose_base";
     public static final String CHOOSE_PIC_CATEGORY_CONTENT = "action_choose_base";
 
@@ -131,8 +131,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     boolean mIsFromCreate = false;
     static String intentAction = "";
     private boolean isChooseTietu = false;
-    private boolean isChooseBase = false;
-    private boolean isMakeTietu = false;
 
     private ChooseBaseFragment currentFrag;
 
@@ -209,8 +207,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
             intentAction = sourceIntent.getAction();
             if (PTU_ACTION_CHOOSE_TIETU.equals(intentAction)) {
                 isChooseTietu = true;
-            } else if (PTU_ACTION_CHOOSE_BASE.equals(intentAction)) {
-                isChooseBase = true;
             }
         }
     }
@@ -253,7 +249,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     @TestOnly
     private void test() {
         if (isOnlyChoosePic()) return;
-        if (isMakeTietu) return;
 //        switchFragment(TEMPLATE_FRAG_ID);
 
         Intent testIntent = new Intent(this, PtuActivity.class);
@@ -543,7 +538,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 PicResource picResource = (PicResource) data.getSerializableExtra(SearchActivity.Companion.getINTENT_EXTRA_SEARCH_PIC_RES());
                 US.putEditPicEvent(US.EDIT_PIC_FROM_SEARCH);
                 if (picResource != null) {
-                    choosePic(picResource, null);
+                    choosePic(picResource, null, true);
                 }
             }
             return;
@@ -603,28 +598,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
      * 是否属于只选图模式
      */
     public boolean isOnlyChoosePic() {
-        return isChooseTietu || isChooseBase || isMakeTietu ||
+        return isChooseTietu ||
                 INTENT_ACTION_ONLY_CHOSE_PIC.equals(getIntent().getAction());
-    }
-
-    public void onChosenTietuOrBase(PicResource picResource, String chosenPath) {
-        Intent intent = new Intent();
-        if (isChooseTietu) {
-            intent.putExtra(TietuFragment.INTENT_EXTRA_CHOSE_TIETU_RES, picResource);
-            setResult(PtuActivity.RESULT_CODE_CHOSE_TIETU, intent);
-            try {
-                MyDatabase.getInstance().insertMyTietu(chosenPath, System.currentTimeMillis());
-            } catch (Exception e) {
-                // nothing
-            } finally {
-                MyDatabase.getInstance().close();
-            }
-            // 用户兴趣标签在另一个地方添加了
-        } else if (isChooseBase) {
-            intent.putExtra(PtuActivity.INTENT_EXTRA_CHOSE_BASE_PIC_RES, picResource);
-            setResult(PtuActivity.RESULT_CODE_CHOSE_BASE, intent);
-        }
-        finish();
     }
 
     public Fragment getCurFragment() {
@@ -651,28 +626,29 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     /**
      * @param categoryList 选择的图片所属的类别或者文件夹下面的图片列表
      */
-    public void choosePic(@NotNull PicResource picResource, @Nullable List<PicResource> categoryList) {
+    public void choosePic(@NotNull PicResource picResource, @Nullable List<PicResource> categoryList, boolean isStyle) {
         BmobFile bmobFile = picResource.getUrl();
         if (bmobFile == null) {
             return; // 无动作
         }
         String path = bmobFile.getUrl();
         String action = getIntent().getAction();
-        if (isChooseTietu || isChooseBase) {//选择贴图,不是一般的选择图片
+        Set<String> categories = getIntent().getCategories();
+        if (categories!= null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE) || isStyle) {
+            AllData.styleList = categoryList;
+        }
+        if (categories!= null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT)) || !isStyle) {
+            AllData.contentList = categoryList;
+        }
 
-        } else if (INTENT_ACTION_ONLY_CHOSE_PIC.equals(action)) {
-            if (getIntent().getCategories().contains(CHOOSE_PIC_CATEGORY_STYLE)) {
-                AllData.styleList = categoryList;
-            }
-            if (getIntent().getCategories().contains((CHOOSE_PIC_CATEGORY_STYLE))) {
-                AllData.contentList = categoryList;
-            }
+        if (INTENT_ACTION_ONLY_CHOSE_PIC.equals(action)) {
+
             Intent data = new Intent();
             data.putExtra(INTENT_EXTRA_CHOSEN_PIC_RES, picResource);
             setResult(RESULT_OK, data);
             finish();
         } else {
-            startPTuActivity(path, picResource);
+            startPTuActivity(path, picResource, isStyle);
         }
     }
 
@@ -757,13 +733,14 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         //        }
     }
 
-    private void startPTuActivity(String chosenPath, PicResource picResource) {
+    private void startPTuActivity(String chosenPath, PicResource picResource, boolean isStyle) {
         Intent intent = new Intent(this, PtuActivity.class);
         String action = getIntent().getAction();
         mLocalPicFragment.addUsedPath(chosenPath);
         intent.setAction(PtuActivity.PTU_ACTION_NORMAL);
         intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, chosenPath);
         intent.putExtra(PtuActivity.INTENT_EXTRA_CHOSEN_TAGS, picResource.getTag());
+        intent.putExtra(PtuActivity.INTENT_EXTRA_IS_STYLE, isStyle);
 
         // intent.putExtra(PtuActivity.PTU_DATA_PIC_INFO, picResource);
         startActivityForResult(intent, HomeActivity.REQUEST_CODE_NORMAL);

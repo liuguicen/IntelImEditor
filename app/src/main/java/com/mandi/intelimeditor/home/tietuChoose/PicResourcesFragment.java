@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +19,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
-import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
+import com.mandi.intelimeditor.common.util.WrapContentLinearLayoutManager;
 import com.mandi.intelimeditor.home.ChooseBaseFragment;
 import com.mandi.intelimeditor.home.HomeActivity;
 import com.mandi.intelimeditor.home.view.LongPicPopupWindow;
@@ -29,7 +28,6 @@ import com.mandi.intelimeditor.home.viewHolder.GroupHeaderHolder;
 import com.mandi.intelimeditor.home.viewHolder.NewFeatureHeaderHolder;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.user.US;
-import com.mandi.intelimeditor.home.tietuChoose.TietuChooseContract;
 import com.mandi.intelimeditor.R;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.umeng.analytics.MobclickAgent;
@@ -165,16 +163,16 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             int id = item.getItemId();
             switch (id) {
                 case R.id.action_sort_by_hot_desc:
-                    updatePicList(0);
+                    clickSortPic(0);
                     US.putSearchSortEvent(US.SORT_HOT);
                     break;
                 case R.id.action_sort_by_time_asc:
                     US.putSearchSortEvent(US.SORT_NEWEST);
-                    updatePicList(1);
+                    clickSortPic(1);
                     break;
                 case R.id.action_sort_by_group:
                     US.putSearchSortEvent(US.SORT_GROUP);
-                    updatePicList(4);
+                    clickSortPic(4);
                     break;
             }
             return true;
@@ -221,11 +219,11 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         refreshLayout.setEnableRefresh(true);
         refreshLayout.setOnRefreshListener(refreshlayout -> {
             refreshlayout.finishRefresh(800/*,false*/);//传入false表示刷新失败
-            rootView.postDelayed(this::refreshPicList, 700);
+            rootView.postDelayed(this::dropdownSortPic, 700);
         });
     }
 
-    private void refreshPicList() {
+    private void dropdownSortPic() {
         String nextRefreshTint = "最热图片";
         LogUtil.d(TAG, "updateIndex = " + curUpdateIndex + " isSortByGroup =" + isSortByGroup);
         if (curUpdateIndex == 4) {//分组切换到最热
@@ -248,10 +246,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         refreshHeader.setNextUpdateText(nextRefreshTint);
     }
 
-    /**
-     * 下拉刷新更新图片列表
-     */
-    private void updatePicList(int index) {
+    private void clickSortPic(int index) {
         curUpdateIndex = index;
         String nextRefreshTint = "最热图片";
         LogUtil.d(TAG, "updateIndex = " + curUpdateIndex);
@@ -287,22 +282,23 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         if (mIsTietu) {
             spanCount = 3;
         }
-        GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(getContext(), spanCount);
-        int finalSpanCount = spanCount;
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (position <= mPicResourceAdapter.getItemCount()
-                        && (mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.FEED_AD
-                        || mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.GROUP_HEADER
-                        || mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.NEW_FEATURE_HEADER)
-                ) {
-                    return finalSpanCount;
-                }
-                return 1;
-            }
-        });
-        picResRcv.setLayoutManager(gridLayoutManager);
+        WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(getContext());
+//        GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(getContext(), spanCount);
+//        int finalSpanCount = spanCount;
+//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+//                if (position <= mPicResourceAdapter.getItemCount()
+//                        && (mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.FEED_AD
+//                        || mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.GROUP_HEADER
+//                        || mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.NEW_FEATURE_HEADER)
+//                ) {
+//                    return finalSpanCount;
+//                }
+//                return 1;
+//            }
+//        });
+        picResRcv.setLayoutManager(linearLayoutManager);
         picResRcv.setAdapter(mPicResourceAdapter);
         mPicResourceAdapter.setClickListener((itemHolder, view) -> {
             int position = itemHolder.getLayoutPosition();
@@ -381,7 +377,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                     US.putEditPicEvent(US.EDIT_PIC_FROM_TIETU);
                 }
             }
-            mActivity.choosePic(chosenResource, null);
+            mActivity.choosePic(chosenResource, null, true);
         }
     }
 
