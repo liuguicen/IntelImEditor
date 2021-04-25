@@ -50,6 +50,7 @@ import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.RepealRedoListener;
 import com.mandi.intelimeditor.ptu.common.PTuUIUtil;
 import com.mandi.intelimeditor.ptu.common.PtuBaseChooser;
+import com.mandi.intelimeditor.ptu.common.TransferController;
 import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
@@ -90,6 +91,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     private Button chooseContenBtn;
     private Button chooseStyleBtn;
     static final int bottonWidth = Util.dp2Px(20);
+    private TransferController transferController;
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
@@ -141,20 +143,31 @@ public class StyleTransferFragment extends BasePtuFragment {
         prepareShowChooseRcv(view, isChooseStyle);
 
         chooseStyleBtn = rootView.findViewById(R.id.choose_style);
-        chooseStyleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseStyle(v);
-            }
-        });
         chooseContenBtn = rootView.findViewById(R.id.choose_pic);
         chooseContenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choosePic(v);
+                if (!isChooseStyle && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
+                    chooseFromAllPic();
+                } else {
+                    chooseContent(v);
+                }
             }
         });
 
+        chooseStyleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isChooseStyle && chooseRcv.getParent() != null) {
+                    chooseFromAllPic();
+                } else {
+                    chooseStyle(v);
+                }
+            }
+        });
+        if (transferController != null) {
+            onChosenBm(transferController.contentBm, transferController.styleBm);
+        }
         rootView.findViewById(R.id.go_ptu).setOnClickListener(v -> {
             pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
         });
@@ -166,12 +179,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             int position = itemHolder.getLayoutPosition();
             if (position < 0) return;
             if (position == 0) {
-                US.putPTuTietuEvent(US.PTU_TIETU_MORE);
-                Intent intent = new Intent(mContext, HomeActivity.class);
-                intent.setAction(HomeActivity.INTENT_ACTION_ONLY_CHOSE_PIC);
-                intent.addCategory(isChooseStyle ? HomeActivity.CHOOSE_PIC_CATEGORY_STYLE : HomeActivity.CHOOSE_PIC_CATEGORY_CONTENT);
-                intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, HomeActivity.TEMPLATE_FRAG_ID);
-                startActivityForResult(intent, isChooseStyle ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
+                chooseFromAllPic();
                 return;
 //                String thePath = Environment.getExternalStorageDirectory() + "/test1.jpg";
 //                pTuActivityInterface.transfer(thePath, true);
@@ -191,20 +199,31 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     };
 
+    private void chooseFromAllPic() {
+        US.putPTuTietuEvent(US.PTU_TIETU_MORE);
+        Intent intent = new Intent(mContext, HomeActivity.class);
+        intent.setAction(HomeActivity.INTENT_ACTION_ONLY_CHOSE_PIC);
+        intent.addCategory(isChooseStyle ? HomeActivity.CHOOSE_PIC_CATEGORY_STYLE : HomeActivity.CHOOSE_PIC_CATEGORY_CONTENT);
+        intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, isChooseStyle ? HomeActivity.TEMPLATE_FRAG_ID : HomeActivity.LOCAL_FRAG_ID);
+        startActivityForResult(intent, isChooseStyle ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
+    }
+
     @Override
     public void initData() {
         super.initData();
     }
 
-    public void onChosenBm(Bitmap bm, boolean isStyle) {
+    public void onChosenBm(Bitmap contentBm, Bitmap styleBm) {
         Resources resources = IntelImEditApplication.appContext.getResources();
-        if (isStyle) {
-            chooseStyleBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(bm)));
-        } else
-            chooseContenBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(bm)));
+        if (contentBm != null) {
+            chooseContenBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(contentBm)));
+        }
+        if (styleBm != null) {
+            chooseStyleBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(styleBm)));
+        }
     }
 
-    private void choosePic(View view) {
+    private void chooseContent(View view) {
         US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
         isChooseStyle = false;
         prepareShowChooseRcv(view, isChooseStyle);
@@ -235,6 +254,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.bottomToTop = R.id.fragment_main_function;
             layoutParams.setMargins(0, 0, 0, Util.dp2Px(4f));
+            chooseRcv.setTag(PtuConstraintLayout.TAG_TIETU_RCV);
             ptuFrameLayout.addView(chooseRcv, layoutParams);
             chooseRcv.setAdapter(chooseListAdapter);
         }
@@ -468,6 +488,10 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     }
 
+    public void initBeforeCreateView(TransferController transferController) {
+        this.transferController = transferController;
+    }
+
     public interface DeforActionListener {
         void deforComposeGif(List<GifFrame> bmList);
     }
@@ -476,7 +500,6 @@ public class StyleTransferFragment extends BasePtuFragment {
      * 获取圆角位图的方法
      *
      * @param bitmap 需要转化成圆角的位图
-     * @param pixels 圆角的度数，数值越大，圆角越大
      * @return 处理后的圆角位图
      */
     private Bitmap getCircleBitmap(Bitmap bitmap) {

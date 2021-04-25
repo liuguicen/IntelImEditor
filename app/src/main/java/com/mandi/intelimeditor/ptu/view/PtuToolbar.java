@@ -70,6 +70,9 @@ public class PtuToolbar extends FrameLayout {
      * @param is2LevelFunction 是否显示
      */
     public void switchToolbarBtn(boolean is2LevelFunction) {
+        rootView.findViewById(R.id.iv_help).setVisibility(VISIBLE);
+        rootView.findViewById(R.id.iv_redo).setVisibility(VISIBLE);
+        rootView.findViewById(R.id.iv_undo).setVisibility(VISIBLE);
         if (is2LevelFunction) {
             cancelBtn.setVisibility(VISIBLE);
             sureBtn.setVisibility(VISIBLE);
@@ -88,6 +91,8 @@ public class PtuToolbar extends FrameLayout {
         rootView.findViewById(R.id.iv_help).setVisibility(GONE);
         rootView.findViewById(R.id.iv_redo).setVisibility(GONE);
         rootView.findViewById(R.id.iv_undo).setVisibility(GONE);
+        saveBtn.setVisibility(VISIBLE);
+        backView.setVisibility(VISIBLE);
     }
 
     /**

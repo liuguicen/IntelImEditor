@@ -56,6 +56,7 @@ import com.mandi.intelimeditor.ptu.common.DigController;
 import com.mandi.intelimeditor.ptu.common.DrawController;
 import com.mandi.intelimeditor.ptu.common.SecondFuncController;
 import com.mandi.intelimeditor.ptu.common.TietuController;
+import com.mandi.intelimeditor.ptu.common.TransferController;
 import com.mandi.intelimeditor.ptu.cut.CutFragment;
 import com.mandi.intelimeditor.ptu.deformation.DeformationFragment;
 import com.mandi.intelimeditor.ptu.dig.DigFragment;
@@ -709,11 +710,15 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     public void onNext(@NotNull Bitmap bitmap) {
                         //TODO 图片内存泄漏
                         if (isDestroyed()) return;
-                        ptuSeeView.setBitmapAndInit(bitmap, totalBound);
-                        if (ptuSeeView.getSourceBm() != null) { // 这里为空概率应该很小很小
-                            repealRedoManager.setBaseBm(bitmap.copy(Bitmap.Config.ARGB_8888, true));
+                        if (isStyle) {
+                            styleBm = bitmap;
                         } else {
-                            LogUtil.e("设置PTuSeeView底图失败！");
+                            ptuSeeView.setBitmapAndInit(bitmap, totalBound);
+                            if (ptuSeeView.getSourceBm() != null) { // 这里为空概率应该很小很小
+                                repealRedoManager.setBaseBm(bitmap.copy(Bitmap.Config.ARGB_8888, true));
+                            } else {
+                                LogUtil.e("设置PTuSeeView底图失败！");
+                            }
                         }
                         onLoadSuccess(isReplace, bitmap);
                         LogUtil.d("显示图片Bitmap完成");
@@ -831,7 +836,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             } else if (PtuUtil.CHILD_FUNCTION_GIF == toChildFunction) {
                 switchFragment(EDIT_GIF, null);
             } else {
-                switchFragment(EDIT_TRANSFER, null);
+                switchFragment(EDIT_TRANSFER, new TransferController(isStyle ? null : bm, isStyle ? bm : null));
 //                getVggFeature(bm, true);
             }
         }
@@ -930,7 +935,11 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             currentEditMode = EDIT_MAIN;
             currentFrag = mainFrag;
             ptuSeeView.switchStatus2Main();
+            mPtuToolbar.switchToolbarBtn(false);
             judgeShowBannerAd();
+        } else if (function == EDIT_TRANSFER) {
+            mPtuToolbar.switch2Transfer();
+            switch2Transfer(secondFuncControl instanceof TransferController ? (TransferController) secondFuncControl : null);
         } else {
             ui2SecondFunction();
             ptuSeeView.resetShow();
@@ -959,9 +968,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 case EDIT_GIF:
                     switch2GifEdit();
                     break;
-                case EDIT_TRANSFER:
-                    switch2Transfer();
-                    break;
+
             }
         }
         //        PTuLog.d(TAG, "switchFragment完成");
@@ -1150,12 +1157,13 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
 
-    private void switch2Transfer() {
+    private void switch2Transfer(TransferController transferController) {
         if (transferFrag == null) {
             transferFrag = new StyleTransferFragment();
             transferFrag.setPTuActivityInterface(this);
         }
         //更换底部导航栏
+        transferFrag.initBeforeCreateView(transferController);
         fm.beginTransaction()
                 .setCustomAnimations(R.animator.slide_bottom_in, R.animator.slide_bottom_out,
                         R.animator.slide_bottom_in, R.animator.slide_bottom_out)
@@ -1164,7 +1172,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
         currentFrag = transferFrag;
         currentEditMode = EDIT_TRANSFER;
-        transferFrag.onChosenBm(isStyle ? styleBm : repealRedoManager.getBaseBitmap(), isStyle);
 //        ptuSeeView.switchStatus2Main();
     }
 
@@ -1229,7 +1236,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
                         runOnUiThread(() -> {
                             showProgress(10);
-                            transferFrag.onChosenBm(bitmap, isStyle);
+                            transferFrag.onChosenBm(isStyle ? null : bitmap, isStyle ? bitmap : null);
                         });
                         emitter.onNext(bitmap);
                         emitter.onComplete();
@@ -1514,7 +1521,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             ptuSeeView.setVisibility(View.VISIBLE);
         }
 
-        mPtuToolbar.switchToolbarBtn(false);
         if (gifManager != null) {
             gifManager.preview();
         }

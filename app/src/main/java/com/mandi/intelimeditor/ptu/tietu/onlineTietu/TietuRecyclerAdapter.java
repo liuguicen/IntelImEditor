@@ -43,7 +43,7 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private static final String TAG = "TietuRecyclerAdapter";
     private final boolean mIsTietu;
-    public static final int DEFAULT_ROW_NUMBER = 2;
+    public static final int DEFAULT_ROW_NUMBER = 1;
     public static final int itemLayoutHorizontalMargin = Util.dp2Px(1.5f);
 
     private List<PicResourceItemData> groupedList = new ArrayList<>();
@@ -96,7 +96,7 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 groupedList.add(new PicResourceItemData(null, PicResourceItemData.PicListItemType.TX_PIC_AD));
             }
         }
-        //刷新列表数据，修复友盟bug
+        // 刷新列表数据，修复友盟bug
         notifyDataSetChanged();
     }
 

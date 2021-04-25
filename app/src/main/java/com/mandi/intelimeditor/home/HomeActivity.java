@@ -124,9 +124,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
      */
     public static final String INTENT_EXTRA_FRAGMENT_ID = "FRAGMENT_ID";
 
-    public static final int LOCAL_FRAG_ID = 0;
-    public static final int TEMPLATE_FRAG_ID = 1;
-    public static final int TIETU_FRAG_ID = 2;
+    public static final int TEMPLATE_FRAG_ID = 0;
+    public static final int LOCAL_FRAG_ID = 1;
 
     boolean mIsFromCreate = false;
     static String intentAction = "";
@@ -375,7 +374,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 super.onPageSelected(position);
                 // ViewPager里面的Fragment生命周期无法准确获取，在这里手动监听
                 currentFrag = getFragByID(position);
-                if (position == 0) {
+                if (position == LOCAL_FRAG_ID) {
                     mFloatActionBtn.show();
                 } else {
                     mFloatActionBtn.hide();

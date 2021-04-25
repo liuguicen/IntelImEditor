@@ -37,12 +37,15 @@ public class PtuConstraintLayout extends ConstraintLayout {
     public boolean dispatchTouchEvent(MotionEvent event) {
         View tietuRcv = findViewWithTag(TAG_TIETU_RCV);
         View functionRcv = findViewById(R.id.main_function_rcv);
+        View transferFunctionLayout = findViewById(R.id.transfer_function_layout);
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN && tietuRcv != null) {
             int[] xy = new int[2];
             getLocationOnScreen(xy);
             xy[0] += event.getX();
             xy[1] += event.getY();
-            if (!Util.pointInView(xy[0], xy[1], tietuRcv) && !Util.pointInView(xy[0], xy[1], functionRcv )) {
+            if (!Util.pointInView(xy[0], xy[1], tietuRcv)
+                    && !Util.pointInView(xy[0], xy[1], functionRcv)
+                    && !Util.pointInView(xy[0], xy[1], transferFunctionLayout)) {
                 ((RecyclerView) tietuRcv).setAdapter(null);
                 removeView(tietuRcv);
             }
