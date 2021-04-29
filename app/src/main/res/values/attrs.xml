@@ -30,7 +30,7 @@
     </declare-styleable>
     <declare-styleable name="SettingsItemView">
         <attr name="siv_title" format="reference|string" />
-        <attr name="siv_subTitle" format="reference|integer" />
+        <attr name="siv_subTitle" format="reference|string" />
         <attr name="siv_color" format="reference|color" />
         <attr name="siv_showSwitch" format="reference|boolean" />
     </declare-styleable>

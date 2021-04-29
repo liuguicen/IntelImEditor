@@ -85,7 +85,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/SettingAppTheme" />
         <activity
-            android:name=".user.FeedBackActivity"
+            android:name=".user.userSetting.FeedBackActivity"
             android:label="@string/feedback_title"
             android:screenOrientation="portrait" />
         <activity

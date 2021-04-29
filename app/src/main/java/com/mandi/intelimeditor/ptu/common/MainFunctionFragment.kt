@@ -80,19 +80,19 @@ class MainFunctionFragment : BasePtuFragment() {
      */
     fun switchFunctionFrag(isGif: Boolean = false, refresh: Boolean = false) {
         pFunctionList.clear()
-        if (!isGif) {
-            pFunctionList.add(FunctionInfoBean(R.string.rend_pic, R.mipmap.rend_pic, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND))
-        } else {
-            pFunctionList.add(FunctionInfoBean(R.string.gif_en, R.drawable.ic_gif, R.drawable.function_background_text_yellow, PtuUtil.EDIT_GIF))
-        }
+//        if (!isGif) {
+//            pFunctionList.add(FunctionInfoBean(R.string.rend_pic, R.mipmap.rend_pic, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND))
+//        } else {
+//            pFunctionList.add(FunctionInfoBean(R.string.gif_en, R.drawable.ic_gif, R.drawable.function_background_text_yellow, PtuUtil.EDIT_GIF))
+//        }
         pFunctionList.add(FunctionInfoBean(R.string.text, R.mipmap.text, R.drawable.function_background_text_yellow, PtuUtil.EDIT_TEXT))
-        pFunctionList.add(FunctionInfoBean(R.string.tietu, R.mipmap.tietu, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU))
-        pFunctionList.add(FunctionInfoBean(R.string.dig_face, R.mipmap.dig_face, R.drawable.function_background__dig_sliver, PtuUtil.EDIT_DIG))
+//        pFunctionList.add(FunctionInfoBean(R.string.tietu, R.mipmap.tietu, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU))
+//        pFunctionList.add(FunctionInfoBean(R.string.dig_face, R.mipmap.dig_face, R.drawable.function_background__dig_sliver, PtuUtil.EDIT_DIG))
 
-        if (!isGif) {
-            pFunctionList.add(FunctionInfoBean(R.string.deformation, R.drawable.icon_deformation,
-                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_DEFORMATION))
-        }
+//        if (!isGif) {
+//            pFunctionList.add(FunctionInfoBean(R.string.deformation, R.drawable.icon_deformation,
+//                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_DEFORMATION))
+//        }
 
         pFunctionList.add(FunctionInfoBean(R.string.draw, R.mipmap.draw, R.drawable.function_background_draw_pink, PtuUtil.EDIT_DRAW))
 

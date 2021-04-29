@@ -15,8 +15,8 @@ android {
         // 注意Android 9加入了新变化，如果targetsdk >= 29,只能使用新的文件访问方式，
         // 这种方式大概是只能使用Android提供的api访问文件，受到很大限制
         targetSdkVersion 27 // 注意
-        versionCode 32
-        versionName "2.9.2"
+        versionCode 1
+        versionName "1.0.0"
         multiDexEnabled true
         /**
          * 只支持中文，减小包大小

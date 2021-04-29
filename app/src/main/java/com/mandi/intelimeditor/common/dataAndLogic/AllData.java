@@ -168,7 +168,7 @@ public class AllData {
             IntelImEditApplication.appContext.getResources().getString(R.string.app_name) + "/";
     public static final String zitiDir = appFilePathDefault + "字体/";
 
-    public static final String picDir = appFilePathDefault + IntelImEditApplication.appContext.getResources().getString(R.string.app_name) + "-制作表情/";
+    public static final String picDir = appFilePathDefault + IntelImEditApplication.appContext.getResources().getString(R.string.app_name) + "-制作图片/";
     public static final Context appContext = IntelImEditApplication.appContext;
 
     //一些基本配置

@@ -46,7 +46,7 @@ object PicDirInfoManager {
                     formatDescribeInfo("短视频(制作GIF）", shortVideoSet.size, "条"),
                     representPath)
             if (picDirInfos.size >= 2) {
-                picDirInfos[1] = picDirInfo
+                picDirInfos.add(1, picDirInfo)
             } else {
                 picDirInfos.add(picDirInfo)
             }

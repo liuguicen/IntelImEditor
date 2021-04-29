@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.common.CommonConstant;
+import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
@@ -303,16 +304,20 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         }
     }
 
-    public void toOfficialGroup(View view) {
-        String key = "VkczNgFq-7NcehkIFWXr9OlXrg0N9DYh";
-        if ("910595711".equals(((SettingsItemView) view).getSubTitle())) {
-            key = "jiXCpPWsr-A7RA5d5rYDeZlrYCSUtuP_";
-        }
+    public void toCommunicateGroup(View view) {
+        toQQGroup(this, AppConfig.QQ_GROUP_COMMUNICATE_KEY);
+    }
+
+    public void toFeedBackGroup(View view) {
+        toQQGroup(this, AppConfig.QQ_GROUP_FEEDBACK_KEY);
+    }
+
+    public static void toQQGroup(Context context, String key) {
         Intent intent = new Intent();
         intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
         // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
-            startActivity(intent);
+            context.startActivity(intent);
         } catch (Exception e) {
             // 未安装手Q或安装的版本不支持
             ToastUtils.show("未安装手Q或安装的版本不支持");

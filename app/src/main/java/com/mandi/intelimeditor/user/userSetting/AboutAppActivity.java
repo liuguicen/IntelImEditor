@@ -6,13 +6,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mandi.intelimeditor.common.BaseActivity;
+import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.ptu.draw.MosaicView;
 import com.mandi.intelimeditor.user.useruse.AppAgreementActivity;
 import com.mandi.intelimeditor.BuildConfig;
 import com.mandi.intelimeditor.R;
 import com.tencent.bugly.beta.Beta;
-
-
 
 
 public class AboutAppActivity extends BaseActivity {
@@ -28,6 +27,11 @@ public class AboutAppActivity extends BaseActivity {
         mosaicView = findViewById(R.id.imageView4);
         findViewById(R.id.about_version).setOnClickListener(v -> mosaicView.clear());
         findViewById(R.id.textView4).setOnClickListener(v -> mosaicView.undo());
+        TextView communicateGroup = (TextView) findViewById(R.id.communicate_group);
+        communicateGroup.setText("APP使用交流群: " + getText(R.string.qq_group_communicate));
+        communicateGroup.setOnClickListener(v -> {
+            SettingActivity.toQQGroup(this, AppConfig.QQ_GROUP_COMMUNICATE_KEY);
+        });
     }
 
     @Override

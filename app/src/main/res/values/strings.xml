@@ -657,4 +657,8 @@ b) 在使用暴走P图网络服务进行网上交易时，您不可避免的要�
     <string name="no_network_style_notice">暂时无法下载风格图片，网络或者服务器出错！您可以使用本机图片</string>
     <string name="fun_transfer">风格</string>
     <string name="go_ptu">去P图</string>
+    <string name="communicate_group_name">艺术美图交流群</string>
+    <string name="feedbackGroup">反馈群</string>
+    <string name="qq_group_communicate">452210374</string>
+    <string name="qq_group_feedback">910595711</string>
 </resources>

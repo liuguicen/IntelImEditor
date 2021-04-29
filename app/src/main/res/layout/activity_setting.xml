@@ -134,9 +134,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:onClick="toOfficialGroup"
-                app:siv_subTitle="175947325"
-                app:siv_title="暴走P图交流群" />
+                android:onClick="toCommunicateGroup"
+                app:siv_subTitle="@string/qq_group_communicate"
+                app:siv_title="@string/communicate_group_name" />
 
             <View
                 android:layout_width="match_parent"
@@ -149,9 +149,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:onClick="toOfficialGroup"
-                app:siv_subTitle="910595711"
-                app:siv_title="暴走P图反馈群" />
+                android:onClick="toFeedBackGroup"
+                app:siv_subTitle="@string/qq_group_feedback"
+                app:siv_title="@string/feedbackGroup" />
 
             <View
                 android:layout_width="match_parent"

@@ -9,7 +9,7 @@
     android:layout_margin="@dimen/dp_8">
 
     <!--用户头像-->
-    <view.CircleImageView
+    <com.mandi.intelimeditor.common.view.CircleImageView
         android:id="@+id/user_head_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
