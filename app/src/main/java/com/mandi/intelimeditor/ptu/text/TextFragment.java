@@ -101,12 +101,12 @@ public class TextFragment extends BasePtuFragment {
     public List<FunctionInfoBean> getFunctionList() {
         //设置底部图标数据
         pFunctionList.clear();
-        pFunctionList.add(new FunctionInfoBean(R.string.text_style, R.mipmap.bold, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
-        pFunctionList.add(new FunctionInfoBean(R.string.text_color, R.drawable.color, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
-        pFunctionList.add(new FunctionInfoBean(R.string.text_font, R.mipmap.typeface, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
+        pFunctionList.add(new FunctionInfoBean(R.string.text_style, R.drawable.round_format_bold, PtuUtil.EDIT_REND));
+        pFunctionList.add(new FunctionInfoBean(R.string.text_color, R.drawable.round_color_lens, PtuUtil.EDIT_REND));
+        pFunctionList.add(new FunctionInfoBean(R.string.text_font, R.drawable.round_text_format, PtuUtil.EDIT_REND));
         // 从sp里面读取是否解锁
-        pFunctionList.add(new FunctionInfoBean(R.string.rubber, R.mipmap.eraser, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
-        pFunctionList.add(new FunctionInfoBean(R.string.tools, R.drawable.tools, R.drawable.function_background_text_yellow, PtuUtil.EDIT_TEXT));
+        pFunctionList.add(new FunctionInfoBean(R.string.rubber, R.mipmap.eraser, PtuUtil.EDIT_REND));
+        pFunctionList.add(new FunctionInfoBean(R.string.tools, R.drawable.round_build, PtuUtil.EDIT_TEXT));
         return pFunctionList;
     }
 
@@ -336,9 +336,9 @@ public class TextFragment extends BasePtuFragment {
             floatTextView.setClickable(false);
             if (mRubberFunctionList == null) {
                 mRubberFunctionList = new ArrayList<>();
-                mRubberFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
-                mRubberFunctionList.add(new FunctionInfoBean(R.string.text_color, R.drawable.color, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
-                mRubberFunctionList.add(new FunctionInfoBean(R.string.rubber, R.drawable.ic_tick, R.drawable.function_background_text_yellow, PtuUtil.EDIT_REND));
+                mRubberFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size, PtuUtil.EDIT_REND));
+                mRubberFunctionList.add(new FunctionInfoBean(R.string.text_color, R.drawable.color, PtuUtil.EDIT_REND));
+                mRubberFunctionList.add(new FunctionInfoBean(R.string.rubber, R.drawable.ic_tick, PtuUtil.EDIT_REND));
             }
             pFunctionAdapter.setNewInstance(mRubberFunctionList);
         }

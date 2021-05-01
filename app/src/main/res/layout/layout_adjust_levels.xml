@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:gravity="center">
 
-    <view.MRangeSeekBar
+    <com.mandi.intelimeditor.ptu.view.MRangeSeekBar
         android:id="@+id/levels_range_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

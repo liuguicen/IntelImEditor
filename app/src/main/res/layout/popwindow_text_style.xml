@@ -7,8 +7,8 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -18,14 +18,13 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="  粗体"
-            android:textSize="10pt"
             android:textColor="@color/base_text_color1"
-            />
+            android:textSize="10pt" />
 
-        <view.MySwitchButton
+        <com.mandi.intelimeditor.common.view.MySwitchButton
             android:id="@+id/switch_button_bold"
-            android:layout_width="55dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_20"
             slideswitch:isOpen="false"
             slideswitch:shape="circle"
             slideswitch:themeColor="@color/button_color_switch" />
@@ -33,10 +32,11 @@
     <!--设置斜体-->
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
+
         <TextView
 
             android:id="@+id/text_italic"
@@ -44,38 +44,37 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="  斜体"
-            android:textSize="10pt"
             android:textColor="@color/base_text_color1"
-            />
+            android:textSize="10pt" />
 
-        <view.MySwitchButton
+        <com.mandi.intelimeditor.common.view.MySwitchButton
             android:id="@+id/switch_button_text_italic"
-            android:layout_width="55dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_20"
             slideswitch:isOpen="false"
             slideswitch:shape="circle"
             slideswitch:themeColor="@color/button_color_switch" />
     </LinearLayout><!--设置斜体-->
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/text_shadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="  阴影"
-            android:textSize="10pt"
             android:textColor="@color/base_text_color1"
-            />
+            android:textSize="10pt" />
 
-        <view.MySwitchButton
+        <com.mandi.intelimeditor.common.view.MySwitchButton
             android:id="@+id/switch_button_text_shadow"
-            android:layout_width="55dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_20"
             slideswitch:isOpen="false"
             slideswitch:shape="circle"
             slideswitch:themeColor="@color/button_color_switch" />

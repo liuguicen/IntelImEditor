@@ -15,7 +15,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginHorizontal="4dp"/>
 
-    <view.MRangeSeekBar
+    <com.mandi.intelimeditor.ptu.view.MRangeSeekBar
         app:layout_constraintLeft_toRightOf="@+id/reformation_radius_tv"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/reformation_radius"

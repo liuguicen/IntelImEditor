@@ -80,7 +80,7 @@
     <dimen name="text_ad_mark_middle">9sp</dimen>
     <dimen name="ptu_choose_base_height">220dp</dimen>
     <!--重要尺寸，注意别乱动-->
-    <dimen name="bottom_function_layout_height">72dp</dimen>
+    <dimen name="bottom_function_layout_height">56dp</dimen>
     <dimen name="pic_resource_list_tietu_margin">7dp</dimen>
     <dimen name="pic_resource_list_tietu_margin_big">12dp</dimen>
     <dimen name="pic_resource_list_template_margin">5dp</dimen>

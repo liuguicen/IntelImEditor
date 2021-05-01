@@ -195,10 +195,10 @@ public class CutFragment extends BasePtuFragment {
     public List<FunctionInfoBean> getFunctionList() {
         //设置底部图标数据
         pFunctionList.clear();
-        pFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size, R.drawable.function_background_cut_blue, PtuUtil.EDIT_CUT));
-        pFunctionList.add(new FunctionInfoBean(R.string.cut_scale, R.mipmap.scale, R.drawable.function_background_cut_blue, PtuUtil.EDIT_CUT));
-        pFunctionList.add(new FunctionInfoBean(R.string.cut_rotate, R.mipmap.rotate, R.drawable.function_background_cut_blue, PtuUtil.EDIT_CUT));
-        pFunctionList.add(new FunctionInfoBean(R.string.cut_flip, R.drawable.flip, R.drawable.function_background_cut_blue, PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size,  PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.cut_scale, R.mipmap.scale, PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.cut_rotate, R.mipmap.rotate, PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.cut_flip, R.drawable.flip, PtuUtil.EDIT_CUT));
         for (int i = 0; i < pFunctionList.size(); i++) {
             pFunctionList.get(i).setCanSelected(true);
         }
