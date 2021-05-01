@@ -40,6 +40,7 @@ import com.mandi.intelimeditor.ad.ttAD.videoAd.FullScreenVadManager;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.TTRewardVadManager;
 import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.common.CommonConstant;
+import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.appInfo.AppIntentService;
 import com.mandi.intelimeditor.common.appInfo.TheUser;
 import com.mandi.intelimeditor.common.appInfo.TheUserUtil;
@@ -56,11 +57,9 @@ import com.mandi.intelimeditor.dialog.LoadingDialog;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.home.localPictuture.LocalPicFragment;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourcesFragment;
-import com.mandi.intelimeditor.home.tietuChoose.TextureFragment;
 import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.saveAndShare.PTuResultData;
-import com.mandi.intelimeditor.ptu.tietu.TietuFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.ViewPager2FragmentAdapter;
 import com.mandi.intelimeditor.user.US;
@@ -136,7 +135,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     private ViewPager2 mViewPager;
     private TabLayout mTabLayout;
     private ViewPager2FragmentAdapter mViewPagerFragmentAdapter;
-    private PicResourcesFragment mTemplateChooseFragment;
+    private PicResourcesFragment mTemplateFragment;
     private LocalPicFragment mLocalPicFragment;
     private DrawerLayout mDrawerLayout;
     private TextView mVipStatusTv;
@@ -296,7 +295,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 //        View mTagsManagerView = mHeaderView.findViewById(R.id.tagsManagerView);
 
         //判断会员时间是否过期
-        if (AllData.isCloseVipFunction) {
+        if (AppConfig.isCloseVipFunction) {
             mVipStatusTv.setVisibility(View.GONE);
         }
         if (!AllData.isVip) {
@@ -416,14 +415,14 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         }
 
         Log.e(TAG, "启动了 mTemplateChooseFragment == null:" + (mLocalPicFragment == null));
-        if (mTemplateChooseFragment == null) {
-            mTemplateChooseFragment = PicResourcesFragment.newInstance(PicResource.FIRST_CLASS_TEMPLATE,
+        if (mTemplateFragment == null) {
+            mTemplateFragment = PicResourcesFragment.newInstance(PicResource.FIRST_CLASS_TEMPLATE,
                     PicResource.SECOND_CLASS_BASE, isOnlyChoosePic());
         }
 
         Log.e(TAG, "启动了 mTietuChooseFragment == null:" + (mLocalPicFragment == null));
         mViewPagerFragmentAdapter = new ViewPager2FragmentAdapter(this);
-        mViewPagerFragmentAdapter.addFragment(mTemplateChooseFragment, "风格");
+        mViewPagerFragmentAdapter.addFragment(mTemplateFragment, "风格");
         mViewPagerFragmentAdapter.addFragment(mLocalPicFragment, "本地");
         mViewPager.setAdapter(mViewPagerFragmentAdapter);
         mViewPager.setOffscreenPageLimit(3);
@@ -432,7 +431,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
             tab.setText(mViewPagerFragmentAdapter.getCurTitle(position));
         }).attach();
 
-        int fragID = getIntent().getIntExtra(INTENT_EXTRA_FRAGMENT_ID, LOCAL_FRAG_ID);
+        int fragID = getIntent().getIntExtra(INTENT_EXTRA_FRAGMENT_ID, 0);
         // 要放在setAdapter后面，不然没效，自己猜也知道，当前Fragment序号是放在Adapter里面的，没传入为空，不设置
         switchFragment(fragID);
     }
@@ -472,7 +471,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 return;
             case TEMPLATE_FRAG_ID:
                 mViewPager.setCurrentItem(TEMPLATE_FRAG_ID);
-                currentFrag = mTemplateChooseFragment;
+                currentFrag = mTemplateFragment;
                 return;
         }
     }
@@ -482,7 +481,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
             case LOCAL_FRAG_ID:
                 return mLocalPicFragment;
             case TEMPLATE_FRAG_ID:
-                return mTemplateChooseFragment;
+                return mTemplateFragment;
         }
         return mLocalPicFragment;
     }
@@ -570,8 +569,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 return;
             }
         }
-        if (currentFrag != mLocalPicFragment) {
-            switchFragment(LOCAL_FRAG_ID);
+        if (mViewPager.getCurrentItem() != 0) {
+            switchFragment(0);
             return;
         }
         super.onBackPressed();

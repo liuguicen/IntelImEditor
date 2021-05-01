@@ -21,6 +21,7 @@ import com.mandi.intelimeditor.common.util.ToastUtils
 import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.user.US
 import com.mandi.intelimeditor.R
+import com.mandi.intelimeditor.common.appInfo.AppConfig
 import kotlinx.android.synthetic.main.dialog_unlock_layout.*
 import kotlinx.android.synthetic.main.layout_to_open_vip.*
 
@@ -134,7 +135,7 @@ class UnlockDialog : IBaseDialog() {
             ToastUtils.show("视频加载中...")
             chooseRewardVad2Show(adStrategyUtil, rewardVadListener)
         }
-        if (AllData.isCloseVipFunction) {
+        if (AppConfig.isCloseVipFunction) {
             replaceOpenVipWithAD()
         }
         to_open_vip_layout.setOnClickListener {

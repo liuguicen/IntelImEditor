@@ -10,6 +10,7 @@ import com.mandi.intelimeditor.ad.tencentAD.TxFeedAd;
 import com.mandi.intelimeditor.ad.tencentAD.TxFeedAdPool;
 import com.mandi.intelimeditor.ad.ttAD.feedad.TTFeedAdPool;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.TTRewardVad;
+import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
@@ -515,11 +516,11 @@ public class AdData {
             }
             return true;
         }
-        if (adType == TENCENT_AD && AllData.isCloseTencentAd) {
+        if (adType == TENCENT_AD && AppConfig.isCloseTencentAd) {
             return true;
         }
 
-        if (adType == TT_AD && AllData.isCloseTTAd) {
+        if (adType == TT_AD && AppConfig.isCloseTTAd) {
             return true;
         }
         return false;
@@ -530,7 +531,7 @@ public class AdData {
         String channel = AnalyticsConfig.getChannel(context);
         long adOpenTime = 0;
         if ("huawei".equals(channel)) { // 华为渠道检测期间不显示腾讯广告
-            AllData.isCloseVipFunction = true;
+            AppConfig.isCloseVipFunction = true;
             Calendar calendar = Calendar.getInstance();
             // 一定注意！！！calendar月份从0开始算的， 10月1日要写成9月1日，不然多一个月延期，一个月的广告费
             calendar.set(2020, 10, 18, 20, 0, 0);
@@ -586,8 +587,8 @@ public class AdData {
             Log.e("--", "小时 = " + ttHours + " 天数 = " + (ttHours / 24));
         }
         if (System.currentTimeMillis() < adOpenTime) {
-            AllData.isCloseTencentAd = true;
-            AllData.isCloseTTAd = true;
+            AppConfig.isCloseTencentAd = true;
+            AppConfig.isCloseTTAd = true;
             US.putOtherEvent(US.SKIP_AD_FOR_CHECK);
         }
         // 华为的对头条广告直到10月7日都关闭 // 10月7日之后提醒用户升级

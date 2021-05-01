@@ -26,10 +26,10 @@ import com.mandi.intelimeditor.pay.alipay.AliPayTools
 import com.mandi.intelimeditor.pay.alipay.PayConstants
 import com.mandi.intelimeditor.user.US
 import com.mandi.intelimeditor.user.userSetting.SettingActivity
-import com.mandi.intelimeditor.user.userVip.PayVipPresenterImp
 import com.mandi.intelimeditor.user.useruse.AppAgreementActivity
 import com.mandi.intelimeditor.BuildConfig
 import com.mandi.intelimeditor.R
+import com.mandi.intelimeditor.common.appInfo.AppConfig
 import kotlinx.android.synthetic.main.activity_open_vip.*
 
 /**
@@ -152,7 +152,7 @@ class OpenVipActivity : BaseActivity(), PayVipContract.View {
         val REQUEST_CODE_UNLOCK_RESOURCE = 1001
 
         fun startOpenVipAc(activity: Activity) {
-            if (AllData.isCloseVipFunction) return
+            if (AppConfig.isCloseVipFunction) return
             if (TheUserUtil.hasLoggedLastTime()) {
                 val intent = Intent(activity, OpenVipActivity::class.java)
                 activity.startActivityForResult(intent, OpenVipActivity.REQUEST_CODE_FROM_SETTING)

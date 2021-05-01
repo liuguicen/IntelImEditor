@@ -130,7 +130,7 @@ public class PTuResultActivity extends BaseActivity {
 
     private void showRecommendRes(List<PicResource> picResList) {
         RecyclerView recommendResRcv = findViewById(R.id.recommend_rcv);
-        PicResourcesAdapter picResourcesAdapter = new PicResourcesAdapter(PTuResultActivity.this, PicResource.FIRST_CLASS_TEMPLATE);
+        PicResourcesAdapter picResourcesAdapter = new PicResourcesAdapter(PTuResultActivity.this, 1);
         picResourcesAdapter.initAdData(true);
         picResourcesAdapter.setImageUrls(picResList, null);
         picResourcesAdapter.setClickListener((itemHolder, view) -> {

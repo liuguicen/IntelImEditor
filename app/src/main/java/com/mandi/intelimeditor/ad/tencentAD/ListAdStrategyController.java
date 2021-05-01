@@ -69,6 +69,9 @@ public class ListAdStrategyController {
         mAdPool = adPool;
         seed = System.currentTimeMillis();
         mRandom = new Random(seed);
+        if (startCount <= 0) {
+            throw new IllegalArgumentException("startCount must be > 0");
+        }
         this.startCount = startCount;
         this.minInterval = minInterval;
         this.maxInterval = maxInterval;

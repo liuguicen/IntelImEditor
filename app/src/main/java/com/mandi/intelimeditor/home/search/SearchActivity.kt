@@ -212,7 +212,7 @@ class SearchActivity : BaseActivity() {
         updateHistoryPanel(false)
         showEmptyView()
         if (mAdapter == null) {
-            mAdapter = PicResourcesAdapter(this, PicResource.FIRST_CLASS_TIETU)
+            mAdapter = PicResourcesAdapter(this, 3)
             mAdapter?.initAdData(true)
             mAdapter?.setClickListener { itemHolder, view ->
                 val position = itemHolder.layoutPosition;

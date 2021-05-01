@@ -44,13 +44,6 @@ public class AllData {
     public static long latestTietuModifyTime = GET_SERVICE_UPDATE_TIME_FAILED;  // 一开始相当于没有获取
     public static boolean hasInitDataNeedAc = false;
 
-    /**
-     * 一些应用市场由于特殊情况，暂时关闭广告，比如华为检查直接下载类的广告，由于目前腾讯广告包含此类，且不能关闭
-     * 只能手动避免
-     */
-    public static boolean isCloseTencentAd = false;
-    public static boolean isCloseTTAd = false;
-    public static boolean isCloseVipFunction = false; // 不打开VIP功能
     // 目前图片资源的数量不会太多，2020年6月，没到700条，直接把查到的数据做成全局的
     // 因为目前多个地方使用，更方便，也更快
     public static List<PicResource> expressResList;

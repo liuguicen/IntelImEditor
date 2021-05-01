@@ -212,7 +212,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         mBtnLogin.setVisibility(View.GONE);
         mUserInfoLayout.setVisibility(View.VISIBLE);
         View toOpenVipView = mUserInfoLayout.findViewById(R.id.open_vip);
-        if (AllData.isCloseVipFunction) {
+        if (AppConfig.isCloseVipFunction) {
             toOpenVipView.setVisibility(View.GONE);
         }
         toOpenVipView.setOnClickListener(v -> {

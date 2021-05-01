@@ -86,7 +86,7 @@ public class MediaInfoScanner {
      * <P>注意!!有些情况下系统的media也扫描不到图片，即保存图片的时候没有发送图片更新通知，比如从电脑直接复制图片
      * <p>那需要监听存储器，或者扫描整个存储器，这个目前即使专业的APP不好做，没有做
      * <p>遇到类似问题不要重复找bug，找半天发现没问题
-     * <p>刚保存的图片，虽然发送了媒体更新，也需要1、2s的时间才能查到,手动添加，{@link LocalPicFragment#addNewPath(String, String)}
+     * <p>刚保存的图片，虽然发送了媒体更新，也需要1、2s的时间才能查到,手动添加，{@link LocalPicFragment#addNewPath(String)}
      *
      * @return 返回是否需要更新
      */

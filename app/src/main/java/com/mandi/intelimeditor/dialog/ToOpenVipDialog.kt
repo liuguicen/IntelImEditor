@@ -9,6 +9,7 @@ import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.user.US
 import com.mandi.intelimeditor.user.userVip.OpenVipActivity
 import com.mandi.intelimeditor.R
+import com.mandi.intelimeditor.common.appInfo.AppConfig
 import kotlinx.android.synthetic.main.dialog_to_open_vip.*
 import kotlinx.android.synthetic.main.layout_to_open_vip.*
 
@@ -73,7 +74,7 @@ class ToOpenVipDialog : IBaseDialog() {
      *显示出对话框
      */
     fun showIt() {
-        if (AllData.isCloseVipFunction) return;
+        if (AppConfig.isCloseVipFunction) return;
         super.showIt(mActivity)
         LogUtil.d(TTRewardVad.TAG, "显示去开通VIP对话框")
     }

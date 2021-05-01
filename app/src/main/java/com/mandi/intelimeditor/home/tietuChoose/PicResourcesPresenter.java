@@ -1,6 +1,8 @@
 package com.mandi.intelimeditor.home.tietuChoose;
 
 import android.content.Context;
+import android.os.Environment;
+import android.system.Os;
 import android.text.TextUtils;
 
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
@@ -12,6 +14,7 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +82,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     @NotNull
     @Override
     public PicResourcesAdapter createPicAdapter() {
-        mPicResourceAdapter = new PicResourcesAdapter(mContext, mFirstClass);
+        mPicResourceAdapter = new PicResourcesAdapter(mContext, 1);
         mPicResourceAdapter.initAdData(false);
         return mPicResourceAdapter;
     }
@@ -115,6 +118,20 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
 //                Log.e(TAG, "onNext: test error");
                     mIsDownloadSuccess = true;
                     tietuMaterialList = new ArrayList<>(tietuMaterialList);
+
+                    String thePath = Environment.getExternalStorageDirectory().toString();
+                    PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
+                    p1.setHeat(1000);
+                    p1.setTag("梵高 星空");
+                    tietuMaterialList.add(p1);
+                    PicResource p2 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
+                    p1.setHeat(100);
+                    p1.setTag("动漫 新海诚");
+                    tietuMaterialList.add(p2);
+                    tietuMaterialList.add(PicResource.path2PicResource(thePath + File.separator + "test3.jpg"));
+                    tietuMaterialList.add(PicResource.path2PicResource(thePath + File.separator + "test4.jpg"));
+                    tietuMaterialList.add(PicResource.path2PicResource(thePath + File.separator + "test5.jpg"));
+
                     PicResourcesAdapter.randomInsertForHeat(tietuMaterialList);
                     mPicResourceAdapter.setImageUrls(tietuMaterialList, null);
                     mView.onDownloadStateChange(true, tietuMaterialList);
@@ -122,6 +139,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
                     // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
                     // 文档上面说只能同步使用
                     mView.onDownloadStateChange(false, null);
+                    e.printStackTrace();
                     LogUtil.e("下载贴图失败 \n" + e.getCause());
                 }
             }

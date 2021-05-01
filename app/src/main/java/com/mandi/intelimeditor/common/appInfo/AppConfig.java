@@ -38,6 +38,16 @@ public class AppConfig {
 
     // 资源解锁数据相关的版本
     public static final int CUR_LOCK_VERSION = 1;
+
+
+    public static boolean isCloseVipFunction = true; // 不打开VIP功能
+    /**
+     * 一些应用市场由于特殊情况，暂时关闭广告，比如华为检查直接下载类的广告，由于目前腾讯广告包含此类，且不能关闭
+     * 只能手动避免
+     */
+    public static boolean isCloseTencentAd = false;
+    public static boolean isCloseTTAd = false;
+
     //各个历史版本，别删
     private static PackageInfo pi;
 

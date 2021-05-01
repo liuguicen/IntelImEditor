@@ -26,7 +26,7 @@ public class LongPicPopupWindow {
                                           final Context context,
                                           View imageView,
                                           boolean isShowDelete,
-                                          boolean isShowAddTietu) {
+                                          boolean isCollect) {
         final PopupWindow popWindowFile = new PopupWindow(context);
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -40,31 +40,31 @@ public class LongPicPopupWindow {
                         WindowManager.LayoutParams.WRAP_CONTENT));
         linearLayout.setPadding(Util.dp2Px(2), Util.dp2Px(2), Util.dp2Px(2), Util.dp2Px(2));
 
-        TextView frequentlyTextView = createAndAddOneTv(linearLayout, context);
-        if (callback.isInPrefer()) {
-            frequentlyTextView.setText("取消");
-            frequentlyTextView.setOnClickListener(v -> {
-                popWindowFile.dismiss();
-                callback.deleteFromPrefer();
-            });
-        } else {
-            frequentlyTextView.setText("常用");
-            frequentlyTextView.setOnClickListener(v -> {
-                popWindowFile.dismiss();
-                callback.addToPrefer();
-            });
-        }
+//        TextView frequentlyTextView = createAndAddOneTv(linearLayout, context);
+//        if (callback.isInPrefer()) {
+//            frequentlyTextView.setText("取消");
+//            frequentlyTextView.setOnClickListener(v -> {
+//                popWindowFile.dismiss();
+//                callback.deleteFromPrefer();
+//            });
+//        } else {
+//            frequentlyTextView.setText("常用");
+//            frequentlyTextView.setOnClickListener(v -> {
+//                popWindowFile.dismiss();
+//                callback.addToPrefer();
+//            });
+//        }
 
-        if (isShowAddTietu) {// 加入贴图
+        if (isCollect) {// 加入贴图
             TextView tvAddTietu = createAndAddOneTv(linearLayout, context);
             if (callback.isInMyTietu()) {
-                tvAddTietu.setText("取消贴图可"); // 少显示一个字，没时间看了，先这样
+                tvAddTietu.setText("取消收藏可"); // 少显示一个字，没时间看了，先这样
                 tvAddTietu.setOnClickListener(v -> {
                     popWindowFile.dismiss();
                     callback.deleteFromMyTietu();
                 });
             } else {
-                tvAddTietu.setText("加贴图吧");// 少显示一个字，没时间看了，先这样
+                tvAddTietu.setText("收藏收藏");// 少显示一个字，没时间看了，先这样
                 tvAddTietu.setOnClickListener(v -> {
                     popWindowFile.dismiss();
                     callback.addToMyTietu();

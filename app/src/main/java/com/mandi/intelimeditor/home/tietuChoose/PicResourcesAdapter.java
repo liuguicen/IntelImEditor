@@ -27,7 +27,6 @@ import com.mandi.intelimeditor.ad.LockUtil;
 import com.mandi.intelimeditor.ad.TTAdConfig;
 import com.mandi.intelimeditor.ad.tencentAD.AdUtil;
 import com.mandi.intelimeditor.ad.tencentAD.ListAdStrategyController;
-import com.mandi.intelimeditor.ad.tencentAD.TxFeedAdPool;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.util.BmobUtil;
@@ -60,12 +59,13 @@ import util.CoverLoader;
 public class PicResourcesAdapter extends BasePicAdapter {
     public static final String TAG = "PicResourcesAdapter";
 
-    public static final float TIE_TU_NUMBER_IN_ONE_PAGE = 15; // 一页能显示的贴图数量，目前大概5行，15张左右
-    public static final float TEMPLATE_NUMBER_IN_ONE_PAGE = 7.5f;
+    public static final float PIC_NUMBER_FOR_1_COL = 2f;
+    public static final float PIC_NUMBER_FOR_2_COL = 7.5f;
+    public static final float PIC_NUMBER_FOR_3_COL = 15; // 一页能显示的贴图数量，目前大概5行，15张左右
+    public static final float PIC_NUMBER_FOR_4_COL = 30f;
     public static String AD_ID;
     private final LayoutInflater layoutInflater;
-    @Nullable
-    private ListAdStrategyController mAdController_pic;
+
     @Nullable
     private ListAdStrategyController mAdController_feed;
 
@@ -78,6 +78,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
     private RequestOptions mLowPriorityOption;
 
     private boolean isAddNewFeatureHeader = false;
+    private String adPositionName = "图片列表";
 
     private RequestOptions getRequsetOptions(int position) {
         if (position < 4) {
@@ -87,7 +88,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
         }
     }
 
-    public PicResourcesAdapter(Context context, String firstClass) {
+    public PicResourcesAdapter(Context context, int spanCount) {
         super(context);
         this.firstClass = firstClass;
         AD_ID = AdData.getAdIDByPicResourceClass(firstClass);
@@ -101,17 +102,20 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .priority(Priority.LOW); // 网络下载会很慢，优先显示几张
 
-        if (PicResource.FIRST_CLASS_TIETU.equals(firstClass)) {
-            spanCount = 3;
+        this.spanCount = spanCount;
+        if (spanCount == 3) {
             mItemImagePadding = context.getResources()
                     .getDimensionPixelOffset(R.dimen.pic_resource_list_tietu_margin);
             mIsTietu = true;
-            numberInOneScreen = TIE_TU_NUMBER_IN_ONE_PAGE;
-        } else {
-            spanCount = 2;
+            numberInOneScreen = PIC_NUMBER_FOR_3_COL;
+        } else if (spanCount == 2) {
             mItemImagePadding = context.getResources()
                     .getDimensionPixelOffset(R.dimen.pic_resource_list_template_margin);
-            numberInOneScreen = TEMPLATE_NUMBER_IN_ONE_PAGE;
+            numberInOneScreen = PIC_NUMBER_FOR_2_COL;
+        } else {
+            mItemImagePadding = context.getResources()
+                    .getDimensionPixelOffset(R.dimen.pic_resource_list_template_margin);
+            numberInOneScreen = PIC_NUMBER_FOR_1_COL;
         }
     }
 
@@ -122,7 +126,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
      * @param isFewPic 是否是少图模式，设置为true会在末尾添加大的信息流广告
      */
     public void initAdData(boolean isFewPic) {
-        buildTxPic(true, isFewPic); // 这个选上
         AdStrategyUtil adStrategyUtil = new AdStrategyUtil(AdData.AdSpaceName.PIC_RES_FEED, AllData.appConfig.pic_res_ad_strategy);
         if (adStrategyUtil.isShow("TX")) {
             buildTxFeed(false, isFewPic);
@@ -130,28 +133,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
             buildTTFeed(false, isFewPic);
         }
         SPUtil.addAndPutAdSpaceExposeNumber(AdData.AdSpaceName.PIC_RES_FEED);
-    }
-
-    /**
-     * 收益
-     */
-    private void buildTxPic(boolean isOnly, boolean isFewPic) {
-        if (AdData.judgeAdClose(AdData.TENCENT_AD)) return;
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "initTencentAd: ");
-
-        TxFeedAdPool adPool = AdData.getTxPicAdPool();
-        if (isOnly) {
-            adPool.setMaxAdNumber(6);
-        }
-        if (mIsTietu) {
-            mAdController_pic = new ListAdStrategyController(mContext, AD_ID, adPool,
-                    36, 84, 128, isFewPic, isOnly); // 只显示腾讯广告时可加在第一位
-        } else {
-            mAdController_pic = new ListAdStrategyController(mContext, AD_ID, adPool,
-                    36, 84, 128, isFewPic, isOnly);
-        }
-        mAdController_pic.setUmEventName(EventName.pic_resource_ad);
     }
 
     /**
@@ -200,8 +181,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
     }
 
     public void setImageUrls(List<PicResourceItemData> list, boolean isReset) {
-        if (mAdController_pic != null)
-            mAdController_pic.reSet();
         if (mAdController_feed != null)
             mAdController_feed.reSet();
         if (isReset) {
@@ -220,7 +199,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
             // 这里isAddAd(groupedList.size() + extraSize) 判断一行的末尾，因为加大广告多占了位置，忽略之
             if (mAdController_feed != null && mAdController_feed.isAddAd(groupedList.size() + extraSize)) {
                 PicResourceItemData adItem = new PicResourceItemData(null, PicResourceItemData.PicListItemType.FEED_AD);
-                if (LogUtil.debugPicListFeedAd)  {
+                if (LogUtil.debugPicListFeedAd) {
                     Log.d(this.getClass().getSimpleName(), "setImageUrls: 添加信息流正常大小广告, 位置 = " + groupedList.size());
                 }
                 // 首屏的直接加在第一个，效果更好
@@ -228,20 +207,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 // 大广告，一个当一行，会多占用增加line_number - 1个位置 ，这样才能让大广告在完整的行的后面，需要计算到
                 int line_number = mIsTietu ? 3 : 2;
                 extraSize += line_number - 1;
-
-                // 如果第一屏就添加了大广告，那么不要小广告后移
-                if (groupedList.size() < numberInOneScreen) {
-                    if (mAdController_pic != null) {
-                        mAdController_pic.setAddPosition(groupedList.size() + (int) (numberInOneScreen * 2));
-                    }
-                }
-            }
-
-            // 插入腾讯纯图小广告位
-            // Logcat.d("插入广告位， 位置 = " + i);
-            if (mAdController_pic != null && mAdController_pic.isAddAd(i)) {
-                PicResourceItemData adItem = new PicResourceItemData(null, PicResourceItemData.PicListItemType.TX_PIC_AD);
-                groupedList.add(adItem);
             }
         }
         if (mAdController_feed != null
@@ -262,8 +227,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
      * todo 应该将两个方法合并，不要写这种大量重复的代码
      */
     public void setImageUrls(List<PicResource> list, List<PicDirInfo> folders) {
-        if (mAdController_pic != null)
-            mAdController_pic.reSet();
         if (mAdController_feed != null)
             mAdController_feed.reSet();
         groupedList.clear();
@@ -297,19 +260,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 // 大广告，一个当一行，会多占用增加line_number - 1个位置 ，这样才能让大广告在完整的行的后面，需要计算到
                 int line_number = mIsTietu ? 3 : 2;
                 extraSize += line_number - 1;
-
-                // 如果第一屏就添加了大广告，那么不要小广告后移
-                if (groupedList.size() < numberInOneScreen) {
-                    if (mAdController_pic != null) {
-                        mAdController_pic.setAddPosition(groupedList.size() + (int) (numberInOneScreen * 2));
-                    }
-                }
-            }
-
-            // 插入腾讯纯图小广告位
-            // Logcat.d("插入广告位， 位置 = " + i);
-            if (mAdController_pic != null && mAdController_pic.isAddAd(i)) {
-                groupedList.add(new PicResourceItemData(null, PicResourceItemData.PicListItemType.TX_PIC_AD));
             }
         }
         if (mAdController_feed != null
@@ -434,10 +384,10 @@ public class PicResourcesAdapter extends BasePicAdapter {
         if (picResourceData != null && picResourceData.getUrl() != null) {
             url = picResourceData.getUrl().getUrl();
         }
-        if (holder instanceof FolderHolder) {
-            bindFolder((FolderHolder) holder, position);
-        } else if (holder instanceof ItemHolder) {
+        if (holder instanceof ItemHolder) {
             bindItem((ItemHolder) holder, position, url);
+        } else if (holder instanceof FolderHolder) {
+            bindFolder((FolderHolder) holder, position);
         } else if (holder instanceof ADHolder) {
             bindAd((ADHolder) holder, position);
         } else if (holder instanceof GroupHeaderHolder) {
@@ -465,20 +415,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 itemHolder.hotTv.setVisibility(View.GONE);
                 itemHolder.tagTv.setVisibility(View.GONE);
             }
-//            if (tag != null && (tag.contains("熊猫头") || tag.contains("蘑菇头") || tag.contains("换脸"))) {
-//                itemHolder.functionTv.setVisibility(View.VISIBLE);
-//                itemHolder.functionTv.setText(R.string.change_face);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    itemHolder.functionTv.setBackground(Util.getDrawable(R.drawable.rip_orenge_cornor_backgound));
-//                } else {
-//                    itemHolder.functionTv.setBackground(Util.getDrawable(R.drawable.background_round_corner_orenge));
-//                }
-//                itemHolder.functionTv.setOnClickListener(v -> {
-//                    checkLock_and_ExeSpecialClick(itemHolder, v, groupedList.get(position));
-//                });
-//            } else { // gone需要设置，因为View重用
-//                itemHolder.functionTv.setVisibility(View.GONE);
-//            }
         } else {
             itemHolder.hotTv.setVisibility(View.GONE);
             itemHolder.tagTv.setVisibility(View.GONE);
@@ -538,16 +474,8 @@ public class PicResourcesAdapter extends BasePicAdapter {
 //    }
 
     private void bindAd(ADHolder holder, int position) {
-        if (holder instanceof TencentPicADHolder && mAdController_pic != null) { // 腾讯纯图片广告
-            if (LogUtil.debugPicResource) {
-                Log.d(TAG, "开始展示广告，位置 =  " + position +
-                        "container = " + holder.container.toString());
-            }
-            mAdController_pic.showAd(position, holder,
-                    AdData.getPicResourceAd_PositionName(firstClass));
-        } else if (mAdController_feed != null) { // 信息流
-            mAdController_feed.showAd(position, holder,
-                    AdData.getPicResourceAd_PositionName(firstClass));
+        if (mAdController_feed != null) { // 信息流
+            mAdController_feed.showAd(position, holder, adPositionName);
             if (LogUtil.debugPicResource) {
                 Log.d(TAG, "onBindViewHolder: 展示信息流广告， position = " + position);
             }
@@ -598,9 +526,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (mAdController_pic != null && holder instanceof ADHolder) {
-            mAdController_pic.onAdHolderRecycled((ADHolder) holder);
-        }
         if (mAdController_feed != null && holder instanceof ADHolder) {
             mAdController_feed.onAdHolderRecycled((ADHolder) holder);
         }
@@ -697,12 +622,12 @@ public class PicResourcesAdapter extends BasePicAdapter {
          * 刷新布局参数
          */
         public void updateLayoutParams(ViewGroup parent) {
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             ViewGroup.LayoutParams ivParams = iv.getLayoutParams();
-            int itemWidth = AllData.screenWidth > 100 ? AllData.screenWidth : parent.getWidth();
-            ivParams.width = itemWidth / spanCount;
-            ivParams.height = itemWidth / spanCount;
+            int rowWidth = AllData.screenWidth > 100 ? AllData.screenWidth : parent.getWidth();
+            ivParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            ivParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 //          LogUtil.d(TAG, "ivParams = " + ivParams.width + " = " + ivParams.height);
             iv.setLayoutParams(ivParams);
 
