@@ -175,7 +175,7 @@ public class DrawFragment extends BasePtuFragment {
         drawStyleTv.setOnClickListener(v -> {
             isInClearDraw = false;
             US.putPTuDrawEvent(US.PTU_DRAW_STYLE);
-            drawStyleTv.setIconBackgroundResource(R.drawable.function_background_draw_pink);
+//            drawStyleTv.setIconBackgroundResource(R.drawable.function_background_draw_pink);
             drawView.selectPaintStyle(lastStyle);
             drawPopupBuilder.setStrokePopWindow(v);
             // InsertAd.onClickTarget(getActivity()); 本来就是弹窗，不弹广告这里

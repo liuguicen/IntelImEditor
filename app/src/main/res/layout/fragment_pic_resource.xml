@@ -38,7 +38,7 @@
     </FrameLayout>
 
     <!--Viewpager2嵌套recyclerview，解决滑动冲突-->
-    <view.NestedScrollableHost
+    <com.mandi.intelimeditor.common.view.NestedScrollableHost
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +63,7 @@
 
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-    </view.NestedScrollableHost>
+    </com.mandi.intelimeditor.common.view.NestedScrollableHost>
 
     <TextView
         android:id="@+id/tv_pic_load_info"

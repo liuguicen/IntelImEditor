@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package view;
+package com.mandi.intelimeditor.common.view;
 
 import android.content.Context
 import android.util.AttributeSet

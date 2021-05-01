@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical">
 
     <!--颜色选择条-->
-    <view.ColorBar
+    <com.mandi.intelimeditor.ptu.view.ColorBar
         android:id="@+id/color_picker_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_16"
@@ -20,12 +20,12 @@
         android:gravity="center">
 
         <!--选中的颜色-->
-        <view.ColorLumpCircle
+        <com.mandi.intelimeditor.ptu.view.ColorLumpCircle
             android:id="@+id/stroke_color"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            app:colorLumpRadius="16dp"
-            app:colorLumpColor="@color/black" />
+            app:colorLumpColor="@color/black"
+            app:colorLumpRadius="16dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/color_picker_list"

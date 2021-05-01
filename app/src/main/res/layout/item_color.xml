@@ -5,7 +5,7 @@
     android:layout_height="@dimen/dp_40"
     android:gravity="center">
 
-    <view.ColorLumpCircle
+    <com.mandi.intelimeditor.ptu.view.ColorLumpCircle
         android:id="@+id/stroke_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

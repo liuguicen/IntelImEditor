@@ -2,45 +2,48 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_72"
+    android:layout_width="72dp"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="?android:selectableItemBackground"
+    android:background="?android:selectableItemBackgroundBorderless"
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.mandi.intelimeditor.common.view.CircleImageView
-        android:id="@+id/iconIv"
-        style="@style/function_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/transparency"
-        app:layout_constraintBottom_toTopOf="@+id/text_guideline"
-        app:layout_constraintDimensionRatio="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/titleTv"
-        style="@style/function_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ellipsize="middle"
+    <LinearLayout
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:maxLines="2"
-        android:textColor="@color/base_text_color1"
+        android:orientation="vertical"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_guideline"
-        tools:text="文字" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iconIv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="@dimen/dp_4"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_rotate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@string/text"
+            android:textColor="@color/text_default_color"
+            android:textSize="12sp"
+            tools:text="文件" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/lockIv"
@@ -54,12 +57,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/text_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.666"
-        tools:layout_editor_absoluteX="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -85,7 +85,7 @@ class MainFunctionFragment : BasePtuFragment() {
 //        } else {
 //            pFunctionList.add(FunctionInfoBean(R.string.gif_en, R.drawable.ic_gif, R.drawable.function_background_text_yellow, PtuUtil.EDIT_GIF))
 //        }
-        pFunctionList.add(FunctionInfoBean(R.string.text, R.mipmap.text, R.drawable.function_background_text_yellow, PtuUtil.EDIT_TEXT))
+        pFunctionList.add(FunctionInfoBean(R.string.text, R.drawable.round_text_fields, PtuUtil.EDIT_TEXT))
 //        pFunctionList.add(FunctionInfoBean(R.string.tietu, R.mipmap.tietu, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU))
 //        pFunctionList.add(FunctionInfoBean(R.string.dig_face, R.mipmap.dig_face, R.drawable.function_background__dig_sliver, PtuUtil.EDIT_DIG))
 
@@ -94,9 +94,9 @@ class MainFunctionFragment : BasePtuFragment() {
 //                    R.drawable.function_background_text_yellow, PtuUtil.EDIT_DEFORMATION))
 //        }
 
-        pFunctionList.add(FunctionInfoBean(R.string.draw, R.mipmap.draw, R.drawable.function_background_draw_pink, PtuUtil.EDIT_DRAW))
+        pFunctionList.add(FunctionInfoBean(R.string.draw, R.drawable.round_format_paint, PtuUtil.EDIT_DRAW))
 
-        pFunctionList.add(FunctionInfoBean(R.string.edit, R.mipmap.edit, R.drawable.function_background_cut_blue, PtuUtil.EDIT_CUT))
+        pFunctionList.add(FunctionInfoBean(R.string.edit, R.drawable.round_crop_rotate, PtuUtil.EDIT_CUT))
         if (pFunctionAdapter != null) {
             pFunctionAdapter.notifyDataSetChanged()
         }

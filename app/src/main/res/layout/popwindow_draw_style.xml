@@ -22,7 +22,7 @@
             android:textColor="@color/base_text_color1"
             />
 
-        <view.MySwitchButton
+        <com.mandi.intelimeditor.ptu.view.MySwitchButton
             android:id="@+id/switch_button_bold"
             android:layout_width="55dp"
             android:layout_height="35dp"
@@ -48,7 +48,7 @@
             android:textColor="@color/base_text_color1"
             />
 
-        <view.MySwitchButton
+        <com.mandi.intelimeditor.ptu.view.MySwitchButton
             android:id="@+id/switch_button_text_italic"
             android:layout_width="55dp"
             android:layout_height="35dp"
@@ -72,7 +72,7 @@
             android:textColor="@color/base_text_color1"
             />
 
-        <view.MySwitchButton
+        <com.mandi.intelimeditor.ptu.view.MySwitchButton
             android:id="@+id/switch_button_text_shadow"
             android:layout_width="55dp"
             android:layout_height="35dp"

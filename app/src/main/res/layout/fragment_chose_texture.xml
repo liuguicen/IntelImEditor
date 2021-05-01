@@ -19,13 +19,13 @@
         app:tabTextAppearance="@style/TabLayoutTextStyle1"
         app:tabTextColor="@color/half_transparent_black" />
 
-    <view.NestedScrollableHost
+    <com.mandi.intelimeditor.common.view.NestedScrollableHost
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/choose_content_view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </view.NestedScrollableHost>
+    </com.mandi.intelimeditor.common.view.NestedScrollableHost>
 
 </LinearLayout>

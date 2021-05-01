@@ -49,7 +49,7 @@ public class ThreeLevelToolsAdapter extends RecyclerView.Adapter<ThreeLevelTools
 
     @Override
     public void onBindViewHolder(@NonNull ToolItemViewHolder toolItemViewHolder, int position) {
-        toolItemViewHolder.icon.setBackground(Util.getDrawable(bgId));
+//        toolItemViewHolder.icon.setBackground(Util.getDrawable(bgId));
         toolItemViewHolder.icon.setImageResource(iconIdList.get(position));
         toolItemViewHolder.name.setText(mContext.getString(nameIdList.get(position)));
     }
