@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mandi.intelimeditor.ad.LockUtil;
+import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
@@ -22,6 +23,7 @@ import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.WrapContentLinearLayoutManager;
 import com.mandi.intelimeditor.home.ChooseBaseFragment;
 import com.mandi.intelimeditor.home.HomeActivity;
+import com.mandi.intelimeditor.home.data.UsuPathManger;
 import com.mandi.intelimeditor.home.view.LongPicPopupWindow;
 import com.mandi.intelimeditor.home.view.PicRefreshHeader;
 import com.mandi.intelimeditor.home.viewHolder.GroupHeaderHolder;
@@ -188,7 +190,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             showLoading(true);
             mPresenter = new PicResourcesPresenter(mContext, this, mFirstClass, mSecondClass, mCategory);
             initLocalView();
-            mPresenter.start();
+            mPresenter.loadData();
         }
     }
 
@@ -226,14 +228,17 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
     private void dropdownSortPic() {
         String nextRefreshTint = "最热图片";
         LogUtil.d(TAG, "updateIndex = " + curUpdateIndex + " isSortByGroup =" + isSortByGroup);
-        if (curUpdateIndex == 4) {//分组切换到最热
-            mPresenter.start();
+        if (AllData.allPicRes_downloadState != AllData.DOWNLOAD_STATE_SUCCESS) { // 如果下载所有图片没有成功，那么下拉就是重试
+            AllData.downLoadALLPicRes(); // 下载之后会通过eventBus传递事件过来更新视图
+            nextRefreshTint = "下拉重试";
+        } else if (curUpdateIndex == 4) {//分组切换到最热
+            mPresenter.loadData();
             nextRefreshTint = "最新图片";
             curUpdateIndex = 0;
 //            US.putSearchSortEvent(US.SORT_NEWEST); 不要统计，循环的，次数一样，统计无意义
         } else if (curUpdateIndex == 0) {//最热切换到最新
             if (isSortByGroup) {
-                mPresenter.start();
+                mPresenter.loadData();
             }
             mPicResourceAdapter.sortPicList(1, true);
             nextRefreshTint = "分组排列";
@@ -264,7 +269,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             }
         } else if (curUpdateIndex == 4) {
             if (isSortByGroup) {
-                mPresenter.start();
+                mPresenter.loadData();
                 nextRefreshTint = "最新图片";
             } else {
                 mPresenter.getTagsByCate(mSecondClass);
@@ -309,16 +314,16 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                 if (view.getId() == R.id.tv_pic_header_more) {
                     curGroupPosition = position;
                     showPicsInGroup(mPicResourceAdapter.getImageUrlList().get(position).headerTitle,
-                            mPicResourceAdapter.getImageUrlList().get(position).picResourceList);
+                            mPicResourceAdapter.getImageUrlList().get(position).picResListInGroup);
                     return;
                 }
                 PicResourceItemData itemData = mPicResourceAdapter.getImageUrlList().get(position);
                 if (view.getId() == R.id.iv_pic_1) {
-                    itemData = mPicResourceAdapter.getImageUrlList().get(position).picResourceList.get(0);
+                    itemData = mPicResourceAdapter.getImageUrlList().get(position).picResListInGroup.get(0);
                 } else if (view.getId() == R.id.iv_pic_2) {
-                    itemData = mPicResourceAdapter.getImageUrlList().get(position).picResourceList.get(1);
+                    itemData = mPicResourceAdapter.getImageUrlList().get(position).picResListInGroup.get(1);
                 } else if (view.getId() == R.id.iv_pic_3) {
-                    itemData = mPicResourceAdapter.getImageUrlList().get(position).picResourceList.get(2);
+                    itemData = mPicResourceAdapter.getImageUrlList().get(position).picResListInGroup.get(2);
                 }
                 PicResource chosenResource = itemData.data;
                 if (chosenResource == null) return;

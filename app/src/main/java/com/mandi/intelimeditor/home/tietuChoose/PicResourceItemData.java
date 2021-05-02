@@ -23,12 +23,15 @@ public class PicResourceItemData implements Comparable<PicResourceItemData> {
      * {@link PicResourceItemData.PicListItemType}
      */
     public int type; // 类型
-    public String headerTitle = ""; // 标题
     public PicResource data;
-    public List<PicResourceItemData> picResourceList; //分组列表
+
+    public String headerTitle = ""; // 标题
+    public List<PicResourceItemData> picResListInGroup; //分组列表
     public int groupHeat; //分组总热度
     public Date groupCreateTime; //分组最近更新时间
+
     public PicDirInfo picDirInfo;
+
     public boolean isUnlock = true; //解锁
 
     public PicResourceItemData(String headerTitle, boolean isNewFeature) {

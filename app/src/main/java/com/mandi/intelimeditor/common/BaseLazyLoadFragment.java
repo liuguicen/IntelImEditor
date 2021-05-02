@@ -12,7 +12,7 @@ public abstract class BaseLazyLoadFragment extends BaseFragment {
     /**
      * 是否加载过数据
      */
-    private boolean isLoaded;
+    protected boolean isLoaded;
 
     /**
      * androidx Fragment+ViewPage2时，fragment加载时会走onResume,所以在这里处理懒加载

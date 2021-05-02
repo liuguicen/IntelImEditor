@@ -46,6 +46,10 @@ public class AppIntentService extends IntentService {
         OnlineAppConfig.loadAppConfigFromServer();
         // 从服务器加载引导图
         Tutorial.loadGuideUseFromServer(false);
+        // 直接下载所有图片资源
+        AllData.downLoadALLPicRes();
+        // 初始扫描本地图片
+        AllData.initScanLocalPic();
     }
 
     private void getFloorVipPrice() {

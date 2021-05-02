@@ -12,12 +12,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +23,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jaygoo.widget.OnRangeChangedListener;
-import com.jaygoo.widget.RangeSeekBar;
 import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.bean.FunctionInfoBean;
 import com.mandi.intelimeditor.common.CommonConstant;
@@ -48,7 +44,6 @@ import com.mandi.intelimeditor.ptu.PTuActivityInterface;
 import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.RepealRedoListener;
-import com.mandi.intelimeditor.ptu.common.PTuUIUtil;
 import com.mandi.intelimeditor.ptu.common.PtuBaseChooser;
 import com.mandi.intelimeditor.ptu.common.TransferController;
 import com.mandi.intelimeditor.ptu.gif.GifFrame;
@@ -138,6 +133,9 @@ public class StyleTransferFragment extends BasePtuFragment {
                 GridLayoutManager.HORIZONTAL, false);
         chooseRcv.setLayoutManager(gridLayoutManager);
         isChooseStyle = true;
+        if (transferController != null && transferController.contentBm == null) {
+            isChooseStyle = false;
+        }
         chooseListAdapter = new TietuRecyclerAdapter(mContext, true);
         chooseListAdapter.setOnItemClickListener(chooseRcvListener);
         prepareShowChooseRcv(view, isChooseStyle);
@@ -261,7 +259,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         if (isChooseStyle) {
             prepareShowStyle(view);
         } else {
-            showStyleOrContenList(AllData.styleList);
+            prepareShowContentList();
         }
         if (isFirstShowChooseRcv) { // 本地贴图第一次加载显示不了，尝试多种办法不行，目前只能用这个
             view.post(() -> prepareShowStyle(view));
@@ -270,16 +268,27 @@ public class StyleTransferFragment extends BasePtuFragment {
         isFirstShowChooseRcv = false;
     }
 
-    private void showStyleOrContenList(List<PicResource> styleList) {
-        if (styleList == null) styleList = new ArrayList<>();
-        chooseListAdapter.setList(styleList);
-        chooseListAdapter.add(0, PicResource.path2PicResource(ALL_STYLE));
+    private void prepareShowContentList() {
+        // 如果在注册之前完成扫描，那么不会收到事件, 不能在Frag的onCreate注册，View可能还没初始化
+        EventBus.getDefault().register(this);
+        // 如果在注册之后的这里完成扫描，那么会收到事件，会调用显示方法两次，但是比放到if判断后面有可能漏掉事件好
+        if (AllData.hasInitScanLocalPic) {
+            showStyleOrContenList(AllData.contentList);
+        }
+        // 如果在注册之后的这里完成扫描，调用显示方法一次
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onEventMainThread(Integer event) {
+        if (EventBusConstants.INIT_SCAN_LOCAL_PIC_FINISH.equals(event)) {
+            showStyleOrContenList(AllData.contentList);
+        }
     }
 
     private void prepareShowStyle(View view) {
         Observable
                 .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-                    PicResourceDownloader.queryPicResByCategory("", PicResource.category_style, emitter);
+                    PicResourceDownloader.queryPicResByCategory("", PicResource.CATEGORY_STYLE, emitter);
                 })
                 .subscribe(new SimpleObserver<List<PicResource>>() {
 
@@ -309,6 +318,11 @@ public class StyleTransferFragment extends BasePtuFragment {
                 });
     }
 
+    private void showStyleOrContenList(List<PicResource> list) {
+        if (list == null) list = new ArrayList<>();
+        chooseListAdapter.setList(list);
+        chooseListAdapter.add(0, PicResource.path2PicResource(ALL_STYLE));
+    }
 
     private void onNoStylePic() {
         if (chooseListAdapter != null) { // 这个方法会异步回调，此时tietuListAdapter已经回收置空了，原来自己就没处理，GG
@@ -319,45 +333,13 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     }
 
-    private void showSizeWindow() {
-        View contentView = LayoutInflater.from(mContext).inflate(R.layout.seek_bar_layout, null);
-        RangeSeekBar radiusBar = ((RangeSeekBar) contentView.findViewById(R.id.seek_bar_popw));
-        radiusBar.setRange(0, 100);
-        radiusBar.setProgress(1);
-
-        TextView valueTv = contentView.findViewById(R.id.seek_bar_value_tv);
-        valueTv.setText(String.valueOf(1));
-
-        radiusBar.setOnRangeChangedListener(new OnRangeChangedListener() {
-            @Override
-            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
-                int intValue = (int) leftValue;
-
-                valueTv.setText(String.valueOf(intValue));
-            }
-
-            @Override
-            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                radiusBar.postDelayed(() -> {
-
-                }, 1000);
-            }
-        });
-
-        PTuUIUtil.addPopOnFunctionLayout(mContext, contentView, pFunctionRcv);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
             pTuActivityInterface.transfer(picRes.getUrlString(), true);
-            showStyleOrContenList(AllData.styleList);
+            showStyleOrContenList(AllData.curStyleList);
         }
 
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_CONTENT && data != null) {
@@ -479,13 +461,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         // 次数多，且不是第二次点击，就退出
 
         return false;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    public void onEventMainThread(Integer event) {
-        int isVisible = EventBusConstants.GIF_PLAY_CHOSEN.equals(event)
-                ? View.VISIBLE : View.INVISIBLE;
-
     }
 
     public void initBeforeCreateView(TransferController transferController) {

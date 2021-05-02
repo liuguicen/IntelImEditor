@@ -5,26 +5,37 @@ import android.graphics.Paint;
 import android.os.Environment;
 import android.util.Log;
 
+import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.appInfo.HasReadConfig;
+import com.mandi.intelimeditor.common.util.LogUtil;
+import com.mandi.intelimeditor.common.util.SimpleObserver;
+import com.mandi.intelimeditor.home.data.MediaInfoScanner;
+import com.mandi.intelimeditor.home.data.UsuPathManger;
 import com.mandi.intelimeditor.ptu.changeFace.LevelsAdjuster;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.bean.GroupBean;
 import com.mandi.intelimeditor.R;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
 
 
 /**
@@ -58,7 +69,7 @@ public class AllData {
     public static Map<String, List<GroupBean>> mAllGroupList = new HashMap<>();
     public static Map<String, List<PicResource>> mAllCategoryList = new HashMap<>();
     public static boolean hasLoadGuide = false;
-    public static List<PicResource> styleList = new ArrayList<>();
+    public static List<PicResource> curStyleList = new ArrayList<>();
     public static List<PicResource> contentList = new ArrayList<>();
     private static BitmapPool sPTuBmPool;
 
@@ -176,6 +187,81 @@ public class AllData {
             sPTuBmPool = new BitmapPool();
         }
         return sPTuBmPool;
+    }
+
+
+    public static UsuPathManger usuManager;
+    public static MediaInfoScanner mMediaInfoScanner;
+    public static boolean hasInitScanLocalPic = false;
+
+    public static void initScanLocalPic() {
+        usuManager = new UsuPathManger(AllData.appContext);
+        mMediaInfoScanner = MediaInfoScanner.getInstance();
+
+        // 先从数据库获取里面所有的图片信息
+        try {
+            usuManager.initFromDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.e(TAG, "call: 从数据库获取数据完成");
+        // 扫描器扫描信息，然后通知UI更新，先会更新图片，再是文件的
+        mMediaInfoScanner.scanAndUpdatePicInfo();
+
+        hasInitScanLocalPic = true;
+        EventBus.getDefault().post(EventBusConstants.INIT_SCAN_LOCAL_PIC_FINISH);
+
+    }
+
+    public static List<PicResource> allStyleList = new ArrayList<>();
+
+    public static final int DOWN_LOAD_STATE_NO_START = 1;
+    public static final int DOWNLOAD_STATE_SUCCESS = 2;
+    public static final int DOWNLOAD_STATE_FAILED = 3;
+    public static int allPicRes_downloadState = DOWN_LOAD_STATE_NO_START;
+
+    public static void downLoadALLPicRes() {
+        Observable.create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
+            PicResourceDownloader.queryPicResByCategory(PicResource.FIRST_CLASS_TEMPLATE, PicResource.CATEGORY_STYLE, emitter);
+        }).subscribe(new SimpleObserver<List<PicResource>>() {
+            @Override
+            public void onError(Throwable throwable) {
+                LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + throwable.getMessage());
+                if (allPicRes_downloadState != DOWNLOAD_STATE_SUCCESS) { // 可能会多次调用, 只要成功过一次，就不显示加载失败了
+                    allPicRes_downloadState = DOWNLOAD_STATE_FAILED;
+                    LogUtil.e("下载贴图失败 \n" + throwable.getCause());
+                }
+                EventBus.getDefault().post(EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH);
+            }
+
+            @Override
+            public void onNext(@NotNull List<PicResource> tietuMaterialList) {
+                try {
+                    LogUtil.d(TAG, "获取贴图成功 = " + " - " + tietuMaterialList.size());
+                    allStyleList = new ArrayList<>(tietuMaterialList);
+
+                    String thePath = Environment.getExternalStorageDirectory().toString();
+                    PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
+                    p1.setHeat(1000);
+                    p1.setTag("梵高 星空");
+                    allStyleList.add(p1);
+                    PicResource p2 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
+                    p1.setHeat(100);
+                    p1.setTag("动漫 新海诚");
+                    allStyleList.add(p2);
+                    allStyleList.add(PicResource.path2PicResource(thePath + File.separator + "test3.jpg"));
+                    allStyleList.add(PicResource.path2PicResource(thePath + File.separator + "test4.jpg"));
+                    allStyleList.add(PicResource.path2PicResource(thePath + File.separator + "test5.jpg"));
+                } catch (Exception e) {
+                    // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
+                    // 文档上面说只能同步使用
+                    e.printStackTrace();
+                    allPicRes_downloadState = DOWNLOAD_STATE_FAILED;
+                    LogUtil.e("下载贴图失败 \n" + e.getCause());
+                }
+                EventBus.getDefault().post(EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH);
+            }
+        });
     }
 
     /**

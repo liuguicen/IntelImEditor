@@ -2,9 +2,9 @@ package com.mandi.intelimeditor.home.tietuChoose;
 
 import android.content.Context;
 import android.os.Environment;
-import android.system.Os;
-import android.text.TextUtils;
 
+import com.mandi.intelimeditor.common.Constants.EventBusConstants;
+import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
@@ -12,6 +12,9 @@ import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -65,10 +68,29 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
      */
     @Override
     public void start() {
-        if (TextUtils.isEmpty(mCategory)) {
-            loadTietuByCategory(mSecondClass);
-        } else {
-            getTagPicListByCate(mCategory);
+    }
+
+    @Override
+    public void loadData() {
+        // 如果在注册之前完成下载，那么不会收到事件
+        EventBus.getDefault().register(this);
+        // 如果在注册之后的这里完成下载，那么会收到事件，会调用显示方法两次，但是比放到if判断后面有可能漏掉事件好
+        if (AllData.allPicRes_downloadState == AllData.DOWNLOAD_STATE_SUCCESS) {
+            showResListByHot();
+        }
+    }
+
+    private void showResListByHot() {
+        ArrayList<PicResource> styleList = new ArrayList<>(AllData.allStyleList);
+        PicResourcesAdapter.randomInsertForHeat(styleList);
+        mPicResourceAdapter.setImageUrls(styleList, null);
+        mView.onDownloadStateChange(true, styleList);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onEventMainThread(Integer event) {
+        if (EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH.equals(event)) {
+            showResListByHot();
         }
     }
 
@@ -78,6 +100,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
             loadTietuByCategory(mSecondClass);
         }
     }
+
 
     @NotNull
     @Override

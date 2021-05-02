@@ -5,16 +5,19 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mandi.intelimeditor.ad.AdData;
+import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.FileTool;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.home.ChoosePicContract;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
-import com.mandi.intelimeditor.home.data.UsuPathManger;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.home.data.PicDirInfoManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +34,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.mandi.intelimeditor.common.dataAndLogic.AllData.mMediaInfoScanner;
+import static com.mandi.intelimeditor.common.dataAndLogic.AllData.usuManager;
+
 /**
  * Created by LiuGuicen on 2017/1/17 0017.
  * 本地图片的路径数据是一开始就加载，并在整个应用周期中保活的，因为很多地方用到
@@ -45,9 +51,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     private List<String> currentPicPathList;
     private LocalPicAdapter picAdapter;
 
-    private UsuPathManger usuManager;
     private final PicDirInfoManager picDirInfoManager;
-    private MediaInfoScanner mMediaInfoScanner;
     private List<String> picPathInFile;
     private MyFileListAdapter fileInfosAdapter;
     private String latestPic;
@@ -57,9 +61,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
         this.mView = view;
         mContext = context;
 
-        usuManager = new UsuPathManger(AllData.appContext);
         picDirInfoManager = PicDirInfoManager.INSTANCE;
-        mMediaInfoScanner = MediaInfoScanner.getInstance();
         picPathInFile = new ArrayList<>();
         //        mAdPool = new ListAdPool(mContext);
     }
@@ -70,69 +72,109 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
      */
     @Override
     public void start() {
+        // 如果在注册之前完成扫描，那么不会收到事件
+        EventBus.getDefault().register(this);
+        // 如果在注册之后的这里完成扫描，那么会收到事件，会调用显示方法两次，但是比放到if判断后面有可能漏掉事件好
+        if (AllData.hasInitScanLocalPic) {
+            initSetAndShowPicList();
+        }
+        // 如果在注册之后的这里完成扫描，调用显示方法一次
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
+    public void onEventMainThread(Integer event) {
+        Log.d(TAG, "event bus 更新本地图片");
+        if (EventBusConstants.INIT_SCAN_LOCAL_PIC_FINISH.equals(event)) {
+            initSetAndShowPicList();
+        }
+    }
+
+    private void initSetAndShowPicList() {
+        // 只要进入这个方法，表示初始加载完成了，反注册
+        EventBus.getDefault().unregister(this);
+
+        mMediaInfoScanner.updateRecentPicList(usuManager);
+        currentPicPathList = usuManager.getUsuPaths();
+        Log.d(TAG, "currentPicPathList:" + currentPicPathList.size());
+        picAdapter.setImageUrls(currentPicPathList, true);
+        mView.showPicList();
+
+        mMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
+        mView.initFileInfoViewData();
+
+        LogUtil.d(TAG, "初始化显示图片完成");
+    }
+
+    @Override
+    public void detectAndUpdateInfo() {
         Observable.create(
                 new ObservableOnSubscribe<Integer>() {
                     @Override
                     public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
-                        // 线程数据库获取里面甩所有的图片信息
-                        usuManager.initFromDB();
-                        Log.e(TAG, "call: 从数据库获取数据完成");
-                        // 扫描器扫描信息，然后通知UI更新，先会更新图片，再是文件的
-                        mMediaInfoScanner.scanAndUpdatePicInfo();
-                        emitter.onNext(1);//更新图片
-                        emitter.onNext(2);//更新文件信息
-                        emitter.onComplete();
+                        if (mMediaInfoScanner.scanAndUpdatePicInfo()) {
+                            emitter.onNext(1);//更新图片
+                            emitter.onNext(2);//更新文件信息
+                            emitter.onComplete();
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<Integer, MediaInfoScanner.PicUpdateType>() {
                     @Override
                     public MediaInfoScanner.PicUpdateType apply(Integer type) throws Exception {
-                        if (type == 1)
-                            return mMediaInfoScanner.updateRecentPic(usuManager);
-                        else
+                        if (type == 1) {
+                            Log.d(TAG, "call: 进行图片更新了");
+                            MediaInfoScanner.PicUpdateType picUpdateType = mMediaInfoScanner.updateRecentPicList(usuManager);
+                            if (latestPic != null && !usuManager.hasRecentPic(latestPic) &&
+                                    !usuManager.getUsuPaths().contains(latestPic))//解决最新添加的图片扫描不到的问题，手动添加
+                                usuManager.addRecentPathStart(latestPic);
+                            return picUpdateType;
+                        } else {
+                            LogUtil.d("更新图片文件信息");
                             return mMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
+                        }
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MediaInfoScanner.PicUpdateType>() {
-                               @Override
-                               public void onComplete() {
-                                   Log.e(TAG, "Rx的onCompleted: ");
-                               }
+                    @Override
+                    public void onComplete() {
 
-                               @Override
-                               public void onError(Throwable throwable) {
-                                   Log.e(TAG, "Rx的 onError: " + throwable.getMessage());
-                                   mView.showPicList();
-                               }
+                    }
 
-                               @Override
-                               public void onSubscribe(Disposable d) {
+                    @Override
+                    public void onError(Throwable throwable) {
+                        LogUtil.e("onError: 跑出了错误", throwable.getMessage());
+                        mView.refreshFileInfosList();
+                    }
 
-                               }
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                               /**
-                                * 读取数据成功，第一次显示图片
-                                * @param updateType 更新的类型
-                                */
-                               @Override
-                               public void onNext(MediaInfoScanner.PicUpdateType updateType) {
-                                   Log.d(TAG, "Rx 的onNext: " + updateType);
-                                   switch (updateType) {
-                                       case CHANGE_ALL_PIC:
-                                           currentPicPathList = usuManager.getUsuPaths();
-                                           Log.d(TAG, "currentPicPathList:" + currentPicPathList.size());
-                                           picAdapter.setImageUrls(currentPicPathList, true);
-                                           mView.showPicList();
-                                           LogUtil.d(TAG, "初始化显示图片完成");
-                                           break;
-                                       case CHANGE_ALL_FILE:
-                                           mView.initFileInfoViewData();
-                                   }
-                               }
-                           }
-                );
+                    }
+
+                    @Override
+                    public void onNext(MediaInfoScanner.PicUpdateType updateType) {
+                        switch (updateType) {
+                            case CHANGE_ALL_PIC:
+                                if (usuManager.isUsuPic(currentPicPathList)) {
+                                    picAdapter.setImageUrls(usuManager.getUsuPaths(), true);
+                                    mView.refreshPicList();
+                                }
+                                LogUtil.d(TAG, "初始化显示图片完成");
+                                break;
+                            case CHANGE_ALL_FILE:
+                                if (!usuManager.isUsuPic(currentPicPathList))
+                                    mView.refreshFileInfosList();
+                        }
+                    }
+                });
+
+    }
+
+    public void destroy() {
+        // 如果在注册之前完成扫描，那么不会收到事件
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -194,73 +236,6 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
         List<String> successList = picDirInfoManager.deletePicList(pathList);// 删除图片文件并更新目录列表信息
         onDelMultiPicsSuccess(successList);
         return successList.size() == pathList.size();
-    }
-
-    @Override
-    public void detectAndUpdateInfo() {
-        Observable.create(
-                new ObservableOnSubscribe<Integer>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
-                        if (mMediaInfoScanner.scanAndUpdatePicInfo()) {
-                            emitter.onNext(1);//更新图片
-                            emitter.onNext(2);//更新文件信息
-                            emitter.onComplete();
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<Integer, MediaInfoScanner.PicUpdateType>() {
-                    @Override
-                    public  MediaInfoScanner.PicUpdateType apply(Integer type) throws Exception {
-                        if (type == 1) {
-                            Log.d(TAG, "call: 进行图片更新了");
-                             MediaInfoScanner.PicUpdateType picUpdateType = mMediaInfoScanner.updateRecentPic(usuManager);
-                            if (latestPic != null && !usuManager.hasRecentPic(latestPic) &&
-                                    !usuManager.getUsuPaths().contains(latestPic))//解决最新添加的图片扫描不到的问题，手动添加
-                                usuManager.addRecentPathStart(latestPic);
-                            return picUpdateType;
-                        } else {
-                            LogUtil.d("更新图片文件信息");
-                            return mMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
-                        }
-                    }
-                })
-                .subscribe(new Observer< MediaInfoScanner.PicUpdateType>() {
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        LogUtil.e("onError: 跑出了错误", throwable.getMessage());
-                        mView.refreshFileInfosList();
-                    }
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext( MediaInfoScanner.PicUpdateType updateType) {
-                        switch (updateType) {
-                            case CHANGE_ALL_PIC:
-                                if (usuManager.isUsuPic(currentPicPathList)) {
-                                    picAdapter.setImageUrls(usuManager.getUsuPaths(), true);
-                                    mView.refreshPicList();
-                                }
-                                LogUtil.d(TAG, "初始化显示图片完成");
-                                break;
-                            case CHANGE_ALL_FILE:
-                                if (!usuManager.isUsuPic(currentPicPathList))
-                                    mView.refreshFileInfosList();
-                        }
-                    }
-                });
-
     }
 
     @Override
@@ -355,6 +330,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     /**
      * 刚保存的图片，虽然发送了媒体更新，也需要1、2s的时间才能查到，自己的PTu界面保存下来的图片，手动添加一遍
      * 手动添加后，如果扫描到了，刷新整个列表，如果没扫描到，则不刷新，所以手动和这里的扫描不会冲突
+     *
      * @param newPicPath
      */
     @Override

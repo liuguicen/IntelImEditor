@@ -280,7 +280,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
             FirstUseUtil.usuPicUseGuide(mActivity, mActivity.mFloatActionBtn, gridLayoutManager.findViewByPosition(2));
         }
         pictureGridView.setAdapter(picAdapter);
-        Debug.stopMethodTracing();
+//        Debug.stopMethodTracing();
         Log.d("end trace", "time " + System.currentTimeMillis() / 1000);
         showLoading(false);
     }
@@ -492,6 +492,12 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
     }
 
     @Override

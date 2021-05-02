@@ -30,7 +30,7 @@ public class PicResource extends BmobObject {
     public static final String SECOND_CLASS_EXPRESSION = "expression"; // 名称不能改了，要和后台一致
     //    public static final String SECOND_CLASS_NAME_EXPRESSION = "表情";
     public static final String SECOND_CLASS_PROPERTY = "property"; // 名称不能改了，要和后台一致
-    public static final String category_style = "style"; // 名称不能改了，要和后台一致
+    public static final String CATEGORY_STYLE = "style"; // 名称不能改了，要和后台一致
     //    public static final String CATEGORY_NAME_PROPERTY = "道具";
     public static final String SECOND_CLASS_MY = "my";
     public static final String SECOND_CLASS_MY_NAME = "我的";

@@ -348,7 +348,7 @@ public class PicResourceDownloader {
             }
             itemDataList.add(item);
         }
-        itemData.picResourceList = itemDataList;
+        itemData.picResListInGroup = itemDataList;
         itemData.groupHeat = groupHeat;
         itemData.groupCreateTime = date;
     }

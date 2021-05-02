@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.core.util.Pair;
 
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
+import com.mandi.intelimeditor.common.util.FileTool;
 import com.mandi.intelimeditor.common.util.TimeDateUtil;
 import com.mandi.intelimeditor.R;
 
@@ -14,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 
 /**
@@ -256,7 +255,7 @@ public class UsuPathManger {
     }
 
     /**
-     * 更新usu列表中的最近图片信息
+     * 用排好序的最近图片，更新usu列表中的最近图片信息，包括时间日期分组标题
      *
      * @param sortedPicPathsByTime 排好序的最近图片
      */
@@ -368,5 +367,15 @@ public class UsuPathManger {
         if (UsuPathManger.PREFER_FLAG.equals(url))
             return true;
         return false;
+    }
+
+    public List<String> getPurePathList() {
+        ArrayList<String> newList = new ArrayList<>();
+        for (String s : mUsuallyPicPathList) {
+            if (s.startsWith("/")) {
+                newList.add(s);
+            }
+        }
+        return newList;
     }
 }

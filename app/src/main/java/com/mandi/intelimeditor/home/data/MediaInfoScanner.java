@@ -27,6 +27,7 @@ import java.util.TreeMap;
 /**
  * Created by LiuGuicen on 2017/1/18 0018.
  * 图片（主要）和小视频信息的扫描器，处理各种sd卡的媒体文件的扫描的问题
+ * 里面还包含了扫描的到的数据
  * 重要注释，看{@link MediaInfoScanner#scanAndUpdatePicInfo()}
  */
 
@@ -130,9 +131,9 @@ public class MediaInfoScanner {
     }
 
     /**
-     * 更新最近图片信息，在usu列表中的
+     * 根据扫描得到的排序好的图片信息，更新最近图片列表
      */
-    public PicUpdateType updateRecentPic(UsuPathManger usuPathManger) {
+    public PicUpdateType updateRecentPicList(UsuPathManger usuPathManger) {
         totalPicNumber = sortedPicPathsByTime.size();
         usuPathManger.updateRecentInfoInUsu(sortedPicPathsByTime);
         sortedPicPathsByTime.clear();

@@ -108,6 +108,7 @@ public class GlobalSettings {
     }
 
     public boolean isShowShortVideo() {
-        return performanceYear >= YearClass.PERFORMANCE_2G_4G;
+//        return performanceYear >= YearClass.PERFORMANCE_2G_4G;
+        return false;
     }
 }

@@ -28,5 +28,6 @@ interface TietuChooseContract {
         fun isDownloadSuccess(): Boolean
         fun deleteOneMyTietu(path: String)
         fun refresh()
+        fun loadData()
     }
 }

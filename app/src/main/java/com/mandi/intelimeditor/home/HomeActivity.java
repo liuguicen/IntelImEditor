@@ -633,7 +633,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         String action = getIntent().getAction();
         Set<String> categories = getIntent().getCategories();
         if (categories!= null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE) || isStyle) {
-            AllData.styleList = categoryList;
+            AllData.curStyleList = categoryList;
         }
         if (categories!= null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT)) || !isStyle) {
             AllData.contentList = categoryList;

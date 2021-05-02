@@ -361,17 +361,17 @@ public class PicResourcesAdapter extends BasePicAdapter {
         headerHolder.picGridView.setOnClickListener(v -> {
             int position = headerHolder.getLayoutPosition();
             if (position == -1) return;
-            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResourceList.get(0));
+            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResListInGroup.get(0));
         });
         headerHolder.picGridView2.setOnClickListener(v -> {
             int position = headerHolder.getLayoutPosition();
             if (position == -1) return;
-            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResourceList.get(1));
+            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResListInGroup.get(1));
         });
         headerHolder.picGridView3.setOnClickListener(v -> {
             int position = headerHolder.getLayoutPosition();
             if (position == -1) return;
-            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResourceList.get(2));
+            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResListInGroup.get(2));
         });
         return headerHolder;
     }
@@ -506,9 +506,9 @@ public class PicResourcesAdapter extends BasePicAdapter {
         LogUtil.d(TAG, "分组 = " + groupedList.get(position).groupHeat + " position =" + position);
         if (!TextUtils.isEmpty(groupedList.get(position).headerTitle)) {
             holder.titleTv.setText(groupedList.get(position).headerTitle);
-            holder.picGridView.setPicResource(groupedList.get(position).picResourceList.get(0));
-            holder.picGridView2.setPicResource(groupedList.get(position).picResourceList.get(1));
-            holder.picGridView3.setPicResource(groupedList.get(position).picResourceList.get(2));
+            holder.picGridView.setPicResource(groupedList.get(position).picResListInGroup.get(0));
+            holder.picGridView2.setPicResource(groupedList.get(position).picResListInGroup.get(1));
+            holder.picGridView3.setPicResource(groupedList.get(position).picResListInGroup.get(2));
         }
     }
 
