@@ -5,6 +5,9 @@ import android.graphics.Paint;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.mandi.intelimeditor.ad.LockUtil;
 import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
@@ -13,11 +16,12 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.home.data.UsuPathManger;
+import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.ptu.changeFace.LevelsAdjuster;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
-import com.mandi.intelimeditor.bean.GroupBean;
 import com.mandi.intelimeditor.R;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -34,8 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -55,19 +62,9 @@ public class AllData {
     public static long latestTietuModifyTime = GET_SERVICE_UPDATE_TIME_FAILED;  // 一开始相当于没有获取
     public static boolean hasInitDataNeedAc = false;
 
-    // 目前图片资源的数量不会太多，2020年6月，没到700条，直接把查到的数据做成全局的
-    // 因为目前多个地方使用，更方便，也更快
-    public static List<PicResource> expressResList;
-    public static List<PicResource> propertyResList;
-    public static List<PicResource> templateResList;
+
     public static List<PicResource> allResList;
-    /**
-     * 所有分组列表
-     */
-    public static int sortByGroup = 0; //0：默认热度排序，1：更新时间排序
-    // TODO: 2020/10/23 每个分类列表 存一遍 放太多数据了，不要这样搞
-    public static Map<String, List<GroupBean>> mAllGroupList = new HashMap<>();
-    public static Map<String, List<PicResource>> mAllCategoryList = new HashMap<>();
+    public static List<PicResGroup> mAllGroupList = new ArrayList<>(); // 分组列表，分组操作比较麻烦，所以存下来
     public static boolean hasLoadGuide = false;
     public static List<PicResource> curStyleList = new ArrayList<>();
     public static List<PicResource> contentList = new ArrayList<>();
@@ -215,58 +212,169 @@ public class AllData {
 
     public static List<PicResource> allStyleList = new ArrayList<>();
 
-    public static final int DOWN_LOAD_STATE_NO_START = 1;
-    public static final int DOWNLOAD_STATE_SUCCESS = 2;
-    public static final int DOWNLOAD_STATE_FAILED = 3;
-    public static int allPicRes_downloadState = DOWN_LOAD_STATE_NO_START;
+    public static final int PROCESS_STATE_UN_FINISH = 1;
+    public static final int PROCESS_STATE_SUCCESS = 2;
+    public static final int PROCESS_STATE_FAILED = 3;
+    public static int allPicRes_downloadState = PROCESS_STATE_UN_FINISH;
+    public static int allPicRes_groupState = PROCESS_STATE_UN_FINISH;
+
+
+    /**
+     * 数据获取是异步的，可能还没获取完成, 现在allData里面的这个接口相当于异步网络查询了，后面扩展也是逻辑差不多，不用改太多
+     */
+    public static List<PicResGroup> tieTuGroupList = new ArrayList<>(); // 分组计算比较麻烦，所以存下来
+    public static List<PicResGroup> templateGroupList = new ArrayList<>();
+    public static List<Emitter<List<PicResGroup>>> tieTuGroupQuery = new ArrayList<>();
+    public static List<Emitter<List<PicResGroup>>> templateGroupQuery = new ArrayList<>();
+    public static List<Emitter<List<PicResource>>> allResQuery = new ArrayList<>();
 
     public static void downLoadALLPicRes() {
-        Observable.create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-            PicResourceDownloader.queryPicResByCategory(PicResource.FIRST_CLASS_TEMPLATE, PicResource.CATEGORY_STYLE, emitter);
-        }).subscribe(new SimpleObserver<List<PicResource>>() {
-            @Override
-            public void onError(Throwable throwable) {
-                LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + throwable.getMessage());
-                if (allPicRes_downloadState != DOWNLOAD_STATE_SUCCESS) { // 可能会多次调用, 只要成功过一次，就不显示加载失败了
-                    allPicRes_downloadState = DOWNLOAD_STATE_FAILED;
-                    LogUtil.e("下载贴图失败 \n" + throwable.getCause());
-                }
-                EventBus.getDefault().post(EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH);
-            }
+        Log.e(TAG, "开始下载所有图片资源，重要log别删");
+        allResList.clear();
+        Observable
+                .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
+                    PicResourceDownloader.queryAllPicRes(emitter);
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<List<PicResource>>() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (allResList.size() > 0) { // 只下载了一部分,
+                            // 目前先当做成功了，也可以循环再下载若干次
+                            onComplete();
+                        } else {
+                            LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + throwable.getMessage());
+                            if (allPicRes_downloadState != PROCESS_STATE_SUCCESS) { // 可能会多次调用, 只要成功过一次，就不显示加载失败了
+                                allPicRes_downloadState = PROCESS_STATE_FAILED;
+                                LogUtil.e("下载图片资源失败 \n" + throwable.getCause());
+                            }
+                            if (allPicRes_groupState != PROCESS_STATE_SUCCESS) { // 可能会多次调用, 只要成功过一次，就不显示加载失败了
+                                allPicRes_groupState = PROCESS_STATE_FAILED;
+                                LogUtil.e("图片资源分组失败 \n" + throwable.getCause());
+                            }
 
-            @Override
-            public void onNext(@NotNull List<PicResource> tietuMaterialList) {
-                try {
-                    LogUtil.d(TAG, "获取贴图成功 = " + " - " + tietuMaterialList.size());
-                    allStyleList = new ArrayList<>(tietuMaterialList);
+                            for (Emitter<List<PicResource>> emitter : allResQuery) {
+                                emitter.onError(new Exception("下载贴图失败 \n" + throwable.getCause()));
+                            }
+                            allResQuery.clear();
 
-                    String thePath = Environment.getExternalStorageDirectory().toString();
-                    PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
-                    p1.setHeat(1000);
-                    p1.setTag("梵高 星空");
-                    allStyleList.add(p1);
-                    PicResource p2 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
-                    p1.setHeat(100);
-                    p1.setTag("动漫 新海诚");
-                    allStyleList.add(p2);
-                    allStyleList.add(PicResource.path2PicResource(thePath + File.separator + "test3.jpg"));
-                    allStyleList.add(PicResource.path2PicResource(thePath + File.separator + "test4.jpg"));
-                    allStyleList.add(PicResource.path2PicResource(thePath + File.separator + "test5.jpg"));
-                } catch (Exception e) {
-                    // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
-                    // 文档上面说只能同步使用
-                    e.printStackTrace();
-                    allPicRes_downloadState = DOWNLOAD_STATE_FAILED;
-                    LogUtil.e("下载贴图失败 \n" + e.getCause());
-                }
-                EventBus.getDefault().post(EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH);
-            }
-        });
+                            for (Emitter<List<PicResGroup>> emitter : tieTuGroupQuery) {
+                                emitter.onError(new Exception("下载贴图失败 \n" + throwable.getCause()));
+                            }
+                            tieTuGroupQuery.clear();
+
+                            for (Emitter<List<PicResGroup>> emitter : templateGroupQuery) {
+                                emitter.onError(new Exception("下载贴图失败 \n" + throwable.getCause()));
+                            }
+                            templateGroupQuery.clear();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(@NotNull List<PicResource> tietuMaterialList) {
+                        allResList.addAll(tietuMaterialList);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        LockUtil.updateUnlockIfNeeded(allResList); // 加锁
+                        for (Emitter<List<PicResource>> emitter : allResQuery) {
+                            emitter.onNext(allResList);
+                        }
+                        allResQuery.clear();
+
+                        Log.e(TAG, "查询所有图片资源成功");
+                        allPicRes_downloadState = PROCESS_STATE_SUCCESS;
+                        groupAllPicRes();
+                    }
+                });
+    }
+
+    public static void groupAllPicRes() {
+        Log.e(TAG, "开始下载所有图片资源，重要log别删");
+        Observable
+                .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
+                    tieTuGroupList = PicResSearchSortUtil.groupByTag(PicResource.FIRST_CLASS_TIETU, allResList);
+                    templateGroupList = PicResSearchSortUtil.groupByTag(PicResource.FIRST_CLASS_TEMPLATE, allResList);
+                    emitter.onNext(new ArrayList<>());
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<List<PicResource>>() {
+                    @Override
+                    public void onNext(@NotNull List<PicResource> tietuMaterialList) {
+                        for (Emitter<List<PicResGroup>> emitter : tieTuGroupQuery) {
+                            emitter.onNext(tieTuGroupList);
+                        }
+                        tieTuGroupQuery.clear();
+
+                        for (Emitter<List<PicResGroup>> emitter : templateGroupQuery) {
+                            emitter.onNext(templateGroupList);
+                        }
+                        templateGroupQuery.clear();
+                        allPicRes_groupState = PROCESS_STATE_SUCCESS;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        if (allPicRes_groupState != PROCESS_STATE_SUCCESS) { // 可能会多次调用, 只要成功过一次，就不显示加载失败了
+                            allPicRes_groupState = PROCESS_STATE_FAILED;
+                            LogUtil.e("图片资源分组失败 \n" + e.getCause());
+                        }
+
+                        for (Emitter<List<PicResGroup>> emitter : tieTuGroupQuery) {
+                            emitter.onError(new Exception("下载贴图失败 \n" + e.getCause()));
+                        }
+                        tieTuGroupQuery.clear();
+
+                        for (Emitter<List<PicResGroup>> emitter : templateGroupQuery) {
+                            emitter.onError(new Exception("下载贴图失败 \n" + e.getCause()));
+                        }
+                        templateGroupQuery.clear();
+                    }
+                });
     }
 
     /**
-     * 用完一定要置空，用来传递全局数据的
-     * 因为对应的数量大，不能用intent等传
+     * 数据获取是异步的，可能还没获取完成, 现在allData里面的这个接口相当于异步网络查询了，后面扩展也是逻辑差不多，不用改太多
      */
-    public static LevelsAdjuster levelsAdjuster;
+    public static void queryAllPicRes(Emitter<List<PicResource>> emitter) {
+        if (AllData.allPicRes_downloadState == AllData.PROCESS_STATE_SUCCESS) {
+            emitter.onNext(allResList);
+        } else {
+            allResQuery.add(emitter);
+        }
+    }
+
+    /**
+     * 数据获取是异步的，可能还没获取完成
+     */
+    public static void queryPicResGroup(Emitter<List<PicResGroup>> emitter, boolean isTietu) {
+        if (AllData.allPicRes_groupState == AllData.PROCESS_STATE_SUCCESS) {
+            if (isTietu) emitter.onNext(tieTuGroupList);
+            else emitter.onNext(templateGroupList);
+        } else {
+            if (isTietu) tieTuGroupQuery.add(emitter);
+            else templateGroupQuery.add(emitter);
+        }
+    }
+
+    /**
+     * 确定数据已经获取完成的情况下，直接get
+     */
+    public static List<?> getGroupList(@NonNull String mFirstClass, @NonNull String mSecondClass) {
+        if (PicResource.FIRST_CLASS_TEMPLATE.equals(mFirstClass)) {
+            return templateGroupList;
+        }
+
+        List<PicResGroup> result = new ArrayList<>();
+        for (PicResGroup picResGroup : tieTuGroupList) {
+            PicResource pic = picResGroup.resList.get(0);
+            if (mSecondClass.equals(pic.getCategory())) {
+                result.add(picResGroup);
+            }
+        }
+        return result;
+    }
 }

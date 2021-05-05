@@ -15,19 +15,13 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource
  */
 interface TietuChooseContract {
     interface View : BaseView<Presenter> {
-        fun refreshCategoryList()
         fun onDownloadStateChange(isSuccess: Boolean, list: MutableList<PicResource>?)
-        fun hideCategoryList()
-        fun showTagList(data: MutableList<String>)
-        fun setCategoryList(cateGoryList: MutableList<PicResourceItemData>)
+        fun afterSort(nextSortType: Int)
     }
 
     interface Presenter : BasePresenter {
         fun createPicAdapter(): PicResourcesAdapter
-        fun loadTietuByCategory(secondClass: String)
         fun isDownloadSuccess(): Boolean
         fun deleteOneMyTietu(path: String)
-        fun refresh()
-        fun loadData()
     }
 }

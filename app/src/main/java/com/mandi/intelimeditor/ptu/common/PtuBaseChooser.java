@@ -20,7 +20,7 @@ import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.home.HomeActivity;
-import com.mandi.intelimeditor.home.search.SearchUtil;
+import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
 import com.mandi.intelimeditor.ptu.PTuActivityInterface;
 import com.mandi.intelimeditor.ptu.PtuActivity;
@@ -166,7 +166,7 @@ public class PtuBaseChooser {
                     public List<PicResource> apply(List<PicResource> oldList) throws Exception {
                         // 将包含撕图标签的放到前面去
                         if (priorTagList != null) {
-                            return SearchUtil.sortByGivenTag(oldList, priorTagList);
+                            return PicResSearchSortUtil.sortByGivenTag(oldList, priorTagList);
                         }
                         return oldList;
                     }

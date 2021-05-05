@@ -23,7 +23,7 @@ public abstract class BaseFragment extends Fragment {
     public String TAG = getClass().getSimpleName();
     public View rootView;
     public Context mContext;
-    public View loadingView;
+    public View loadingLayout;
 
     private ProgressBar loadingProgressBar;
     private TextView loadingTv;
@@ -67,7 +67,7 @@ public abstract class BaseFragment extends Fragment {
      * 初始化View
      */
     public void initView() {
-        loadingView = rootView.findViewById(R.id.loadingView);
+        loadingLayout = rootView.findViewById(R.id.loadingLayout);
         loadingProgressBar = rootView.findViewById(R.id.progressBar);
         loadingTv = rootView.findViewById(R.id.loadingTv);
     }
@@ -79,11 +79,11 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showLoading(boolean show) {
-        if (loadingView != null) {
+        if (loadingLayout != null) {
             if (show) {
-                loadingView.setVisibility(View.VISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
             } else {
-                loadingView.setVisibility(View.GONE);
+                loadingLayout.setVisibility(View.GONE);
             }
         }
     }
@@ -96,13 +96,13 @@ public abstract class BaseFragment extends Fragment {
      * @param textColor 文字颜色
      */
     public void showLoading(boolean show, String message, int textColor) {
-        if (loadingView != null) {
+        if (loadingLayout != null) {
             if (show) {
-                loadingView.setVisibility(View.VISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
                 loadingTv.setTextColor(textColor);
             } else {
                 if (TextUtils.isEmpty(message)) {
-                    loadingView.setVisibility(View.GONE);
+                    loadingLayout.setVisibility(View.GONE);
                 } else {
                     loadingProgressBar.setVisibility(View.GONE);
                     loadingTv.setVisibility(View.VISIBLE);

@@ -428,10 +428,6 @@ public class TietuFragment extends BasePtuFragment {
         if (funcControl.needAdjustLevel) {
             faceChanger.generateLevelsData(srcBitmap, true);
             faceChanger.adjustLevelsAuto();
-        } else if (AllData.levelsAdjuster != null) { // 不需要调整，已经调整好了，直接设置bm相关数据
-            faceChanger.setLevelsAdjuster(AllData.levelsAdjuster);
-            AllData.levelsAdjuster = null;
-            addTietuByMultiType(srcBitmap, null);
         } else { // 不需要调整，且没有调整好，准备数据，不自动调整
             faceChanger.generateLevelsData(srcBitmap, true);
             addTietuByMultiType(srcBitmap, null);

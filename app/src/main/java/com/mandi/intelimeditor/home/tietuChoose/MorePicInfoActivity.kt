@@ -28,7 +28,6 @@ class MorePicInfoActivity : BaseActivity() {
             val intent = Intent(context, MorePicInfoActivity::class.java)
             intent.putExtra(PicResourcesFragment.FIRST_CLASS, firstClass)
             intent.putExtra(PicResourcesFragment.SECOND_CLASS, secondClass)
-            intent.putExtra(PicResourcesFragment.CATEGORY_NAME, category)
             intent.putExtra(TAG_POSITION, position)
             context.startActivity(intent)
         }
@@ -44,7 +43,6 @@ class MorePicInfoActivity : BaseActivity() {
         position = intent.getIntExtra(TAG_POSITION, 0)
         mFirstClass = intent.getStringExtra(PicResourcesFragment.FIRST_CLASS).toString()
         mSecondClass = intent.getStringExtra(PicResourcesFragment.SECOND_CLASS).toString()
-        mCategory = intent.getStringExtra(PicResourcesFragment.CATEGORY_NAME).toString()
 
 //        tagTitles = PicResourceDownloader.getTagListByCate(mSecondClass)
 

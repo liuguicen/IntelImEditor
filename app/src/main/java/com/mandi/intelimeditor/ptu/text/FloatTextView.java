@@ -814,7 +814,7 @@ public class FloatTextView extends androidx.appcompat.widget.AppCompatEditText i
 //                        PTuLog.d(TAG, "显示输入法了");
                         super.dispatchTouchEvent(event);
                         //如果没有弹出输入法，强制弹出
-                        showKeyboard(this);
+                        Util.showInputMethod(this);
                         changeShowState(STATUS_INPUT);
                         return true;
                     }
@@ -822,14 +822,6 @@ public class FloatTextView extends androidx.appcompat.widget.AppCompatEditText i
                 hasUp = true;
         }
         return false;
-    }
-
-    //显示虚拟键盘
-    public static void showKeyboard(View v) {
-        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        imm.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-
     }
 
     /**

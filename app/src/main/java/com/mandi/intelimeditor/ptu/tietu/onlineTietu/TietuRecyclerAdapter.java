@@ -72,14 +72,6 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
 
-    public void initAdData(TxFeedAdPool adPool) {
-        if (adPool == null) return;
-        mAdController = new ListAdStrategyController(mContext,
-                AdData.GDT_ID_PURE_PIC_QY_2,
-                adPool,
-                20, 34, 50, false, false);
-    }
-
     public void setUpdateHeat(boolean updateHeat) {
         isUpdateHeat = updateHeat;
     }
@@ -93,7 +85,7 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             groupedList.add(list.get(i));
             if (mAdController != null && mAdController.isAddAd(i)) {
                 // Logcat.d("插入广告位， 位置 = " + i);
-                groupedList.add(new PicResourceItemData(null, PicResourceItemData.PicListItemType.TX_PIC_AD));
+                groupedList.add(new PicResourceItemData("", PicResourceItemData.PicListItemType.TX_PIC_AD));
             }
         }
         // 刷新列表数据，修复友盟bug
@@ -110,7 +102,7 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             groupedList.add(new PicResourceItemData(data, PicResourceItemData.PicListItemType.ITEM));
             if (mAdController != null && mAdController.isAddAd(i)) {
                 // Logcat.d("插入广告位， 位置 = " + i);
-                groupedList.add(new PicResourceItemData(null, PicResourceItemData.PicListItemType.TX_PIC_AD));
+                groupedList.add(new PicResourceItemData("", PicResourceItemData.PicListItemType.TX_PIC_AD));
             }
         }
         //刷新列表数据，修复友盟bug
@@ -205,7 +197,7 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 MyItemHolder myItemHolder = (MyItemHolder) holder;
                 CoverLoader.INSTANCE.loadOriginImageView(mContext, BmobUtil.getUrlOfSmallerSize(url), myItemHolder.iv);
                 // 注意不能用转换后的url
-                Boolean isUnlocked = AdData.sUnlockData.get(String.valueOf(url.hashCode()));
+                Boolean isUnlocked = LockUtil.sUnlockData.get(String.valueOf(url.hashCode()));
                 if (isUnlocked != null && !isUnlocked) {
                     myItemHolder.lockView.setVisibility(View.VISIBLE);
                 } else {

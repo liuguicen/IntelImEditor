@@ -126,20 +126,51 @@ public class SPUtil {
     /**
      * @return 目前解锁位置存放在本地，用贴图或者模板的资源列表的长度变化判断是否更新位置，这里存取上次长度
      */
+    @Deprecated
     public static int getLastLockDataSize(String secondClass) {
         return userSp.getInt(SPConstants.FunctionsUnlock.LAST_LOCK_DATA_SIZE + secondClass, -1);
     }
 
+    @Deprecated
     public static void putLastLockDataSize(String secondClass, int size) {
         userSp.edit().putInt(SPConstants.FunctionsUnlock.LAST_LOCK_DATA_SIZE + secondClass, size).apply();
     }
 
+    public static void removeLastLockDataSize(String secondClass) {
+        userSp.edit().remove(SPConstants.FunctionsUnlock.LAST_LOCK_DATA_SIZE + secondClass).apply();
+    }
+
+    @Deprecated
     public static int getLastLockVersion(String secondClass) {
         return userSp.getInt(SPConstants.FunctionsUnlock.LAST_LOCK_VERSION + secondClass, -1);
     }
 
+    @Deprecated
     public static void putLastLockVersion(String secondClass, int version) {
         userSp.edit().putInt(SPConstants.FunctionsUnlock.LAST_LOCK_VERSION + secondClass, version).apply();
+    }
+
+    public static void removeLastLockVersion(String secondClass) {
+        userSp.edit().remove(SPConstants.FunctionsUnlock.LAST_LOCK_VERSION + secondClass).apply();
+    }
+
+    public static void putLockVersion(int version) {
+        userSp.edit().putInt(SPConstants.FunctionsUnlock.LAST_LOCK_VERSION, version).apply();
+    }
+
+    public static int getLockVersion() {
+        return userSp.getInt(SPConstants.FunctionsUnlock.LAST_LOCK_VERSION, -1);
+    }
+
+    /**
+     * @return 目前解锁位置存放在本地，用贴图或者模板的资源列表的长度变化判断是否更新位置，这里存取上次长度
+     */
+    public static int getLastLockDataSize() {
+        return userSp.getInt(SPConstants.FunctionsUnlock.LAST_LOCK_DATA_SIZE, -1);
+    }
+
+    public static void putLastLockDataSize(int size) {
+        userSp.edit().putInt(SPConstants.FunctionsUnlock.LAST_LOCK_DATA_SIZE, size).apply();
     }
 
     public static long getLastSplashAdShowTime() {

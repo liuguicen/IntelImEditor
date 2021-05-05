@@ -25,7 +25,7 @@ public class RewardVadUtil {
                                          View.OnClickListener toOpenVipListener) {
         if (url == null) return false;
         String key = String.valueOf(url.hashCode());
-        Boolean isUnlock = AdData.sUnlockData.get(key);
+        Boolean isUnlock = LockUtil.sUnlockData.get(key);
         if (isUnlock != null && !isUnlock) {
             UnlockDialog unlockDialog = new UnlockDialog();
             unlockDialog.setTitle(context.getString(R.string.unlock_title_resource));
@@ -38,7 +38,7 @@ public class RewardVadUtil {
                                     .edit()
                                     .putBoolean(key, true)
                                     .apply();
-                            AdData.sUnlockData.put(key, true);
+                            LockUtil.sUnlockData.put(key, true);
                             if (taskAfterUnlocked != null) {
                                 taskAfterUnlocked.run();
                             }

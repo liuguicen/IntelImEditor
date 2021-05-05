@@ -37,7 +37,7 @@ public class AppConfig {
     public static final String QQ_GROUP_FEEDBACK_KEY = "jiXCpPWsr-A7RA5d5rYDeZlrYCSUtuP_";
 
     // 资源解锁数据相关的版本
-    public static final int CUR_LOCK_VERSION = 1;
+    public static final int CUR_LOCK_VERSION = 2;
 
 
     public static boolean isCloseVipFunction = true; // 不打开VIP功能

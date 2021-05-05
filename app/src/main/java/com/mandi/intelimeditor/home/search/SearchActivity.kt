@@ -14,9 +14,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import cn.bmob.v3.BmobQuery
-import cn.bmob.v3.exception.BmobException
-import cn.bmob.v3.listener.FindListener
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -26,15 +23,14 @@ import com.mandi.intelimeditor.common.dataAndLogic.SPUtil
 import com.mandi.intelimeditor.common.util.InputMethodUtils
 import com.mandi.intelimeditor.common.util.LogUtil
 import com.mandi.intelimeditor.common.util.ToastUtils
-import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.home.data.PicDirInfo
-import com.mandi.intelimeditor.home.search.SearchUtil
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
 import com.mandi.intelimeditor.home.tietuChoose.PicResourcesAdapter
 import com.mandi.intelimeditor.home.viewHolder.FolderHolder
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource
 import com.mandi.intelimeditor.home.data.PicDirInfoManager
 import com.mandi.intelimeditor.R
+import io.reactivex.Emitter
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.toolbar_search_layout.*
 import java.util.*
@@ -77,10 +73,8 @@ class SearchActivity : BaseActivity() {
         initListener()
         updateHistoryPanel(true)
         var searchContent = intent.getStringExtra(INTENT_EXTRA_SEARCH_CONTENT)
-        if (!TextUtils.isEmpty(searchContent)) {
-            if (searchContent != null) {
-                search(searchContent)
-            }
+        if (!TextUtils.isEmpty(searchContent) && searchContent != null) {
+            search(searchContent)
         }
     }
 
@@ -141,7 +135,7 @@ class SearchActivity : BaseActivity() {
             updateHistoryPanel(false)
             searchPanelView.isRefreshing = true
             searchLocal()
-            searchOnline(query)
+            searchPicRes(query)
         } else {
             ToastUtils.show("请输入搜索关键词")
         }
@@ -163,38 +157,24 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-    /**
-     * 在线搜索
-     */
-    private fun searchOnline(queryString: String) {
-        //先从本地搜索，本地搜索无结果，就去搜线上的
-        searchResults = SearchUtil.searchPicByTag(queryString);
-        if (searchResults.size != 0) {
-            searchPanelView.isRefreshing = false
-            updateResultAdapter(searchResults);
-        } else {
-            // 空格和-替换成正则式的形式
-            val bmbQuery = Util.getRegexQuery(queryString);
-            val bmobQuery: BmobQuery<PicResource> = BmobQuery()
-            bmobQuery.addWhereMatches("tag", bmbQuery);
-            bmobQuery.findObjects(object : FindListener<PicResource>() {
-                override fun done(persons: MutableList<PicResource>?, ex: BmobException?) {
-                    searchPanelView.isRefreshing = false
-                    if (ex == null) {
-                        //查询成功
-                        persons?.let {
-                            searchResults = it
-                            updateResultAdapter(searchResults)
-                        }
-                    } else {
-                        //查询失败
-                        ToastUtils.show("查询接口异常，请稍后重试！")
-                        updateResultAdapter(searchResults)
-                    }
-                }
-            })
-        }
+    private fun searchPicRes(queryString: String) {
+        var emitter = object : Emitter<List<PicResource>> {
+            override fun onNext(resList: List<PicResource>) {
+                searchPanelView.isRefreshing = false
+                searchResults.addAll(resList)
+                updateResultAdapter(searchResults);
+            }
 
+            override fun onError(error: Throwable) {
+                ToastUtils.show("查询接口异常，请稍后重试！")
+                updateResultAdapter(searchResults)
+            }
+
+            override fun onComplete() {
+
+            }
+        }
+        PicResSearchSortUtil.searchPicResByQueryString(queryString, null, emitter);
     }
 
     private fun showEmptyView() {

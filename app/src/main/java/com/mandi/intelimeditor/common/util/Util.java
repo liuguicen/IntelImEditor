@@ -124,6 +124,16 @@ public class Util {
         return sb.toString();
     }
 
+    //显示虚拟键盘
+    public static void showInputMethod(View v) {
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (imm != null) {
+            imm.showSoftInput(v, InputMethodManager.SHOW_FORCED);
+        }
+
+    }
+
     /**
      * Created by Administrator on 2016/5/8.
      * 用于判断重复点击的，可以设置间隔时间

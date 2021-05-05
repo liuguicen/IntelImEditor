@@ -55,6 +55,8 @@ import util.CoverLoader;
 
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData.PicListItemType;
 
+import static com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData.PicListItemType.GROUP;
+
 /**
  * Created by liuguicen on 2016/8/31.
  * 本地图片列表的适配器
@@ -101,11 +103,11 @@ public class LocalPicAdapter extends BasePicAdapter {
         }
         SPUtil.addAndPutAdSpaceExposeNumber(AdData.AdSpaceName.PIC_RES_FEED);
         // 目前只采用腾讯图片广告的方案
-        //        if (AllData.appConfig.pic_resources_ad_strategy == AdData.TENCENT_AD) {
-        //        initWithOneTTAd(adPool);
-        //        }  else {
-        //            addMultiFeedAds(adPool);
-        //        }
+//        if (AllData.appConfig.pic_resources_ad_strategy == AdData.TENCENT_AD) {
+//        initWithOneTTAd(adPool);
+//        }  else {
+//            addMultiFeedAds(adPool);
+//        }
     }
 
     private void buildTTFeed() {
@@ -141,23 +143,6 @@ public class LocalPicAdapter extends BasePicAdapter {
         mAdController_feed.setUmEventName(EventName.pic_resource_ad_tx_feed);
     }
 
-
-    private void initWithOneTTAd(TxFeedAdPool adPool) {
-        mAdController_pic = new ListAdStrategyController(mContext,
-                AdData.getAdIDByPicResourceClass(PicResource.FIRST_CLASS_LOCAL),
-                adPool,
-                40, 52, 75, false);
-        // 只显示一个TTAD
-        mAdController_feed = new ListAdStrategyController(mContext, TTAdConfig.PIC_LIST_FEED_AD_ID,
-                AdData.getTTFeedAdPool_picList((Activity) mContext),
-                PIC_NUMBER_IN_ONE_PAGE * 6,
-                Integer.MAX_VALUE - 10,
-                Integer.MAX_VALUE,
-                false
-        );
-        mAdController_feed.setMod(3);
-    }
-
     /**
      * @param imageUrlList
      * @param isInUsu      是否是来自uss的列表
@@ -174,7 +159,7 @@ public class LocalPicAdapter extends BasePicAdapter {
 
             // 分组头
             if (UsuPathManger.isHeader(url)) {
-                groupedList.add(new LocalGroupedItemData(url, PicResourceItemData.PicListItemType.GROUP_HEADER));
+                groupedList.add(new LocalGroupedItemData(url, GROUP));
             } else { // 正常Item
                 LocalGroupedItemData itemData = new LocalGroupedItemData(url, PicResourceItemData.PicListItemType.ITEM);
                 if (mMediaInfoScanner.isShortVideo(url)) {
@@ -186,7 +171,6 @@ public class LocalPicAdapter extends BasePicAdapter {
             // 大广告位
             // 显示大的feedAd，
             if (isInUsu && mAdController_feed != null && mAdController_feed.isAddAd(i)) {
-
                 if (LogUtil.debugPicListFeedAd) {
                     Log.d("LocalPicAdapter", "本地图片页面，显示大广告");
                 }
@@ -211,7 +195,7 @@ public class LocalPicAdapter extends BasePicAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        if (viewType == PicResourceItemData.PicListItemType.GROUP_HEADER) {
+        if (viewType == GROUP) {
             View view = layoutInflater.inflate(R.layout.pic_gird_group_header, parent, false);
             return new HeaderHolder(view);
         } else {
@@ -373,7 +357,7 @@ public class LocalPicAdapter extends BasePicAdapter {
         boolean canDelete = false;
         for (int i = 0; i < groupedList.size(); i++) {
             LocalGroupedItemData itemData = groupedList.get(i);
-            if (itemData.type == PicResourceItemData.PicListItemType.GROUP_HEADER) {
+            if (itemData.type == GROUP) {
                 if (UsuPathManger.PREFER_FLAG.equals(itemData.url)) { // 找到preferPic的开头
                     canDelete = true;
                 } else {
@@ -393,7 +377,7 @@ public class LocalPicAdapter extends BasePicAdapter {
     public void addPreferPath(String path) {
         for (int i = groupedList.size() - 1; i >= 0; i--) {
             LocalGroupedItemData itemData = groupedList.get(i);
-            if (itemData.type == PicResourceItemData.PicListItemType.GROUP_HEADER) {
+            if (itemData.type == GROUP) {
                 if (UsuPathManger.PREFER_FLAG.equals(itemData.url)) { // 找到preferPic的开头
                     groupedList.add(i + 1, new LocalGroupedItemData(path, PicResourceItemData.PicListItemType.ITEM));
                 }

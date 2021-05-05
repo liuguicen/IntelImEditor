@@ -12,5 +12,5 @@ public class EventBusConstants {
     public static final Integer GIF_PLAY_CHOSEN = -100;
     public static final Integer GIF_PLAY_UN_CHOSEN = -101;
     public static final Integer INIT_SCAN_LOCAL_PIC_FINISH = -200;
-    public static final Integer DOWNLOAD_ALL_PIC_RES_FINISH = -300;
+    public static final Integer DOWNLOAD_ALL_PIC_RES_FINISH = 300;
 }

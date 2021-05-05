@@ -68,8 +68,6 @@ public class AdData {
 
     // 优量汇企业的
     public static final String GDT_ID_LAUNCH_QY = "9070881492546044";
-    public static final String GDT_ID_PURE_PIC_QY_1 = "8070584482441036";
-    public static final String GDT_ID_PURE_PIC_QY_2 = "4030481412642067";
     public static final String GDT_ID_INSERT_SCREEN_AD = "3081864377490467";
     public static final String GDT_ID_INSERT_SCREEN_PURE_VAD = "8001861378935287";
     public static final String GDT_ID_FEED_PIC_RES_LIST = "8011617467628352"; // 信息流，图片资源列表
@@ -94,155 +92,6 @@ public class AdData {
     // 即目前要降低曝光次数，增加点击率
     public static final long NATIVE_AD_LOAD_TIME_INTERVAL = 45 * 60 * 1000; // 加载原生广告的间隔时间
 
-
-    /**
-     * 激励视频广告锁住的位置
-     */
-    public static final List<Integer> templateLockedPosition = new ArrayList<Integer>() {{
-        add(3);
-        add(6);
-        add(8);
-        add(11);
-        add(13);
-        add(14);
-        add(17);
-        add(19);
-        add(22);
-        add(25);
-        add(28);
-        add(30);
-        add(33);
-        add(36);
-        add(38);
-        add(44);
-        add(47);
-        add(50);
-        add(53);
-        add(58);
-        add(60);
-        add(63);
-        add(67);
-        add(71);
-        add(76);
-        add(80);
-        add(85);
-        add(87);
-        add(94);
-        add(98);
-        add(103);
-        add(108);
-        add(111);
-        add(118);
-        add(122);
-        add(126);
-        add(132);
-        add(134);
-        add(141);
-        add(146);
-        add(154);
-        add(162);
-        add(168);
-        add(173);
-        add(176);
-        add(184);
-        add(188);
-        add(190);
-        add(198);
-        add(205);
-        add(210);
-        add(214);
-        add(219);
-        add(221);
-        add(229);
-        add(231);
-        add(233);
-        add(237);
-        add(244);
-        add(249);
-        add(257);
-        add(264);
-        add(267);
-        add(274);
-        add(277);
-        add(279);
-        add(282);
-        add(290);
-        add(296);
-    }};
-    public static final List<Integer> tietuLockedPosition = new ArrayList<Integer>() {{
-        add(5);
-        add(7);
-        add(10);
-        add(13);
-        add(15);
-        add(18);
-        add(20);
-        add(23);
-        add(25);
-        add(28);
-        add(30);
-        add(34);
-        add(38);
-        add(41);
-        add(45);
-        add(50);
-        add(53);
-        add(59);
-        add(62);
-        add(65);
-        add(69);
-        add(72);
-        add(78);
-        add(85);
-        add(91);
-        add(97);
-        add(103);
-        add(108);
-        add(103);
-        add(119);
-        add(125);
-        add(131);
-        add(139);
-        add(145);
-        add(151);
-        add(159);
-        add(162);
-        add(170);
-        add(183);
-        add(195);
-        add(199);
-        add(204);
-        add(210);
-        add(215);
-        add(221);
-        add(228);
-        add(233);
-        add(237);
-        add(241);
-        add(250);
-        add(259);
-        add(271);
-        add(285);
-        add(290);
-        add(296);
-    }};
-
-    static {
-        int start = 300;
-        for (int i = 1; i < 20; i++)
-            for (int j = 4; j < 9; j++) {
-                start += j;
-                templateLockedPosition.add(start);
-                tietuLockedPosition.add(start);
-            }
-    }
-
-    /**
-     * 包含了需要解锁的资源，即key，用图片url的hashcode生成，
-     * 以及需要解锁的资源的解锁结果
-     * 判断一个资源是否锁住时，就判断是否包含它的key并且value = false
-     */
-    public static Map<String, Boolean> sUnlockData = new HashMap<>();
 
     /**
      * 是否显示广告，这里的策略是贴图和模板只要点击了，整个List的广告去除，
@@ -286,11 +135,10 @@ public class AdData {
                 if (LogUtil.debugRewardAd) {
                     Log.d(TTRewardVad.TAG, "读出解锁数据 " + entry.getKey() + " : " + entry.getValue());
                 }
-                sUnlockData.put(entry.getKey(), ((Boolean) entry.getValue()));
+                LockUtil.sUnlockData.put(entry.getKey(), ((Boolean) entry.getValue()));
             }
         } else { // 解锁关闭的话，预设的解锁位置也得清空，因为第一次下载图片资源列表时可能会直接使用预设列表设置解锁位置
-            tietuLockedPosition.clear();
-            templateLockedPosition.clear();
+            LockUtil.picResLockedPosition.clear();
         }
     }
 
@@ -327,42 +175,6 @@ public class AdData {
                 .putInt(SPConstants.PTU_RESULT_COUNT, ptuResultCount)
                 .apply();
     }
-
-
-    public static String getAdIDByPicResourceClass(String picResourceClass) {
-        if (PicResource.FIRST_CLASS_TEMPLATE.equals(picResourceClass))
-            return AdData.GDT_ID_PURE_PIC_QY_1;
-        return GDT_ID_PURE_PIC_QY_1;
-        //        switch (picResourceClass) {
-        //            case PicResource.FIRST_CLASS_TIETU:
-        //                return TIETU_LIST_ID;
-        //                return TEMPLATE_LIST_ID;
-        //        }
-        //        return TIETU_LIST_ID;
-    }
-
-    //    public static TxFeedAd prepareAdForPtuResult(Context context) {
-    //        LogUtil.d(context);
-    //        if (!AdData.isShowPtuResultAd()) {
-    //            destroyPtuResultAd();
-    //            return null;
-    //        }
-    //        // 同一个Activity下，不要销毁，减少曝光量，增加点击率
-    //        if (sPtuResultAd != null && sPtuResultAd.isInvalid()) {
-    //            destroyPtuResultAd();
-    //        }
-    //
-    //        if (sPtuResultAd == null) {
-    //            destroyPtuResultAd();
-    //            sPtuResultAd = new TxFeedAd(null,
-    //                    AdData.PTU_RESULT_ID, EventName.ptu_result_ad,
-    //                    "", null);
-    //            sPtuResultAd.setMaxExposureNumber(4);
-    //            sPtuResultAd.setCloseListener(null);
-    //            sPtuResultAd.loadAdResources(null);
-    //        }
-    //        return sPtuResultAd;
-    //    }
 
     public static void destroyPtuResultAd() {
         if (sPtuResultAd != null) {
@@ -481,10 +293,9 @@ public class AdData {
      * 用户开通VIP成功之后，清除一些广告相关的数据
      */
     public static void onOpenVipSuccess() {
-        sUnlockData.clear();
+        LockUtil.sUnlockData.clear();
         // 解锁关闭的话，预设的解锁位置也得清空，因为第一次下载图片资源列表时可能会直接使用预设列表设置解锁位置
-        tietuLockedPosition.clear();
-        templateLockedPosition.clear();
+        LockUtil.picResLockedPosition.clear();
     }
 
     /**

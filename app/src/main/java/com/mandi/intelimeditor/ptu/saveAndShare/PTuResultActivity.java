@@ -32,7 +32,7 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.view.DialogFactory;
-import com.mandi.intelimeditor.home.search.SearchUtil;
+import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourcesAdapter;
 import com.mandi.intelimeditor.ptu.PtuActivity;
@@ -103,7 +103,7 @@ public class PTuResultActivity extends BaseActivity {
             public List<PicResource> apply(List<PicResource> srcTagList) throws Exception {
                 ArrayList<String> useTagsList = srcIntent.getStringArrayListExtra(PTuResultData.INTENT_EXTRA_USED_TAGS_LIST);
                 String excludeTag = (useTagsList != null && useTagsList.size() >= 1) ? useTagsList.get(0) : null;
-                List<PicResource> searchedRes = SearchUtil.searchSimilarResByTags(srcTagList, useTagsList, excludeTag);
+                List<PicResource> searchedRes = PicResSearchSortUtil.searchSimilarResByTags(srcTagList, useTagsList, excludeTag);
                 if (LogUtil.debugRecommend) {
                     Log.d(TAG, "获取到的推荐列表 size = " + (searchedRes != null ? searchedRes.size() : 0));
                 }

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mandi.intelimeditor.common.BaseLazyLoadFragment;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
-import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
@@ -20,6 +19,7 @@ import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import com.mandi.intelimeditor.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,7 +31,8 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
     private boolean isTagGroup;
     private RecyclerView tietuRcv;
     private TietuRecyclerAdapter tietuListAdapter;
-    private PicResourceViewModel mViewModel;
+    private PTuTietuListViewModel mViewModel;
+    private List<PicResource> picResList = new ArrayList<>();
 
     /**
      * @param title      分组标题
@@ -61,7 +62,7 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
             title = getArguments().getString(EXTRA_TITLE);
             isTagGroup = getArguments().getBoolean(EXTRA_IS_TAG);
             LogUtil.d(TAG, "title=" + title);
-            mViewModel = new ViewModelProvider(this).get(PicResourceViewModel.class);
+            mViewModel = new ViewModelProvider(this).get(PTuTietuListViewModel.class);
             mViewModel.getPicResources().observe(getViewLifecycleOwner(), picResources -> {
                 tietuListAdapter.setItemList(picResources);
                 if (picResources.size() > 0) {
@@ -88,7 +89,7 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
      */
     @Override
     public int getLayoutResId() {
-        return R.layout.fragment_tietu_list;
+        return R.layout.fragment_ptu_tietu_list;
     }
 
     @Override
@@ -140,16 +141,15 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
 
     private void loadPicListByTitle(String title) {
         if (isTagGroup) {
-            List<PicResource> picResources = AllData.mAllCategoryList.get(title);
-            LogUtil.d(TAG, "获取贴图成功 = " + title + " - " + picResources.size());
-            tietuListAdapter.setList(picResources);
-            if (picResources.size() > 0) {
+            LogUtil.d(TAG, "获取贴图成功 = " + title + " - " + picResList.size());
+            tietuListAdapter.setList(picResList);
+            if (picResList.size() > 0) {
                 showLoading(false, null, Color.WHITE);
             } else {
                 showLoading(false, "暂无数据", Color.WHITE);
             }
         } else {
-            mViewModel.loadPicResources(title);
+            mViewModel.loadOtherGroup(title);
         }
     }
 
@@ -157,5 +157,9 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
     @Override
     public boolean onBackPressed() {
         return false;
+    }
+
+    public void setPicList(List<PicResource> resList) {
+        picResList = resList;
     }
 }

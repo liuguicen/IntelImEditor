@@ -8,6 +8,11 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
+
+import java.util.ArrayList;
+
+import static com.mandi.intelimeditor.common.dataAndLogic.AllData.appConfig;
 
 
 /**
@@ -27,7 +32,7 @@ public class InstallPolicy {
      */
     public void processPolicy() {
 
-        int lastVersion = AllData.appConfig.readAppVersion();
+        int lastVersion = appConfig.readAppVersion();
 
         if (BuildConfig.VERSION_CODE == lastVersion) {//已经更新版本数据，或者新安装的版本相同
             return;
@@ -44,7 +49,7 @@ public class InstallPolicy {
             }
             //            执行版本更新操作
             // 清除旧版本信息，写入新版本信息,注意只需要秦楚或者写入其中一个
-            if (AllData.appConfig.isVersion1_0())//是1.0版本
+            if (appConfig.isVersion1_0())//是1.0版本
             {
                 clearOldVersionInfo_1_0();
                 setShearInfo();
@@ -55,8 +60,21 @@ public class InstallPolicy {
 
                    }*/
             }
+
+            if (lastVersion <= 32) { // 删除所有低版本中的关于解锁的sp
+                ArrayList<String> clsList = new ArrayList<String>() {{
+                    add(PicResource.SECOND_CLASS_BASE);
+                    add(PicResource.SECOND_CLASS_EXPRESSION);
+                    add(PicResource.SECOND_CLASS_EXPRESSION);
+                }};
+                for (String cls : clsList) {
+                    SPUtil.removeLastLockDataSize(cls);
+                    SPUtil.removeLastLockVersion(cls);
+                }
+            }
+
             writeCurVersionInfo();
-            AllData.appConfig.writeCurAppVersion();
+            appConfig.writeCurAppVersion();
         }
     }
 
@@ -64,14 +82,14 @@ public class InstallPolicy {
         //每次更新之后重新上传一次设备信息，因为版本已经更新，
         //顺便还有os版本等更新的检查
         //后面后台线程检测到false，就会自动更新了
-        AllData.appConfig.writeSendDeviceInfo(false);
+        appConfig.writeSendDeviceInfo(false);
     }
 
     /**
      * 清除1.0的旧版本的信息
      */
     private void clearOldVersionInfo_1_0() {
-        AllData.appConfig.clearOldVersionInfo_1_0();//清除旧版本配置信息
+        appConfig.clearOldVersionInfo_1_0();//清除旧版本配置信息
     }
 
 

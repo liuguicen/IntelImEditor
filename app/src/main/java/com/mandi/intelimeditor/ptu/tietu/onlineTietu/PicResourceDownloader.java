@@ -3,7 +3,10 @@ package com.mandi.intelimeditor.ptu.tietu.onlineTietu;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.mandi.intelimeditor.ad.AdData;
+import com.mandi.intelimeditor.ad.LockUtil;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.TTRewardVad;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
@@ -13,10 +16,10 @@ import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
+import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.network.NetWorkState;
 import com.mandi.intelimeditor.user.US;
-import com.mandi.intelimeditor.bean.GroupBean;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +38,9 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobQueryResult;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.SQLQueryListener;
+import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -49,17 +54,17 @@ import io.reactivex.ObservableOnSubscribe;
  * 自己以前都不会这样做的，软件工程的思想松懈了，忘记了，所以要定期的复习，要加深性的学习
  */
 public class PicResourceDownloader {
+    private static final int NUMBER_IN_PAGE = 500;
     private static String TAG = "PicResourceDownloader";
     /**
      * 缓存时间
      */
-    public static final long CACHE_EXPIRE = TimeUnit.DAYS.toMillis(1) * 100;
-    static final int PRIOR_TIETU_NUMBER = 1000;
-    // 图片资源列表的刷新时间间隔
-    private static final long RESOURCES_LIST_REFRESH_INTERVAL = 24 * 3600 * 1000;
+    public static final long CACHE_EXPIRE = TimeUnit.DAYS.toMillis(1);
+    public static final int MAX_QUERY_NUMBER = 2000;
 
     /**
      * 根据类别查询图片资源列表
+     *
      * @param secondClass 第二层类别，第一层类别现在不考虑，用第二层区分
      *                    如果为null，默认获取全部数据
      *                    否则获取具体类下数据
@@ -67,83 +72,91 @@ public class PicResourceDownloader {
      */
     public static void queryPicResByCategory(final String firstClass, final String secondClass,
                                              @NotNull final ObservableEmitter<List<PicResource>> emitter) {
+
         LogUtil.d("queryTietuByCategory", "firstClass =" + firstClass + " secondClass=" + secondClass);
-        //获取我的
-        if (PicResource.SECOND_CLASS_MY.equals(secondClass)) {
-            PicResourceDownloader.queryMyTietu(emitter);
-            return;
-        }
-        //直接从全局数据获取
-        List<PicResource> picResources = queryFormGlobalData(secondClass);
-        if (picResources != null) {
-            emitter.onNext(picResources);
-//            emitter.onComplete();
-            return;
-        }
-        String sql = "select * from PicResource" +
-                " where category = '" + secondClass + "'" +
-                " order by heat desc" +
-                " limit " + PRIOR_TIETU_NUMBER;
-        //默认查询所有的
-        if (PicResource.ALL_STICKER_LIST.equals(secondClass)) {
-            //分类不为空，则查询分类中的数据
-            sql = "select * from PicResource" +
-                    " where category != '" + PicResource.SECOND_CLASS_BASE + "'" +
-                    " order by heat desc" +
-                    " limit " + PRIOR_TIETU_NUMBER;
-        }
-        String finalSql = sql;
-        Observable.create((ObservableOnSubscribe<Long>)
-                emitter1 -> BmobDatabaseUtil.getServiceUpdateTime("PicResource",
-                        emitter1))
-                .subscribe(new SimpleObserver<Long>() {
-                    @Override
-                    public void onNext(Long serviceUpdateTime) {
-                        LogUtil.d("queryTietuByCategory", "sql =" + finalSql);
-                        BmobQuery<PicResource> query = new BmobQuery<>();
-                        query.setSQL(finalSql);
-                        // 如果有cache， 先从cache里面查询,然后再请求网络，然后再判断是否有更新，有更新的话再从网络查询
-                        //bmob官方有个CACHE_ELSE_NETWORK策略，不用自己写。缓存时间时间为1天
-                        query.setMaxCacheAge(RESOURCES_LIST_REFRESH_INTERVAL);
-                        query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
-                        query.doSQLQuery(
-                                new SQLQueryListener<PicResource>() {
-                                    @Override
-                                    public void done(BmobQueryResult<PicResource> result, BmobException e) {
-                                        if (e == null && result != null) { // 查询成功
-                                            LogUtil.d("queryTietuByCategory", "query pic resource list from cache success");
-                                            List<PicResource> resultList = result.getResults();
-                                            if (resultList == null)
-                                                resultList = new ArrayList<>();
-                                            if (resultList.size() > 10) { // 认为获取成功
-                                                if (PicResource.SECOND_CLASS_EXPRESSION.equals(secondClass)) {
-                                                    AllData.expressResList = resultList;
-                                                } else if (PicResource.SECOND_CLASS_PROPERTY.equals(secondClass)) {
-                                                    AllData.propertyResList = resultList;
-                                                } else if (PicResource.SECOND_CLASS_BASE.equals(secondClass)) {
-                                                    AllData.templateResList = resultList;
-                                                } else if (PicResource.ALL_STICKER_LIST.equals(secondClass)) {
-                                                    AllData.allResList = resultList;
-                                                }
-                                            }
-                                            groupByTag(secondClass, resultList);
-                                            emitter.onNext(resultList); // 更新视图
-                                            long lastQueryTime = SPUtil.getQueryTimeOfTietuWithCategory(secondClass);
-                                            // 要更新
-                                            //  改为一天更新一次，因为热度变化，几乎每次这里都要刷新，这样不频繁刷新，
-                                            //  目前来说对图片列表实时刷新没有必要，隔段时间刷新一次就行了，这样也减少API调用量
-                                            if (serviceUpdateTime > lastQueryTime + RESOURCES_LIST_REFRESH_INTERVAL) {
-                                                queryFromNet(finalSql, emitter, firstClass, secondClass);
-                                            }
-                                        } else { // 获取失败，需要调用从网络查询
-                                            LogUtil.d("queryTietuByCategory", "query pic resource list from cache failed " + e.getMessage());
-                                            queryFromNet(finalSql, emitter, firstClass, secondClass);
-                                        }
-                                    }
-                                });
-                    }
-                });
+        AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
+
+            @Override
+            public void onNext(@NonNull List<PicResource> resList) {
+                try {
+                    LogUtil.d(TAG, "获取贴图成功 = " + " - " + resList.size());
+//                Log.e(TAG, "onNext: test error");
+                    emitter.onNext(PicResSearchSortUtil.filter(resList, firstClass, secondClass));
+                } catch (Exception e) {
+                    // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
+                    // 文档上面说只能同步使用
+                    emitter.onError(e);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
+                LogUtil.d(TAG, "网络出错 = " + " - " + throwable.getMessage());
+                emitter.onError(throwable);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
     }
+    // 参考代码，保留
+//        //获取我的
+//        if (PicResource.SECOND_CLASS_MY.equals(secondClass)) {
+//            PicResourceDownloader.queryMyTietu(emitter);
+//            return;
+//        }
+//        String sql = "select * from PicResource" +
+//                " where category = '" + secondClass + "'" +
+//                " order by heat desc" +
+//                " limit " + NUMBER_IN_PAGE;
+//        Observable.create((ObservableOnSubscribe<Long>)
+//                emitter1 -> BmobDatabaseUtil.getServiceUpdateTime("PicResource",
+//                        emitter1))
+//                .subscribe(new SimpleObserver<Long>() {
+//                    @Override
+//                    public void onNext(Long serviceUpdateTime) {
+//                        LogUtil.d("queryTietuByCategory", "sql =" + sql);
+//                        BmobQuery<PicResource> query = new BmobQuery<>();
+//                        query.setSQL(sql);
+//                        // 如果有cache， 先从cache里面查询,然后再请求网络，然后再判断是否有更新，有更新的话再从网络查询
+//                        // bmob官方有个CACHE_ELSE_NETWORK策略，不用自己写
+//                        query.setMaxCacheAge(CACHE_EXPIRE);
+//                        query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
+//                        query.doSQLQuery(
+//                                new SQLQueryListener<PicResource>() {
+//                                    @Override
+//                                    public void done(BmobQueryResult<PicResource> result, BmobException e) {
+//                                        if (e == null && result != null) { // 查询成功
+//                                            LogUtil.d("queryTietuByCategory", "query pic resource list from cache success");
+//                                            List<PicResource> resultList = result.getResults();
+//                                            if (resultList == null)
+//                                                resultList = new ArrayList<>();
+//                                            if (resultList.size() > 10) { // 认为获取成功
+//                                                AllData.allResList = resultList;
+//                                            }
+//                                            emitter.onNext(resultList);
+//                                            // 主动从网络查询
+////                                            long lastQueryTime = SPUtil.getQueryTimeOfTietuWithCategory(secondClass);
+//                                            //  改为一天更新一次，因为热度变化，几乎每次这里都要刷新，这样不频繁刷新，
+//                                            //  目前来说对图片列表实时刷新没有必要，隔段时间刷新一次就行了，这样也减少API调用量
+////                                            if (serviceUpdateTime > lastQueryTime + RESOURCES_LIST_REFRESH_INTERVAL) {
+////                                                queryFromNet(sql, emitter, firstClass, secondClass);
+////                                            }
+//                                        } else { // 获取失败，需要调用从网络查询
+//                                            if (e != null) {
+//                                                LogUtil.d("queryTietuByCategory", "query pic resource list from cache failed " + e.getMessage());
+//                                                e.printStackTrace();
+//                                            }
+//                                            queryFromNet(sql, emitter, firstClass, secondClass);
+//                                        }
+//                                    }
+//                                });
+//                    }
+//                });
+//    }
 
 
     /**
@@ -177,7 +190,7 @@ public class PicResourceDownloader {
                             // 将要锁定的项存下来
                             if (resultList == null)
                                 resultList = new ArrayList<>();
-                            TTRewardVad.updateUnlockIfNeeded(firstClass, second_class, resultList);
+                            LockUtil.updateUnlockIfNeeded( resultList);
                             emitter.onNext(resultList);
 //                            emitter.onComplete();
                             SPUtil.putQueryTimeOfTietuWithCategory(System.currentTimeMillis(), second_class);
@@ -217,13 +230,13 @@ public class PicResourceDownloader {
         return hasUsedCache;
     }
 
-
     /**
      * @return emitter 是否 调用过出错
      */
     public static void queryMyTietu(ObservableEmitter<List<PicResource>> emitter) {
+        MyDatabase myDb = MyDatabase.getInstance();
         ArrayList<String> myTietuPathList = new ArrayList<>();
-        MyDatabase.getInstance().queryAllMyTietu(myTietuPathList);
+        myDb.queryAllMyTietu(myTietuPathList);
         List<PicResource> picResourceList = new ArrayList<>();
         for (String s : myTietuPathList) {
             PicResource PicResource = new PicResource();
@@ -236,233 +249,73 @@ public class PicResourceDownloader {
         emitter.onComplete();
     }
 
-    /**
-     * 从本地缓存中获取图片列表数据
-     *
-     * @param categoryName 分类名，如果为空，则获取全部的数据，否则获取对应分类下的数据
-     * @return
-     */
-    public static List<PicResource> queryFormGlobalData(String categoryName) {
-        if (AllData.expressResList != null && PicResource.SECOND_CLASS_EXPRESSION.equals(categoryName)) {
-            return AllData.expressResList;
-        } else if (AllData.propertyResList != null && PicResource.SECOND_CLASS_PROPERTY.equals(categoryName)) {
-            return AllData.propertyResList;
-        } else if (AllData.templateResList != null && PicResource.SECOND_CLASS_BASE.equals(categoryName)) {
-            return AllData.templateResList;
-        } else if (PicResource.ALL_STICKER_LIST.equals(categoryName) && AllData.allResList != null) {
-            //获取所有的
-            return AllData.allResList;
-        }
-        return null;
-    }
+    public static void queryAllPicRes(@NotNull final ObservableEmitter<List<PicResource>> emitter) {
+        // 首先查询行数 也就是图片数量
+        BmobQuery<PicResource> query = new BmobQuery<>();
+        query.setMaxCacheAge(CACHE_EXPIRE);
+        query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        Log.d(TAG, "查询数量，bmob缓存情况 = " + query.hasCachedResult(PicResource.class));
+        query.count(PicResource.class, new CountListener() {
 
-    /**
-     * 根据标签将图片列表分组
-     */
-    public static List<PicResourceItemData> groupByTag(String secondClass, List<PicResource> data) {
-        long start = System.currentTimeMillis();
-        if (data == null) return new ArrayList<>();
-        Map<String, List<PicResource>> map = new HashMap<>();
-        for (int i = 0; i < data.size(); i++) {
-            PicResource picRes = data.get(i);
-
-            if (picRes.getTag() == null) {
-                LogUtil.d(TAG, "updateAllTagAndGroup 数据异常" + picRes.toString());
-                continue;
-            }
-
-            try {
-                String[] split_tags = picRes.getTag().split("-");
-                for (String tag : split_tags) {
-                    if (TextUtils.isEmpty(tag)) continue;
-
-                    List<PicResource> picResources = map.get(tag);
-                    if (picResources == null) {
-                        picResources = new ArrayList<>();
-                    }
-                    picResources.add(picRes);
-                    map.put(tag, picResources);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        //保存分组标题
-        List<String> titles = new ArrayList<>(map.keySet());
-        //保存分组数据
-        List<List<PicResource>> groupList = new ArrayList<>(map.values());
-
-        List<PicResourceItemData> dataList = new ArrayList<>();
-        List<GroupBean> cacheTitles = new ArrayList<>();
-        for (int i = 0; i < titles.size(); i++) {
-            String title = titles.get(i);
-            List<PicResource> picResList = groupList.get(i);
-
-            if (picResList != null && picResList.size() >= 6) {
-                PicResourceItemData itemData = new PicResourceItemData(title, false);
-                convertPicResList2PicItemList(picResList, itemData);
-                dataList.add(itemData);
-                //将分组添加到内存变量中
-                cacheTitles.add(new GroupBean(title, picResList));
-            }
-            // TODO: 2020/10/23 不要这样搞，共用！！！
-            //保存分组对应数据, 这个给选图图下面的贴图？？？
-            AllData.mAllCategoryList.put(title, picResList);
-        }
-        // 这个给P图下面的贴图列表的？？？
-        AllData.mAllGroupList.put(secondClass, cacheTitles);
-
-        Log.d(TAG, "updateAllTagAndGroup: 分类用时 = " + (System.currentTimeMillis() - start));
-        return dataList;
-    }
-
-
-    /**
-     * 更新分组数据
-     *
-     * @param data     分组内图片集合
-     * @param itemData 分组
-     */
-    public static void convertPicResList2PicItemList
-    (List<PicResource> data, PicResourceItemData itemData) {
-        List<PicResourceItemData> itemDataList = new ArrayList<>();
-        int groupHeat = 0;
-        Date date = null;
-        for (int i = 0; i < data.size(); i++) {
-            PicResourceItemData item = new PicResourceItemData(data.get(i), PicResourceItemData.PicListItemType.ITEM);
-            setLockData(item);
-            groupHeat += data.get(i).getHeat();
-            if (data.get(i).getCreatedAt() != null) {
-                try {
-                    if (date == null) {
-                        date = AllData.bmobDataParser.parse(data.get(i).getCreatedAt());
+            @Override
+            public void done(Integer total, BmobException e) {
+                if (e == null) {
+                    if (total != null) {//开发者需要根据返回结果自行解析数据
+                        queryOnePage(total, 0, emitter);
                     } else {
-                        Date tmp = AllData.bmobDataParser.parse(data.get(i).getCreatedAt());
-                        if (date.compareTo(tmp) >= 0) {
-                            date = tmp;
+                        Log.e(TAG, "bmob查询图片张数成功，无数据");
+                    }
+                } else {
+                    Log.i("smile", "错误码：" + e.getErrorCode() + "，错误描述：" + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private static void queryOnePage(int totalCount, int start,
+                                     @NotNull final ObservableEmitter<List<PicResource>> emitter) {
+        int end = start + NUMBER_IN_PAGE;
+        String sql = "select * from PicResource" +
+                " order by heat desc" +
+                " limit " + start + " , " + end;
+
+        LogUtil.d("queryOnePage", "sql =" + sql);
+        BmobQuery<PicResource> query = new BmobQuery<>();
+        query.setSQL(sql);
+        // 如果有cache， 先从cache里面查询,然后再请求网络，然后再判断是否有更新，有更新的话再从网络查询
+        // bmob官方有个CACHE_ELSE_NETWORK策略，不用自己写
+        query.setMaxCacheAge(CACHE_EXPIRE);
+        query.setCachePolicy(BmobQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        query.doSQLQuery(
+                new SQLQueryListener<PicResource>() {
+                    @Override
+                    public void done(BmobQueryResult<PicResource> result, BmobException e) {
+                        if (e == null && result != null) { // 查询成功
+                            LogUtil.d("queryOnePage", "query pic resource list from cache success");
+                            List<PicResource> resultList = result.getResults();
+                            if (resultList == null)
+                                resultList = new ArrayList<>();
+                            emitter.onNext(resultList);
+                            if (end < MAX_QUERY_NUMBER && end < totalCount) {
+                                queryOnePage(totalCount, end, emitter);
+                            } else {
+                                emitter.onComplete();
+                            }
+                            // 主动从网络查询
+//                                            long lastQueryTime = SPUtil.getQueryTimeOfTietuWithCategory(secondClass);
+                            //  改为一天更新一次，因为热度变化，几乎每次这里都要刷新，这样不频繁刷新，
+                            //  目前来说对图片列表实时刷新没有必要，隔段时间刷新一次就行了，这样也减少API调用量
+//                                            if (serviceUpdateTime > lastQueryTime + RESOURCES_LIST_REFRESH_INTERVAL) {
+//                                                queryFromNet(sql, emitter, firstClass, secondClass);
+//                                            }
+                        } else { // 获取失败，需要调用从网络查询
+                            if (e != null) {
+                                LogUtil.d("queryOnePage", "分页查询失败 start = " + start + " end =" + end + e.getMessage());
+                            }
+                            emitter.onError(new Exception("分页查询失败 start = " + start + " end =" + end +
+                                    (e != null ? e.getMessage() : "")));
                         }
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            itemDataList.add(item);
-        }
-        itemData.picResListInGroup = itemDataList;
-        itemData.groupHeat = groupHeat;
-        itemData.groupCreateTime = date;
-    }
-
-    /**
-     * 根据分类获取分类下的所有分组列表(标题+图片)
-     */
-    public static List<PicResourceItemData> getTagsGroupByCategory(String secondClass) {
-        List<PicResource> picResources = queryFormGlobalData(secondClass);
-        return groupByTag(secondClass, picResources);
-    }
-
-    /**
-     * 根据分类获取分类下的所有分组列表(标题)
-     * 1、先获取分类数据
-     * 2、根据分类数据获取分组列表
-     */
-    public static void queryTietuList(@NotNull final ObservableEmitter<List<PicResource>> emitter1) {
-        Observable<List<PicResource>> observable2 = Observable.create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-            PicResourceDownloader.queryPicResByCategory(PicResource.FIRST_CLASS_TEMPLATE, PicResource.ALL_STICKER_LIST, emitter);
-        });
-        observable2.subscribe(new SimpleObserver<List<PicResource>>() {
-            @Override
-            public void onError(Throwable throwable) {
-                LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + throwable.getMessage());
-                emitter1.onError(throwable);
-            }
-
-            @Override
-            public void onNext(List<PicResource> picResources) {
-                LogUtil.d(TAG, "获取贴图成功 = " + " - " + picResources.size());
-                emitter1.onNext(picResources);
-            }
-        });
-    }
-
-    /**
-     * 根据分类获取分类下的所有分组列表(标题)
-     * 1、先获取分类数据
-     * 2、根据分类数据获取分组列表
-     */
-    public static void queryTietuTagList(@NotNull final ObservableEmitter<List<GroupBean>> emitter1) {
-        Observable<List<PicResource>> observable2 = Observable.create(emitter -> {
-            PicResourceDownloader.queryPicResByCategory(PicResource.FIRST_CLASS_TEMPLATE, PicResource.ALL_STICKER_LIST, emitter);
-        });
-        observable2.subscribe(new SimpleObserver<List<PicResource>>() {
-            @Override
-            public void onError(Throwable throwable) {
-                LogUtil.d(TAG, "queryTietuTagList 失败= " + " - " + throwable.getMessage());
-                emitter1.onError(throwable);
-            }
-
-            @Override
-            public void onNext(List<PicResource> picResources) {
-                if (picResources != null) {
-                    LogUtil.d(TAG, "queryTietuTagList 获取贴图成功 = " + picResources.size());
-                    PicResourceDownloader.groupByTag(PicResource.ALL_STICKER_LIST, picResources);
-                    List<GroupBean> data = AllData.mAllGroupList.get(PicResource.ALL_STICKER_LIST);
-                    //分组排序
-                    Collections.sort(data, new Comparator<GroupBean>() {
-                        @Override
-                        public int compare(GroupBean o1, GroupBean o2) {
-                            return o2.getHeat() - o1.getHeat();
-                        }
-                    });
-                    emitter1.onNext(data);
-                    emitter1.onComplete();
-                }
-            }
-        });
-    }
-
-    /**
-     * 根据分类获取分类下的所有分组列表(图片)
-     */
-    public static List<PicResourceItemData> getTagPicListByCate(String category) {
-        List<PicResource> list = AllData.mAllCategoryList.get(category);
-        List<PicResourceItemData> dataList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            PicResourceItemData itemData = new PicResourceItemData(list.get(i), PicResourceItemData.PicListItemType.ITEM);
-            setLockData(itemData);
-            dataList.add(itemData);
-        }
-        return dataList;
-    }
-
-    public static String getTietuNameByFileName(String fileName) {
-        int id = fileName.indexOf("_");
-        if (id == -1) id = 0;
-        return fileName.substring(id + 1);
-    }
-
-    private static void setLockData(PicResourceItemData item) {
-        if (item.data == null) return;
-        // 要解锁的
-        item.isUnlock = true;
-        String key = String.valueOf(item.data.getUrl().getUrl().hashCode());
-        if (LogUtil.debugRewardAd) {
-            Log.d("PicResourcesAdapter", "key = " + key);
-        }
-        if (AdData.sUnlockData.get(key) != null) {
-            item.isUnlock = AdData.sUnlockData.get(key);
-        }
-    }
-
-    public static void onlyDownLoadResToCache(String firstClass, String secondClass) {
-        Observable.create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-            PicResourceDownloader.queryPicResByCategory(firstClass, secondClass, emitter); // 原来的代码必须传入这个参数，目前先这样做
-        }).subscribe(new SimpleObserver<List<PicResource>>() {
-
-            @Override
-            public void onNext(List<PicResource> resourceList) {
-                // nothing
-            }
-        });
+                });
     }
 }

@@ -35,10 +35,13 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.home.BasePicAdapter;
 import com.mandi.intelimeditor.home.data.PicDirInfo;
+import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.home.view.TencentPicADHolder;
 import com.mandi.intelimeditor.home.viewHolder.FolderHolder;
-import com.mandi.intelimeditor.home.viewHolder.GroupHeaderHolder;
+import com.mandi.intelimeditor.home.viewHolder.GroupHolder;
 import com.mandi.intelimeditor.home.viewHolder.NewFeatureHeaderHolder;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroupItemData;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.BuildConfig;
 import com.mandi.intelimeditor.R;
@@ -46,8 +49,6 @@ import com.mandi.intelimeditor.R;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import util.CoverLoader;
@@ -69,9 +70,9 @@ public class PicResourcesAdapter extends BasePicAdapter {
     @Nullable
     private ListAdStrategyController mAdController_feed;
 
-    private List<PicResourceItemData> groupedList = new ArrayList<>();
+    private List<PicResourceItemData> itemDataList = new ArrayList<>();
+    private List<PicResource> originalList = new ArrayList<>();
 
-    private String firstClass;
     private float numberInOneScreen;
 
     private RequestOptions mHighPriorityOption;
@@ -90,8 +91,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
 
     public PicResourcesAdapter(Context context, int spanCount) {
         super(context);
-        this.firstClass = firstClass;
-        AD_ID = AdData.getAdIDByPicResourceClass(firstClass);
         layoutInflater = LayoutInflater.from(context);
         mHighPriorityOption = new RequestOptions()
                 // 既缓存原始图片，又缓存转化后的图片
@@ -180,56 +179,14 @@ public class PicResourcesAdapter extends BasePicAdapter {
         mAdController_feed.setUmEventName(EventName.pic_resource_ad_tx_feed);
     }
 
-    public void setImageUrls(List<PicResourceItemData> list, boolean isReset) {
-        if (mAdController_feed != null)
-            mAdController_feed.reSet();
-        if (isReset) {
-            groupedList.clear();
-        }
-        int extraSize = 0;
-
-        //遍历所有数据，根据数据分类型添加到集合中
-        for (int i = 0; i < list.size(); i++) {
-            if (isReset) {
-                PicResourceItemData item = list.get(i);
-                groupedList.add(item);
-                setLockData(item);
-            }
-            // 插入信息流大广告
-            // 这里isAddAd(groupedList.size() + extraSize) 判断一行的末尾，因为加大广告多占了位置，忽略之
-            if (mAdController_feed != null && mAdController_feed.isAddAd(groupedList.size() + extraSize)) {
-                PicResourceItemData adItem = new PicResourceItemData(null, PicResourceItemData.PicListItemType.FEED_AD);
-                if (LogUtil.debugPicListFeedAd) {
-                    Log.d(this.getClass().getSimpleName(), "setImageUrls: 添加信息流正常大小广告, 位置 = " + groupedList.size());
-                }
-                // 首屏的直接加在第一个，效果更好
-                groupedList.add(i < numberInOneScreen * 2 ? 0 : groupedList.size(), adItem);
-                // 大广告，一个当一行，会多占用增加line_number - 1个位置 ，这样才能让大广告在完整的行的后面，需要计算到
-                int line_number = mIsTietu ? 3 : 2;
-                extraSize += line_number - 1;
-            }
-        }
-        if (mAdController_feed != null
-                && (mAdController_feed.isAddInEnd(groupedList.size() + extraSize)
-                || (mAdController_feed.isEndAdd() && extraSize == 0))) {//末尾添加模式，且最后一次添加位置不靠近末尾，或者从未添加过，添加
-            PicResourceItemData adItem = new PicResourceItemData(null, PicResourceItemData.PicListItemType.FEED_AD);
-            groupedList.add(groupedList.size(), adItem);
-        }
-        //顶部增加表情换脸功能
-        if (isAddNewFeatureHeader) {
-            groupedList.add(0, new PicResourceItemData(mContext.getString(R.string.expression_change_face), true));
-        }
-        notifyDataSetChanged();
-    }
-
     /**
      * 更新图片数据列表
      * todo 应该将两个方法合并，不要写这种大量重复的代码
      */
-    public void setImageUrls(List<PicResource> list, List<PicDirInfo> folders) {
+    public void setImageUrls(List<?> picList, List<PicDirInfo> folders) {
         if (mAdController_feed != null)
             mAdController_feed.reSet();
-        groupedList.clear();
+        itemDataList.clear();
         int extraSize = 0;
 
         if (folders != null) {
@@ -237,46 +194,55 @@ public class PicResourcesAdapter extends BasePicAdapter {
             for (int i = 0; i < folders.size(); i++) {
                 PicDirInfo picDirInfo = folders.get(i);
                 PicResourceItemData item = new PicResourceItemData(picDirInfo, PicResourceItemData.PicListItemType.ITEM_FOLDER, false);
-                groupedList.add(item);
+                itemDataList.add(item);
             }
         }
 
         //遍历所有数据，根据数据分类型添加到集合中
-        for (int i = 0; i < list.size(); i++) {
-            PicResource picResource = list.get(i);
-            PicResourceItemData item = new PicResourceItemData(picResource, PicResourceItemData.PicListItemType.ITEM);
-            groupedList.add(item);
+        for (int i = 0; i < picList.size(); i++) {
+            Object obj = picList.get(i);
+            PicResourceItemData item;
+            if (obj instanceof PicResource) {
+                item = new PicResourceItemData((PicResource) obj, PicResourceItemData.PicListItemType.ITEM);
+            } else if (obj instanceof PicResGroup) {
+                item = new PicResourceItemData((PicResGroup) obj, PicResourceItemData.PicListItemType.GROUP);
+            } else if (obj instanceof PicResourceItemData) {
+                item = (PicResourceItemData) obj;
+            } else {
+                continue;
+            }
+            itemDataList.add(item);
             setLockData(item);
 
             // 插入信息流大广告
             // 这里isAddAd(groupedList.size() + extraSize) 判断一行的末尾，因为加大广告多占了位置，忽略之
-            if (mAdController_feed != null && mAdController_feed.isAddAd(groupedList.size() + extraSize)) {
-                PicResourceItemData adItem = new PicResourceItemData(null, PicResourceItemData.PicListItemType.FEED_AD);
+            if (mAdController_feed != null && mAdController_feed.isAddAd(itemDataList.size() + extraSize)) {
+                PicResourceItemData adItem = new PicResourceItemData("", PicResourceItemData.PicListItemType.FEED_AD);
                 if (LogUtil.debugPicListFeedAd) {
-                    Log.d(this.getClass().getSimpleName(), "setImageUrls: 添加信息流正常大小广告, 位置 = " + groupedList.size());
+                    Log.d(this.getClass().getSimpleName(), "setImageUrls: 添加信息流正常大小广告, 位置 = " + itemDataList.size());
                 }
                 // 首屏的直接加在第一个，效果更好
-                groupedList.add(i < numberInOneScreen * 2 ? 0 : groupedList.size(), adItem);
+                itemDataList.add(i < numberInOneScreen * 2 ? 0 : itemDataList.size(), adItem);
                 // 大广告，一个当一行，会多占用增加line_number - 1个位置 ，这样才能让大广告在完整的行的后面，需要计算到
                 int line_number = mIsTietu ? 3 : 2;
                 extraSize += line_number - 1;
             }
         }
         if (mAdController_feed != null
-                && (mAdController_feed.isAddInEnd(groupedList.size() + extraSize)
+                && (mAdController_feed.isAddInEnd(itemDataList.size() + extraSize)
                 || (mAdController_feed.isEndAdd() && extraSize == 0))) {//末尾添加模式，且最后一次添加位置不靠近末尾，或者从未添加过，添加
-            PicResourceItemData adItem = new PicResourceItemData(null, PicResourceItemData.PicListItemType.FEED_AD);
-            groupedList.add(groupedList.size(), adItem);
+            PicResourceItemData adItem = new PicResourceItemData("", PicResourceItemData.PicListItemType.FEED_AD);
+            itemDataList.add(itemDataList.size(), adItem);
         }
         //顶部增加表情换脸功能
         if (isAddNewFeatureHeader) {
-            groupedList.add(0, new PicResourceItemData(mContext.getString(R.string.expression_change_face), true));
+            itemDataList.add(0, new PicResourceItemData(mContext.getString(R.string.expression_change_face)));
         }
         notifyDataSetChanged();
     }
 
     public void clear() {
-        groupedList.clear();
+        itemDataList.clear();
         notifyDataSetChanged();
     }
 
@@ -288,8 +254,8 @@ public class PicResourcesAdapter extends BasePicAdapter {
         if (LogUtil.debugRewardAd) {
             Log.d("PicResourcesAdapter", "key = " + key);
         }
-        if (AdData.sUnlockData.get(key) != null) {
-            item.isUnlock = AdData.sUnlockData.get(key);
+        if (LockUtil.sUnlockData.get(key) != null) {
+            item.isUnlock = LockUtil.sUnlockData.get(key);
         }
     }
 
@@ -301,8 +267,8 @@ public class PicResourcesAdapter extends BasePicAdapter {
             FolderHolder folderHolder = new FolderHolder(view);
             view.setOnClickListener(v -> clickListener.onItemClick(folderHolder, v));
             return folderHolder;
-        } else if (viewType == PicResourceItemData.PicListItemType.GROUP_HEADER) {
-            return createGroupHeaderHolder(parent);
+        } else if (viewType == PicResourceItemData.PicListItemType.GROUP) {
+            return createGroupHolder(parent);
         } else if (viewType == PicResourceItemData.PicListItemType.NEW_FEATURE_HEADER) {
             return createNewHeaderHolder(parent);
         } else if (viewType == PicResourceItemData.PicListItemType.FEED_AD
@@ -326,7 +292,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
 
     private RecyclerView.ViewHolder createAdHolder(ViewGroup parent, int viewType) {
         ConstraintLayout layout;
-        if (PicResource.FIRST_CLASS_TIETU.equals(firstClass)) {
+        if (spanCount == 3) {
             layout = (ConstraintLayout) layoutInflater.inflate(R.layout.item_pic_resource_tietu_list,
                     parent, false);
         } else {
@@ -352,26 +318,26 @@ public class PicResourcesAdapter extends BasePicAdapter {
     /**
      * 分组
      */
-    private GroupHeaderHolder createGroupHeaderHolder(ViewGroup parent) {
+    private GroupHolder createGroupHolder(ViewGroup parent) {
         View view = layoutInflater.inflate(R.layout.item_pic_gird_group, parent, false);
-        GroupHeaderHolder headerHolder = new GroupHeaderHolder(view);
+        GroupHolder headerHolder = new GroupHolder(view);
         headerHolder.moreTv.setOnClickListener(v -> {
             clickListener.onItemClick(headerHolder, v);
         });
         headerHolder.picGridView.setOnClickListener(v -> {
             int position = headerHolder.getLayoutPosition();
             if (position == -1) return;
-            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResListInGroup.get(0));
+            checkLock_andExeClick(headerHolder, v, itemDataList.get(position).picResGroup.resItemList.get(0));
         });
         headerHolder.picGridView2.setOnClickListener(v -> {
             int position = headerHolder.getLayoutPosition();
             if (position == -1) return;
-            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResListInGroup.get(1));
+            checkLock_andExeClick(headerHolder, v, itemDataList.get(position).picResGroup.resItemList.get(1));
         });
         headerHolder.picGridView3.setOnClickListener(v -> {
             int position = headerHolder.getLayoutPosition();
             if (position == -1) return;
-            checkLock_andExeClick(headerHolder, v, groupedList.get(position).picResListInGroup.get(2));
+            checkLock_andExeClick(headerHolder, v, itemDataList.get(position).picResGroup.resItemList.get(2));
         });
         return headerHolder;
     }
@@ -379,31 +345,31 @@ public class PicResourcesAdapter extends BasePicAdapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        PicResource picResourceData = groupedList.get(position).data;
+        PicResource picResourceData = itemDataList.get(position).data;
         String url = null;
         if (picResourceData != null && picResourceData.getUrl() != null) {
             url = picResourceData.getUrl().getUrl();
         }
         if (holder instanceof ItemHolder) {
             bindItem((ItemHolder) holder, position, url);
-        } else if (holder instanceof FolderHolder) {
-            bindFolder((FolderHolder) holder, position);
         } else if (holder instanceof ADHolder) {
             bindAd((ADHolder) holder, position);
-        } else if (holder instanceof GroupHeaderHolder) {
-            bindHeader((GroupHeaderHolder) holder, position);
+        } else if (holder instanceof GroupHolder) {
+            bindGroup((GroupHolder) holder, position);
+        } else if (holder instanceof FolderHolder) {
+            bindFolder((FolderHolder) holder, position);
         } else if (holder instanceof NewFeatureHeaderHolder) {
             bindTopChangeFaceHeader((NewFeatureHeaderHolder) holder, position);
         }
     }
 
     private void bindItem(ItemHolder itemHolder, int position, String url) {
-        if (groupedList.get(position).isUnlock) {
+        if (itemDataList.get(position).isUnlock) {
             itemHolder.lockView.setVisibility(View.GONE);
         } else {
             itemHolder.lockView.setVisibility(View.VISIBLE);
         }
-        PicResource itemData = groupedList.get(position).data;
+        PicResource itemData = itemDataList.get(position).data;
         if (itemData != null) {
             String tag = itemData.getTag();
             if (itemData.getHeat() != null && itemData.getHeat() != 0 && tag != null) {
@@ -420,7 +386,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
             itemHolder.tagTv.setVisibility(View.GONE);
         }
         itemHolder.iv.setOnClickListener(v -> {
-            checkLock_andExeClick(itemHolder, v, groupedList.get(position));
+            checkLock_andExeClick(itemHolder, v, itemDataList.get(position));
         });
         itemHolder.iv.setOnLongClickListener(v -> {
             if (longClickListener != null) {
@@ -486,8 +452,8 @@ public class PicResourcesAdapter extends BasePicAdapter {
      * 设置头部标题
      */
     private void bindTopChangeFaceHeader(NewFeatureHeaderHolder holder, int position) {
-        if (!TextUtils.isEmpty(groupedList.get(position).headerTitle)) {
-            holder.changeFaceTitleTv.setText(groupedList.get(position).headerTitle);
+        if (!TextUtils.isEmpty(itemDataList.get(position).newFeatureTitle)) {
+            holder.changeFaceTitleTv.setText(itemDataList.get(position).newFeatureTitle);
             if (!AllData.hasReadConfig.hasRead_changeFace_acGuide()) {
                 holder.changeFaceNewNoticeTv.setVisibility(View.VISIBLE);
             }
@@ -502,13 +468,14 @@ public class PicResourcesAdapter extends BasePicAdapter {
     /**
      * 设置分组标题
      */
-    private void bindHeader(GroupHeaderHolder holder, int position) {
-        LogUtil.d(TAG, "分组 = " + groupedList.get(position).groupHeat + " position =" + position);
-        if (!TextUtils.isEmpty(groupedList.get(position).headerTitle)) {
-            holder.titleTv.setText(groupedList.get(position).headerTitle);
-            holder.picGridView.setPicResource(groupedList.get(position).picResListInGroup.get(0));
-            holder.picGridView2.setPicResource(groupedList.get(position).picResListInGroup.get(1));
-            holder.picGridView3.setPicResource(groupedList.get(position).picResListInGroup.get(2));
+    private void bindGroup(GroupHolder holder, int position) {
+        PicResGroupItemData picResGroup = itemDataList.get(position).picResGroup;
+        LogUtil.d(TAG, "分组 = " + picResGroup.heat + " position =" + position);
+        if (!TextUtils.isEmpty(picResGroup.title)) {
+            holder.titleTv.setText(picResGroup.title);
+            holder.picGridView.setPicResource(picResGroup.resItemList.get(0));
+            holder.picGridView2.setPicResource(picResGroup.resItemList.get(1));
+            holder.picGridView3.setPicResource(picResGroup.resItemList.get(2));
         }
     }
 
@@ -517,9 +484,9 @@ public class PicResourcesAdapter extends BasePicAdapter {
      */
     private void bindFolder(FolderHolder itemHolder, int position) {
         itemHolder.mTvTitle.setVisibility(View.VISIBLE);
-        itemHolder.mTvTitle.setText(groupedList.get(position).picDirInfo.getDirPath());
-        itemHolder.mTvInfo.setText(groupedList.get(position).picDirInfo.getPicNumInfo());
-        String path = groupedList.get(position).picDirInfo.getRepresentPicPath();
+        itemHolder.mTvTitle.setText(itemDataList.get(position).picDirInfo.getDirPath());
+        itemHolder.mTvInfo.setText(itemDataList.get(position).picDirInfo.getPicNumInfo());
+        String path = itemDataList.get(position).picDirInfo.getRepresentPicPath();
         CoverLoader.INSTANCE.loadImageView(mContext, path, itemHolder.mIvFile);
     }
 
@@ -533,35 +500,35 @@ public class PicResourcesAdapter extends BasePicAdapter {
 
     @Override
     public int getItemCount() {
-        return groupedList.size();
+        return itemDataList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position < groupedList.size()) {
-            return groupedList.get(position).type;
+        if (position < itemDataList.size()) {
+            return itemDataList.get(position).type;
         } else {
             return PicResourceItemData.PicListItemType.ITEM;
         }
     }
 
     public PicResourceItemData getItem(int position) {
-        if (0 <= position && position < groupedList.size()) {
-            return groupedList.get(position);
+        if (0 <= position && position < itemDataList.size()) {
+            return itemDataList.get(position);
         }
         return null;
     }
 
     public List<PicResourceItemData> getImageUrlList() {
-        return groupedList;
+        return itemDataList;
     }
 
-    public void deleterecent_style(String path) {
-        for (int i = groupedList.size() - 1; i >= 0; i--) {
-            PicResource data = groupedList.get(i).data;
+    public void deleteTietuPic(String path) {
+        for (int i = itemDataList.size() - 1; i >= 0; i--) {
+            PicResource data = itemDataList.get(i).data;
             if (data != null && data.getUrl() != null
                     && data.getUrl().getUrl().equals(path)) {
-                groupedList.remove(i);
+                itemDataList.remove(i);
                 return;
             }
         }
@@ -570,23 +537,14 @@ public class PicResourcesAdapter extends BasePicAdapter {
     /**
      * 排序，如果使用sort排序，需要先去除广告ViewHolder,然后再排，最后再插入广告。
      */
-    public void sortPicList(int group, boolean isDesc) {
-        AllData.sortByGroup = group;
-        Iterator item = groupedList.iterator();
-        while (item.hasNext()) {
-            PicResourceItemData model = (PicResourceItemData) item.next();
-            if (model.type == PicResourceItemData.PicListItemType.FEED_AD ||
-                    model.type == PicResourceItemData.PicListItemType.TX_PIC_AD ||
-                    model.type == PicResourceItemData.PicListItemType.NEW_FEATURE_HEADER) {
-                item.remove();
-            }
-        }
-        Collections.sort(groupedList);
-        if (!isDesc) {
-            Collections.reverse(groupedList);
-        }
+    public void sortPicList(List<PicResource> resList, int sortType, boolean isReduce) {
+        List<PicResource> newList = new ArrayList<>(resList);
+        LogUtil.recordTime();
+        PicResSearchSortUtil.sortPicRes(newList, sortType, isReduce);
+        LogUtil.printAndRecord("排序");
         //刷新列表
-        setImageUrls(groupedList, false);
+        setImageUrls(newList, null);
+        LogUtil.printAndRecord("放入数据");
     }
 
     public static List<PicResource> randomInsertForHeat(List<PicResource> groupedList) {
@@ -599,6 +557,10 @@ public class PicResourcesAdapter extends BasePicAdapter {
             }
         }
         return groupedList;
+    }
+
+    public void deleterecent_style(String path) {
+
     }
 
 

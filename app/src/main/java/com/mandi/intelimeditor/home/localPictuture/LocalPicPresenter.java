@@ -72,9 +72,10 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
      */
     @Override
     public void start() {
-        // 如果在注册之前完成扫描，那么不会收到事件
+        // 如果在注册之前完成扫描，那么不会收到事件，直接执行显示方法
         EventBus.getDefault().register(this);
-        // 如果在注册之后的这里完成扫描，那么会收到事件，会调用显示方法两次，但是比放到if判断后面有可能漏掉事件好
+        // 如果在注册之后的这里完成扫描，那么会收到事件，会调用显示方法两次，
+        // 但是比放到if判断后面有可能漏掉事件好, 就是刚好if之后注册之前获取数据完成，发出事件
         if (AllData.hasInitScanLocalPic) {
             initSetAndShowPicList();
         }

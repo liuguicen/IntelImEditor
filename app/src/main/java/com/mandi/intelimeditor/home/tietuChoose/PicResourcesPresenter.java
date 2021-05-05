@@ -2,6 +2,9 @@ package com.mandi.intelimeditor.home.tietuChoose;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
@@ -9,6 +12,8 @@ import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
+import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 
@@ -21,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 
@@ -32,15 +38,14 @@ import io.reactivex.ObservableOnSubscribe;
  * <pre>
  */
 public class PicResourcesPresenter implements TietuChooseContract.Presenter {
-    private PicResourcesAdapter mPicResourceAdapter;
+    private PicResourcesAdapter picResAdapter;
     private String TAG = "PicResourcesPresenter";
 
     private final Context mContext;
     private TietuChooseContract.View mView;
 
-    private String mFirstClass;
-    private String mSecondClass;
-    private String mCategory;
+    private String firstClass;
+    private String secondClass;
 
     /**
      * 贴图分类是否加载成功，对于分类下的贴图，如果加载失败，用户点击分类可以重新加载，暂时不做判断
@@ -48,19 +53,26 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
      * 就不加载了
      */
     private boolean mIsDownloadSuccess = false;
+    //排序方式，0:默认排序，按热度降序，1:按时间降序，4:分组
+    /**
+     * {@link com.mandi.intelimeditor.home.search.PicResSearchSortUtil#SORT_TYPE_HOT 等}
+     */
+    private int curSortType = 0;
+
+    public static final int SORT_TYPE_GROUP = 3;
 
     /**
      * @param firstClass  一级分类
      * @param secondClass 二级分类
-     * @param category    分组名
      */
-    public PicResourcesPresenter(Context context, TietuChooseContract.View view, String firstClass, String secondClass, String category) {
+    public PicResourcesPresenter(Context context, TietuChooseContract.View view, String firstClass, String secondClass) {
         mContext = context;
         mView = view;
-        mFirstClass = firstClass;
-        mSecondClass = secondClass;
-        mCategory = category;
+        this.firstClass = firstClass;
+        this.secondClass = secondClass;
     }
+
+    private List<PicResource> originList;
 
     /**
      * 开始加载数据
@@ -68,65 +80,29 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
      */
     @Override
     public void start() {
-    }
+        LogUtil.d(TAG, "当前分类: loadTietuByCategory = " + " - " + secondClass);
+        AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
 
-    @Override
-    public void loadData() {
-        // 如果在注册之前完成下载，那么不会收到事件
-        EventBus.getDefault().register(this);
-        // 如果在注册之后的这里完成下载，那么会收到事件，会调用显示方法两次，但是比放到if判断后面有可能漏掉事件好
-        if (AllData.allPicRes_downloadState == AllData.DOWNLOAD_STATE_SUCCESS) {
-            showResListByHot();
-        }
-    }
-
-    private void showResListByHot() {
-        ArrayList<PicResource> styleList = new ArrayList<>(AllData.allStyleList);
-        PicResourcesAdapter.randomInsertForHeat(styleList);
-        mPicResourceAdapter.setImageUrls(styleList, null);
-        mView.onDownloadStateChange(true, styleList);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    public void onEventMainThread(Integer event) {
-        if (EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH.equals(event)) {
-            showResListByHot();
-        }
-    }
-
-    @Override
-    public void refresh() {
-        if (PicResource.SECOND_CLASS_MY.equals(mSecondClass)) {
-            loadTietuByCategory(mSecondClass);
-        }
-    }
-
-
-    @NotNull
-    @Override
-    public PicResourcesAdapter createPicAdapter() {
-        mPicResourceAdapter = new PicResourcesAdapter(mContext, 1);
-        mPicResourceAdapter.initAdData(false);
-        return mPicResourceAdapter;
-    }
-
-    @Override
-    public void deleteOneMyTietu(@NotNull String path) {
-        MyDatabase.getInstance().deleteMyTietu(path);
-        if (PicResource.SECOND_CLASS_MY.equals(mSecondClass)) {
-            mPicResourceAdapter.deleterecent_style(path);
-            mPicResourceAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void loadTietuByCategory(@NotNull String second_class) {
-        LogUtil.d(TAG, "当前分类: loadTietuByCategory = " + " - " + second_class);
-        Observable.create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-            PicResourceDownloader.queryPicResByCategory(mFirstClass, second_class, emitter);
-        }).subscribe(new SimpleObserver<List<PicResource>>() {
             @Override
-            public void onError(Throwable throwable) {
+            public void onNext(@NonNull List<PicResource> resList) {
+                try {
+                    LogUtil.d(TAG, "获取贴图成功 = " + " - " + resList.size());
+//                Log.e(TAG, "onNext: test error");
+                    mIsDownloadSuccess = true;
+                    originList = PicResSearchSortUtil.filter(resList, firstClass, secondClass);
+                    PicResourcesAdapter.randomInsertForHeat(resList);
+                    picResAdapter.setImageUrls(originList, null);
+                    mView.onDownloadStateChange(true, resList);
+                } catch (Exception e) {
+                    // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
+                    // 文档上面说只能同步使用
+                    mView.onDownloadStateChange(false, null);
+                    LogUtil.e("下载贴图失败 \n" + e.getCause());
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
                 LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + throwable.getMessage());
                 if (!mIsDownloadSuccess) { // 可能会多次调用, 只要成功过一次，就不显示加载失败了
                     mView.onDownloadStateChange(false, null);
@@ -135,53 +111,85 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
             }
 
             @Override
-            public void onNext(@NotNull List<PicResource> tietuMaterialList) {
-                try {
-                    LogUtil.d(TAG, "获取贴图成功 = " + " - " + tietuMaterialList.size());
-//                Log.e(TAG, "onNext: test error");
-                    mIsDownloadSuccess = true;
-                    tietuMaterialList = new ArrayList<>(tietuMaterialList);
+            public void onComplete() {
 
-                    String thePath = Environment.getExternalStorageDirectory().toString();
-                    PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
-                    p1.setHeat(1000);
-                    p1.setTag("梵高 星空");
-                    tietuMaterialList.add(p1);
-                    PicResource p2 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
-                    p1.setHeat(100);
-                    p1.setTag("动漫 新海诚");
-                    tietuMaterialList.add(p2);
-                    tietuMaterialList.add(PicResource.path2PicResource(thePath + File.separator + "test3.jpg"));
-                    tietuMaterialList.add(PicResource.path2PicResource(thePath + File.separator + "test4.jpg"));
-                    tietuMaterialList.add(PicResource.path2PicResource(thePath + File.separator + "test5.jpg"));
-
-                    PicResourcesAdapter.randomInsertForHeat(tietuMaterialList);
-                    mPicResourceAdapter.setImageUrls(tietuMaterialList, null);
-                    mView.onDownloadStateChange(true, tietuMaterialList);
-                } catch (Exception e) {
-                    // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
-                    // 文档上面说只能同步使用
-                    mView.onDownloadStateChange(false, null);
-                    e.printStackTrace();
-                    LogUtil.e("下载贴图失败 \n" + e.getCause());
-                }
             }
         });
+    }
+
+
+    public void refreshPicList() {
+        LogUtil.d(TAG, "排序方式 = " + curSortType);
+        int sortType = getNextSorType(curSortType);
+        refreshPicList(sortType, true);
+    }
+
+    /**
+     * 下拉刷新更新图片列表
+     */
+    public void refreshPicList(int sortType, boolean isReduce) {
+        curSortType = sortType;
+        LogUtil.d(TAG, "排序方式 = " + curSortType);
+        if (curSortType == SORT_TYPE_GROUP) {
+            showGroup();
+        } else {
+            picResAdapter.sortPicList(originList, curSortType, isReduce);
+        }
+        //切换完成之后滚动顶部
+        mView.afterSort(getNextSorType(sortType));
+    }
+
+    public void showGroup() {
+        AllData.queryPicResGroup(new Emitter<List<PicResGroup>>() {
+            @Override
+            public void onNext(@NonNull List<PicResGroup> value) {
+                picResAdapter.setImageUrls(value, null);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable error) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }, PicResource.FIRST_CLASS_TIETU.equals(firstClass));
+    }
+
+    private int getNextSorType(int sortType) {
+        // 顺序不定，不好用取余
+        switch (sortType) {
+            case PicResSearchSortUtil.SORT_TYPE_HOT:
+                return PicResSearchSortUtil.SORT_TYPE_TIME;
+            case PicResSearchSortUtil.SORT_TYPE_TIME:
+                return SORT_TYPE_GROUP;
+            case SORT_TYPE_GROUP:
+                return PicResSearchSortUtil.SORT_TYPE_HOT;
+        }
+        return sortType;
+    }
+
+    @NotNull
+    @Override
+    public PicResourcesAdapter createPicAdapter() {
+        picResAdapter = new PicResourcesAdapter(mContext, 1);
+        picResAdapter.initAdData(false);
+        return picResAdapter;
+    }
+
+    @Override
+    public void deleteOneMyTietu(@NotNull String path) {
+        MyDatabase.getInstance().deleteMyTietu(path);
+        if (PicResource.SECOND_CLASS_MY.equals(secondClass)) {
+            picResAdapter.deleterecent_style(path);
+            picResAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public boolean isDownloadSuccess() {
         return mIsDownloadSuccess;
-    }
-
-    public void getTagsByCate(String secondClass) {
-        List<PicResourceItemData> data = PicResourceDownloader.getTagsGroupByCategory(secondClass);
-        mView.setCategoryList(data);
-    }
-
-
-    public void getTagPicListByCate(String category) {
-        List<PicResourceItemData> data = PicResourceDownloader.getTagPicListByCate(category);
-        mView.setCategoryList(data);
     }
 }

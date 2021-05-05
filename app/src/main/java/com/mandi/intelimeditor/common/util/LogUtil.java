@@ -217,4 +217,15 @@ public final class LogUtil {
         }
         return infos;
     }
+
+    public static long startTime = 0;
+
+    public static void recordTime() {
+        startTime = System.currentTimeMillis();
+    }
+
+    public static void printAndRecord(String msg) {
+        d(msg + "，耗时 = " + (System.currentTimeMillis() - startTime));
+        startTime = System.currentTimeMillis();
+    }
 }

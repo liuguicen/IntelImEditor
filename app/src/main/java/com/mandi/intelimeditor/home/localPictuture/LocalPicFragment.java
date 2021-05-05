@@ -147,7 +147,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    if (picAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.GROUP_HEADER)
+                    if (picAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.GROUP)
                         return 3;
                     if (picAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.FEED_AD)
                         return 3;
