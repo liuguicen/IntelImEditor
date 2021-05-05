@@ -11,7 +11,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.home.localPictuture.LocalPicFragment;
-import com.mandi.intelimeditor.home.data.PicDirInfoManager;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +44,7 @@ public class MediaInfoScanner {
     private Map<String, Integer> shortVideoMap = new HashMap<>();
     private static final int PICTURE = 1;
     private static final int SHORT_VIDEO = 2;
+    static final String TAG = "MediaInfoScanner";
 
     /**
      * Created by LiuGuicen on 2017/1/17 0017.
@@ -138,6 +139,15 @@ public class MediaInfoScanner {
         usuPathManger.updateRecentInfoInUsu(sortedPicPathsByTime);
         sortedPicPathsByTime.clear();
         return PicUpdateType.CHANGE_ALL_PIC;
+    }
+
+    public List<PicResource> convertRecentPath2PicResList() {
+        Log.d(TAG, "convertRecentPath2PicResList: 耗时操作，少调用，log保留");
+        ArrayList<PicResource> picResources = new ArrayList<>();
+        for (Pair<Long, String> timePath : sortedPicPathsByTime) {
+            picResources.add(PicResource.path2PicResource(timePath.second));
+        }
+        return picResources;
     }
 
     /**

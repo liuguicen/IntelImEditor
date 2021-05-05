@@ -11,5 +11,4 @@ public class EventBusConstants {
     // gif播放选中或者没选中的帧
     public static final Integer GIF_PLAY_CHOSEN = -100;
     public static final Integer GIF_PLAY_UN_CHOSEN = -101;
-    public static final Object INIT_SCAN_LOCAL_PIC_FINISH = 200;
 }

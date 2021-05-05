@@ -77,9 +77,9 @@ public class TextureFragment extends ChooseBaseFragment {
     }
 
     @Override
-    public void loadData(boolean isFirstVisible) {
-        super.loadData(isFirstVisible);
-        if (isFirstVisible) {
+    public void loadData(boolean isFirstLoad) {
+        super.loadData(isFirstLoad);
+        if (isFirstLoad) {
             if (mTabLayout != null) {
                 mTietuExpressionFragment = PicResourcesFragment.newInstance(PicResource.FIRST_CLASS_TIETU,
                         PicResource.SECOND_CLASS_EXPRESSION, mIsOnlyChoosePic);

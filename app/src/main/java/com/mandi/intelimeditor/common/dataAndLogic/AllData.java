@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mandi.intelimeditor.ad.LockUtil;
-import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.appInfo.HasReadConfig;
@@ -17,7 +16,6 @@ import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.home.data.UsuPathManger;
 import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
-import com.mandi.intelimeditor.ptu.changeFace.LevelsAdjuster;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
@@ -26,16 +24,12 @@ import com.mandi.intelimeditor.R;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import io.reactivex.Emitter;
@@ -188,53 +182,85 @@ public class AllData {
 
 
     public static UsuPathManger usuManager;
-    public static MediaInfoScanner mMediaInfoScanner;
+    public static MediaInfoScanner sMediaInfoScanner;
     public static boolean hasInitScanLocalPic = false;
+    private static final List<Emitter<String>> localPicQuery = new ArrayList<>();
 
     public static void initScanLocalPic() {
-        usuManager = new UsuPathManger(AllData.appContext);
-        mMediaInfoScanner = MediaInfoScanner.getInstance();
+        Observable
+                .create((ObservableOnSubscribe<String>) emitter -> {
+                    usuManager = new UsuPathManger(AllData.appContext);
+                    sMediaInfoScanner = MediaInfoScanner.getInstance();
 
-        // 先从数据库获取里面所有的图片信息
-        try {
-            usuManager.initFromDB();
-        } catch (Exception e) {
-            e.printStackTrace();
+                    // 先从数据库获取里面所有的图片信息
+                    try {
+                        usuManager.initFromDB();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Log.e(TAG, "call: 从数据库获取数据完成");
+                    // 扫描器扫描信息，然后通知UI更新，先会更新图片，再是文件的
+                    sMediaInfoScanner.scanAndUpdatePicInfo();
+                    emitter.onNext("");
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<String>() {
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull String s) {
+                        for (Emitter<String> emitter : localPicQuery) {
+                            emitter.onNext("");
+                        }
+                        localPicQuery.clear();
+                        hasInitScanLocalPic = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        for (Emitter<String> emitter : localPicQuery) {
+                            emitter.onError(e);
+                        }
+                        localPicQuery.clear();
+                    }
+                });
+
+    }
+
+
+    public static void queryLocalPicList(Emitter<String> emitter) {
+        if (AllData.hasInitScanLocalPic) {
+            emitter.onNext("");
+        } else {
+            localPicQuery.add(emitter);
         }
-        Log.e(TAG, "call: 从数据库获取数据完成");
-        // 扫描器扫描信息，然后通知UI更新，先会更新图片，再是文件的
-        mMediaInfoScanner.scanAndUpdatePicInfo();
-
-        hasInitScanLocalPic = true;
-        EventBus.getDefault().post(EventBusConstants.INIT_SCAN_LOCAL_PIC_FINISH);
-
     }
 
     public static List<PicResource> allStyleList = new ArrayList<>();
 
-    public static final int PROCESS_STATE_UN_FINISH = 1;
+    public static final int PROCESS_STATE_NO_START = 0;
+    public static final int PROCESS_STATE_ING = 1; // 处理中
     public static final int PROCESS_STATE_SUCCESS = 2;
     public static final int PROCESS_STATE_FAILED = 3;
-    public static int allPicRes_downloadState = PROCESS_STATE_UN_FINISH;
-    public static int allPicRes_groupState = PROCESS_STATE_UN_FINISH;
+    public static int allPicRes_downloadState = PROCESS_STATE_NO_START;
+    public static int allPicRes_groupState = PROCESS_STATE_NO_START;
 
 
     /**
      * 数据获取是异步的，可能还没获取完成, 现在allData里面的这个接口相当于异步网络查询了，后面扩展也是逻辑差不多，不用改太多
      */
-    public static List<PicResGroup> tieTuGroupList = new ArrayList<>(); // 分组计算比较麻烦，所以存下来
-    public static List<PicResGroup> templateGroupList = new ArrayList<>();
-    public static List<Emitter<List<PicResGroup>>> tieTuGroupQuery = new ArrayList<>();
-    public static List<Emitter<List<PicResGroup>>> templateGroupQuery = new ArrayList<>();
+    public static List<PicResGroup> styleGroupList = new ArrayList<>(); // 分组计算比较麻烦，所以存下来
+    public static List<Emitter<List<PicResGroup>>> styleGroupQuery = new ArrayList<>();
     public static List<Emitter<List<PicResource>>> allResQuery = new ArrayList<>();
 
     public static void downLoadALLPicRes() {
         Log.e(TAG, "开始下载所有图片资源，重要log别删");
         allResList.clear();
+        allPicRes_downloadState = PROCESS_STATE_ING;
         Observable
                 .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-                    PicResourceDownloader.queryAllPicRes(emitter);
+                    PicResourceDownloader.downloadAllPicRes(emitter);
                 })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<List<PicResource>>() {
                     @Override
@@ -258,15 +284,10 @@ public class AllData {
                             }
                             allResQuery.clear();
 
-                            for (Emitter<List<PicResGroup>> emitter : tieTuGroupQuery) {
+                            for (Emitter<List<PicResGroup>> emitter : styleGroupQuery) {
                                 emitter.onError(new Exception("下载贴图失败 \n" + throwable.getCause()));
                             }
-                            tieTuGroupQuery.clear();
-
-                            for (Emitter<List<PicResGroup>> emitter : templateGroupQuery) {
-                                emitter.onError(new Exception("下载贴图失败 \n" + throwable.getCause()));
-                            }
-                            templateGroupQuery.clear();
+                            styleGroupQuery.clear();
                         }
                     }
 
@@ -290,12 +311,15 @@ public class AllData {
                 });
     }
 
+    /**
+     * @see #downLoadALLPicRes()
+     */
     public static void groupAllPicRes() {
         Log.e(TAG, "开始下载所有图片资源，重要log别删");
+        allPicRes_groupState = PROCESS_STATE_ING;
         Observable
                 .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-                    tieTuGroupList = PicResSearchSortUtil.groupByTag(PicResource.FIRST_CLASS_TIETU, allResList);
-                    templateGroupList = PicResSearchSortUtil.groupByTag(PicResource.FIRST_CLASS_TEMPLATE, allResList);
+                    styleGroupList = PicResSearchSortUtil.groupByTag(PicResource.CATEGORY_STYLE, allResList);
                     emitter.onNext(new ArrayList<>());
                 })
                 .subscribeOn(Schedulers.computation())
@@ -303,15 +327,10 @@ public class AllData {
                 .subscribe(new SimpleObserver<List<PicResource>>() {
                     @Override
                     public void onNext(@NotNull List<PicResource> tietuMaterialList) {
-                        for (Emitter<List<PicResGroup>> emitter : tieTuGroupQuery) {
-                            emitter.onNext(tieTuGroupList);
+                        for (Emitter<List<PicResGroup>> emitter : styleGroupQuery) {
+                            emitter.onNext(styleGroupList);
                         }
-                        tieTuGroupQuery.clear();
-
-                        for (Emitter<List<PicResGroup>> emitter : templateGroupQuery) {
-                            emitter.onNext(templateGroupList);
-                        }
-                        templateGroupQuery.clear();
+                        styleGroupQuery.clear();
                         allPicRes_groupState = PROCESS_STATE_SUCCESS;
                     }
 
@@ -323,40 +342,56 @@ public class AllData {
                             LogUtil.e("图片资源分组失败 \n" + e.getCause());
                         }
 
-                        for (Emitter<List<PicResGroup>> emitter : tieTuGroupQuery) {
-                            emitter.onError(new Exception("下载贴图失败 \n" + e.getCause()));
+                        for (Emitter<List<PicResGroup>> emitter : styleGroupQuery) {
+                            emitter.onError(new Exception("图片资源分组失败 \n" + e.getCause()));
                         }
-                        tieTuGroupQuery.clear();
-
-                        for (Emitter<List<PicResGroup>> emitter : templateGroupQuery) {
-                            emitter.onError(new Exception("下载贴图失败 \n" + e.getCause()));
-                        }
-                        templateGroupQuery.clear();
+                        styleGroupQuery.clear();
                     }
                 });
     }
 
     /**
-     * 数据获取是异步的，可能还没获取完成, 现在allData里面的这个接口相当于异步网络查询了，后面扩展也是逻辑差不多，不用改太多
+     * @see #downLoadALLPicRes()
      */
     public static void queryAllPicRes(Emitter<List<PicResource>> emitter) {
         if (AllData.allPicRes_downloadState == AllData.PROCESS_STATE_SUCCESS) {
             emitter.onNext(allResList);
         } else {
             allResQuery.add(emitter);
+            if (allPicRes_downloadState == PROCESS_STATE_NO_START || allPicRes_downloadState == PROCESS_STATE_FAILED) {
+                downLoadALLPicRes();
+            }
         }
     }
 
     /**
-     * 数据获取是异步的，可能还没获取完成
+     * @see #downLoadALLPicRes()
+     */
+    public static void removeResQuery(Emitter<List<PicResource>> emitter) {
+        allResQuery.remove(emitter);
+    }
+
+    /**
+     * @see #downLoadALLPicRes()
      */
     public static void queryPicResGroup(Emitter<List<PicResGroup>> emitter, boolean isTietu) {
         if (AllData.allPicRes_groupState == AllData.PROCESS_STATE_SUCCESS) {
-            if (isTietu) emitter.onNext(tieTuGroupList);
-            else emitter.onNext(templateGroupList);
+            emitter.onNext(styleGroupList);
         } else {
-            if (isTietu) tieTuGroupQuery.add(emitter);
-            else templateGroupQuery.add(emitter);
+            styleGroupQuery.add(emitter);
+            if (allPicRes_downloadState == PROCESS_STATE_NO_START || allPicRes_downloadState == PROCESS_STATE_FAILED) {
+                downLoadALLPicRes();
+            }
+        }
+    }
+
+    /**
+     * @see #downLoadALLPicRes()
+     */
+    public static void removePicResGroupQuery(Emitter<List<PicResGroup>> emitter, boolean isTietu) {
+        if (AllData.allPicRes_groupState == AllData.PROCESS_STATE_SUCCESS) {
+            if (isTietu) allResQuery.remove(emitter);
+            else allResQuery.remove(emitter);
         }
     }
 
@@ -364,12 +399,8 @@ public class AllData {
      * 确定数据已经获取完成的情况下，直接get
      */
     public static List<?> getGroupList(@NonNull String mFirstClass, @NonNull String mSecondClass) {
-        if (PicResource.FIRST_CLASS_TEMPLATE.equals(mFirstClass)) {
-            return templateGroupList;
-        }
-
         List<PicResGroup> result = new ArrayList<>();
-        for (PicResGroup picResGroup : tieTuGroupList) {
+        for (PicResGroup picResGroup : styleGroupList) {
             PicResource pic = picResGroup.resList.get(0);
             if (mSecondClass.equals(pic.getCategory())) {
                 result.add(picResGroup);

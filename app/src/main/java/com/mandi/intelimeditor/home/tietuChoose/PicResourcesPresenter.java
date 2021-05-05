@@ -48,6 +48,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
      * {@link com.mandi.intelimeditor.home.search.PicResSearchSortUtil#SORT_TYPE_HOT 等}
      */
     private int curSortType = 0;
+    private boolean isStop = false;
 
     /**
      * @param firstClass  一级分类
@@ -60,7 +61,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
         this.secondClass = secondClass;
     }
 
-    private List<PicResource> originList;
+    private List<PicResource> originList; // 里面采用的默认排序，和其它排序不太一样
 
     /**
      * 开始加载数据
@@ -145,7 +146,9 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
         AllData.queryPicResGroup(new Emitter<List<PicResGroup>>() {
             @Override
             public void onNext(@NonNull List<PicResGroup> value) {
-                picResAdapter.setImageUrls(value, null);
+                if (!isStop) {
+                    picResAdapter.setImageUrls(value, null);
+                }
             }
 
             @Override
@@ -158,6 +161,10 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
 
             }
         }, PicResource.FIRST_CLASS_TIETU.equals(firstClass));
+    }
+
+    public void stop() {
+        isStop = true;
     }
 
     private int getNextSorType(int sortType) {

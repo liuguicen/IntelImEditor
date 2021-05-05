@@ -1,32 +1,21 @@
 package com.mandi.intelimeditor.ptu.tietu.onlineTietu;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mandi.intelimeditor.R;
-import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.LogUtil;
-import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.dialog.BottomTietuListDialog;
 import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Emitter;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 
 /**
@@ -37,6 +26,7 @@ public class PTuTietuListViewModel extends ViewModel {
     private MutableLiveData<List<PicResourceItemData>> picResList; // 为了让所有Fragement共用这个list
     private MutableLiveData<List<PicResGroup>> groupList;
     public MutableLiveData<String> loadStatus = new MutableLiveData<>();
+    public MutableLiveData<String> AllGroupLoadStatus = new MutableLiveData<>();
 
     public PTuTietuListViewModel() {
         if (LogUtil.debugPtuTietuList)
@@ -56,8 +46,8 @@ public class PTuTietuListViewModel extends ViewModel {
     /**
      * 获取分组列表LiveData
      */
-    public LiveData<List<PicResGroup>> getGroupList() {
-        if (groupList == null) {
+    public LiveData<List<PicResGroup>> getOrLoadGroupList() {
+        if (groupList == null || groupList.getValue() == null) {
             groupList = new MutableLiveData<>();
             loadGroupList();
         }
@@ -73,13 +63,13 @@ public class PTuTietuListViewModel extends ViewModel {
             @Override
             public void onNext(@NonNull List<PicResGroup> value) {
                 LogUtil.logTimeConsume("加载贴图分组完成");
-                groupList.postValue(AllData.tieTuGroupList);
+                groupList.postValue(AllData.mAllGroupList);
             }
 
             @Override
             public void onError(@NonNull Throwable error) {
                 LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + error.getMessage());
-                loadStatus.postValue("图片加载失败，网络或服务器异常");
+                AllGroupLoadStatus.postValue("图片加载失败，网络或服务器异常");
             }
 
             @Override

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mandi.intelimeditor.ad.AdData;
-import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.FileTool;
 
@@ -15,9 +14,6 @@ import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.home.data.PicDirInfoManager;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,16 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.mandi.intelimeditor.common.dataAndLogic.AllData.mMediaInfoScanner;
+import static com.mandi.intelimeditor.common.dataAndLogic.AllData.sMediaInfoScanner;
 import static com.mandi.intelimeditor.common.dataAndLogic.AllData.usuManager;
 
 /**
@@ -72,35 +70,33 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
      */
     @Override
     public void start() {
-        // 如果在注册之前完成扫描，那么不会收到事件，直接执行显示方法
-        EventBus.getDefault().register(this);
-        // 如果在注册之后的这里完成扫描，那么会收到事件，会调用显示方法两次，
-        // 但是比放到if判断后面有可能漏掉事件好, 就是刚好if之后注册之前获取数据完成，发出事件
-        if (AllData.hasInitScanLocalPic) {
-            initSetAndShowPicList();
-        }
-        // 如果在注册之后的这里完成扫描，调用显示方法一次
-    }
+        AllData.queryLocalPicList(new Emitter<String>() {
 
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    public void onEventMainThread(Integer event) {
-        Log.d(TAG, "event bus 更新本地图片");
-        if (EventBusConstants.INIT_SCAN_LOCAL_PIC_FINISH.equals(event)) {
-            initSetAndShowPicList();
-        }
+            @Override
+            public void onNext(@NonNull String value) {
+                initSetAndShowPicList();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable error) {
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     private void initSetAndShowPicList() {
-        // 只要进入这个方法，表示初始加载完成了，反注册
-        EventBus.getDefault().unregister(this);
 
-        mMediaInfoScanner.updateRecentPicList(usuManager);
+        sMediaInfoScanner.updateRecentPicList(usuManager);
         currentPicPathList = usuManager.getUsuPaths();
         Log.d(TAG, "currentPicPathList:" + currentPicPathList.size());
         picAdapter.setImageUrls(currentPicPathList, true);
         mView.showPicList();
 
-        mMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
+        sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
         mView.initFileInfoViewData();
 
         LogUtil.d(TAG, "初始化显示图片完成");
@@ -112,7 +108,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                 new ObservableOnSubscribe<Integer>() {
                     @Override
                     public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
-                        if (mMediaInfoScanner.scanAndUpdatePicInfo()) {
+                        if (sMediaInfoScanner.scanAndUpdatePicInfo()) {
                             emitter.onNext(1);//更新图片
                             emitter.onNext(2);//更新文件信息
                             emitter.onComplete();
@@ -126,14 +122,14 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                     public MediaInfoScanner.PicUpdateType apply(Integer type) throws Exception {
                         if (type == 1) {
                             Log.d(TAG, "call: 进行图片更新了");
-                            MediaInfoScanner.PicUpdateType picUpdateType = mMediaInfoScanner.updateRecentPicList(usuManager);
+                            MediaInfoScanner.PicUpdateType picUpdateType = sMediaInfoScanner.updateRecentPicList(usuManager);
                             if (latestPic != null && !usuManager.hasRecentPic(latestPic) &&
                                     !usuManager.getUsuPaths().contains(latestPic))//解决最新添加的图片扫描不到的问题，手动添加
                                 usuManager.addRecentPathStart(latestPic);
                             return picUpdateType;
                         } else {
                             LogUtil.d("更新图片文件信息");
-                            return mMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
+                            return sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
                         }
                     }
                 })
@@ -171,11 +167,6 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                     }
                 });
 
-    }
-
-    public void destroy() {
-        // 如果在注册之前完成扫描，那么不会收到事件
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -304,8 +295,8 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                 usuManager.onDeleteUsuallyPicture(path);
                 isDeleteUsu = true;
             }
-            if (mMediaInfoScanner.isShortVideo(path)) {
-                mMediaInfoScanner.removeSv(path);
+            if (sMediaInfoScanner.isShortVideo(path)) {
+                sMediaInfoScanner.removeSv(path);
                 isDeleteShortVideo = true;
             }
             currentPicPathList.remove(path);
@@ -315,7 +306,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
             picDirInfoManager.updateUsuInfo(usuManager.getUsuPaths());
         }
         if (isDeleteShortVideo) {
-            picDirInfoManager.updateShortVideoInfo(mMediaInfoScanner.getShortVideoMap().keySet());
+            picDirInfoManager.updateShortVideoInfo(sMediaInfoScanner.getShortVideoMap().keySet());
         }
         picAdapter.notifyDataSetChanged();
         fileInfosAdapter.notifyDataSetChanged();

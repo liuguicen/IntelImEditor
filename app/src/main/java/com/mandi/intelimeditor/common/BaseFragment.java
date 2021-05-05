@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.mandi.intelimeditor.R;
+import com.mandi.intelimeditor.common.view.BaseLoadingView;
 
 
 /**
@@ -23,10 +24,8 @@ public abstract class BaseFragment extends Fragment {
     public String TAG = getClass().getSimpleName();
     public View rootView;
     public Context mContext;
-    public View loadingLayout;
-
-    private ProgressBar loadingProgressBar;
-    private TextView loadingTv;
+    protected boolean isDestroyView = false;
+    private BaseLoadingView baseLoadingView;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -67,9 +66,7 @@ public abstract class BaseFragment extends Fragment {
      * 初始化View
      */
     public void initView() {
-        loadingLayout = rootView.findViewById(R.id.loadingLayout);
-        loadingProgressBar = rootView.findViewById(R.id.progressBar);
-        loadingTv = rootView.findViewById(R.id.loadingTv);
+        baseLoadingView = new BaseLoadingView(rootView);
     }
 
     /**
@@ -79,13 +76,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showLoading(boolean show) {
-        if (loadingLayout != null) {
-            if (show) {
-                loadingLayout.setVisibility(View.VISIBLE);
-            } else {
-                loadingLayout.setVisibility(View.GONE);
-            }
-        }
+        baseLoadingView.showLoading(show);
     }
 
     /**
@@ -96,25 +87,12 @@ public abstract class BaseFragment extends Fragment {
      * @param textColor    文字颜色
      */
     public void showLoading(boolean onlyShowText, String message, int textColor) {
-        if (loadingLayout != null) {
-            if (!onlyShowText) {
-                loadingLayout.setVisibility(View.VISIBLE);
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                showLoadingText(message, textColor);
-            } else {
-                if (TextUtils.isEmpty(message)) {
-                    loadingLayout.setVisibility(View.GONE);
-                } else { // 信息不为空
-                    loadingLayout.setVisibility(View.VISIBLE);
-                    loadingProgressBar.setVisibility(View.GONE);
-                    showLoadingText(message, textColor);
-                }
-            }
-        }
+        baseLoadingView.showLoading(onlyShowText, message, textColor);
     }
 
-    protected void showLoadingText(String message, int textColor) {
-        loadingTv.setText(message);
-        loadingTv.setTextColor(textColor);
+    @Override
+    public void onDestroyView() {
+        isDestroyView = true;
+        super.onDestroyView();
     }
 }

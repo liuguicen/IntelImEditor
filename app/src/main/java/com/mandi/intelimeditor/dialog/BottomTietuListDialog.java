@@ -56,7 +56,7 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     private ViewPager2FragmentAdapter pagerAdapter;
     private int selectIndex = 0;
     private boolean isMyTietu = false;
-    private List<PicResGroup> mData = new ArrayList<>();
+    private List<PicResGroup> groupLlist = new ArrayList<>();
     public static final String TITLE_MY = "我的";
     public static final String TITLE_HOTEST = "最热";
     public static final String TITLE_NEWEST = "最新";
@@ -101,7 +101,7 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     public void onStart() {
         super.onStart();
         if (LogUtil.debugPtuTietuList)
-        LogUtil.logTimeConsume("开始创建P图贴图列表弹窗");
+            LogUtil.logTimeConsume("开始创建P图贴图列表弹窗");
         //获取dialog对象
         BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
         WindowManager.LayoutParams layoutParams1 = dialog.getWindow().getAttributes();
@@ -130,7 +130,7 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
             bottomSheet.setBackgroundColor(0xaa000000);
         }
         if (LogUtil.debugPtuTietuList)
-        LogUtil.logTimeConsume("创建弹窗完成");
+            LogUtil.logTimeConsume("创建弹窗完成");
     }
 
 
@@ -174,6 +174,7 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
         initViews(view);
     }
 
+
     private void initViews(View view) {
         mTabs = view.findViewById(R.id.tietuListTabs);
         viewPager = view.findViewById(R.id.tietuViewPager);
@@ -207,13 +208,21 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
         super.onResume();
         //点击贴图时，因为分组列表多，添加到viewpager上时候会有延时，所以要延时加载，否则点击贴图时，会先卡顿一下，才会弹出对话框
         LogUtil.logTimeConsume("进入弹窗resume");
-        if (mViewModel == null && getActivity() != null && mData.size() == 0) {
-//            viewPager.postDelayed(() -> {
+        if (mViewModel == null && getActivity() != null) {
             mViewModel = new ViewModelProvider(getActivity()).get(PTuTietuListViewModel.class);
-            mViewModel.getGroupList().observe(getViewLifecycleOwner(), this::updateTabList);
-//            }, 50);
+        }
+        // 注意，下面的生命周期组件如果弹窗关闭，就不会触发数据加载完成事件了，也就是说，如果用户在加载完成之前关闭，数据列表不会赋值，所以每次都要判断然后加载
+        // 另外，考虑网络出错也需要
+        if (groupLlist.size() == 0) {
+            mViewModel.getOrLoadGroupList().observe(getViewLifecycleOwner(), this::updateTabList);
+            mViewModel.AllGroupLoadStatus.observe(getViewLifecycleOwner(), s ->
+            {
+//                baseLoadingView.showLoading(true, s, Color.WHITE);
+                // 出错了，仍然显示，这时只显示我的
+                updateTabList(groupLlist);
+            });
         } else {
-            updateTabList(mData);
+            updateTabList(groupLlist);
         }
     }
 
@@ -222,7 +231,7 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
             if (LogUtil.debugPtuTietuList)
                 LogUtil.logTimeConsume("开始设置ViewPage的Fragment");
             if (getActivity() != null) {
-                mData = groupList;
+                groupLlist = groupList;
                 if (LogUtil.debugPtuTietuList)
                     LogUtil.d(TAG, "updateTabList pagerAdapter == null");
                 if (pagerAdapter == null) {

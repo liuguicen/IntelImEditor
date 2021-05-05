@@ -140,13 +140,12 @@ public class Util {
      */
     public static class DoubleClick {
         public static long sLastTime = -1;
-
         /**
          * 自定义的
          */
         public long mSelfDefine_lastTime;
-        private final long mSelfDefine_TimeInterval;
 
+        private final long mSelfDefine_TimeInterval;
         /**
          * 注意此方法一般只用于用户点击引起的事件，
          * 如果用于其它事件则可能因为多个不同事件发生时间接近进而导致判断失效

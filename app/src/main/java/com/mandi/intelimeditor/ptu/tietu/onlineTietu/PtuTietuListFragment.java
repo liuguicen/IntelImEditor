@@ -66,12 +66,12 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
     }
 
     /**
-     * @param isFirstVisible
+     * @param isFirstLoad
      */
     @Override
-    public void loadData(boolean isFirstVisible) {
-        super.loadData(isFirstVisible);
-        if (getArguments() != null && isFirstVisible) {
+    public void loadData(boolean isFirstLoad) {
+        super.loadData(isFirstLoad);
+        if (getArguments() != null && isFirstLoad) {
             LogUtil.d(TAG, "title=" + title);
             mViewModel = new ViewModelProvider(this).get(PTuTietuListViewModel.class);
             /**
@@ -80,6 +80,7 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
             mViewModel.getPicResources().observe(getViewLifecycleOwner(), new Observer<List<PicResourceItemData>>() {
                 @Override
                 public void onChanged(List<PicResourceItemData> picResources) {
+                    if(isDestroyView) return;
                     tietuListAdapter.setItemList(picResources);
 
                     LogUtil.logTimeConsume(title + " 完成数据加载，放入了Adapter中");
@@ -92,7 +93,6 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
             });
             mViewModel.loadStatus.observe(
                     getViewLifecycleOwner(), s ->
-
                     {
                         showLoading(true, s, Color.WHITE);
                     });
@@ -173,10 +173,10 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
     private void loadPicListByTitle(String title) {
         if (isTagGroup) {
             if (LogUtil.debugPtuTietuList)
-                LogUtil.d(TAG, "获取贴图成功 = " + title + " - " + picResList.size());
+            LogUtil.d(TAG, "获取贴图成功 = " + title + " - " + picResList.size());
             tietuListAdapter.setList(picResList);
             if (LogUtil.debugPtuTietuList)
-                LogUtil.logTimeConsume(title + " 完成数据加载，放入了Adapter中");
+            LogUtil.logTimeConsume(title + " 完成数据加载，放入了Adapter中");
             if (picResList.size() > 0) {
                 showLoading(true, null, Color.WHITE);
             } else {

@@ -249,7 +249,7 @@ public class PicResourceDownloader {
         emitter.onComplete();
     }
 
-    public static void queryAllPicRes(@NotNull final ObservableEmitter<List<PicResource>> emitter) {
+    public static void downloadAllPicRes(@NotNull final ObservableEmitter<List<PicResource>> emitter) {
         // 首先查询行数 也就是图片数量
         BmobQuery<PicResource> query = new BmobQuery<>();
         query.setMaxCacheAge(CACHE_EXPIRE);
@@ -266,7 +266,8 @@ public class PicResourceDownloader {
                         Log.e(TAG, "bmob查询图片张数成功，无数据");
                     }
                 } else {
-                    Log.i("smile", "错误码：" + e.getErrorCode() + "，错误描述：" + e.getMessage());
+                    Log.e(TAG, "错误码：" + e.getErrorCode() + "，错误描述：" + e.getMessage());
+                    emitter.onError(e);
                 }
             }
         });

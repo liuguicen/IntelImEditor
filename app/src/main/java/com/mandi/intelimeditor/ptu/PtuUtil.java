@@ -24,6 +24,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.tabs.TabLayout;
+import com.mandi.intelimeditor.common.Constants.APPConstants;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
@@ -35,12 +36,14 @@ import com.mandi.intelimeditor.common.util.geoutil.MPoint;
 import com.mandi.intelimeditor.common.util.geoutil.MRect;
 import com.mandi.intelimeditor.ptu.dig.DigView;
 import com.mandi.intelimeditor.ptu.tietu.FloatImageView;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * p图过程中用到的一些工具
@@ -150,6 +153,7 @@ public class PtuUtil {
 
     /**
      * FloatImageView进行了旋转，缩放，将Bm内部的位置转换成View上的位置
+     *
      * @return
      */
     public static MPoint bmPosition2FloatImageView(MPoint bmPos, FloatImageView fiv) {
@@ -422,25 +426,45 @@ public class PtuUtil {
     }
 
     /**
-     * @see PTuIntentBuilder
-     */
-    public static PTuIntentBuilder buildPTuIntent(Activity activity, String url) {
-        return new PTuIntentBuilder(activity, url);
-    }
-
-    /**
      * PTuAc 要设置的项比较多时，建造器模式，使用起来更清晰一些
      */
     public static class PTuIntentBuilder {
         final Activity activity;
-        final Intent intent = new Intent();
+        Intent intent;
 
-        public PTuIntentBuilder(@NotNull Activity activity, @NotNull String url) {
+        public PTuIntentBuilder(@NotNull Activity activity) {
             this.activity = activity;
+            intent = new Intent();
             intent.setComponent(new ComponentName(activity, PtuActivity.class));
             intent.setAction(PtuActivity.PTU_ACTION_NORMAL);
-            intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, url);
         }
+
+        public PTuIntentBuilder(@NotNull Activity activity, @NotNull Intent sourceIntent) {
+            this.activity = activity;
+            this.intent = sourceIntent;
+            sourceIntent.setComponent(new ComponentName(activity, PtuActivity.class));
+            sourceIntent.setAction(PtuActivity.PTU_ACTION_THIRD_APP);
+        }
+
+        public static PTuIntentBuilder build(@NotNull Activity activity) {
+            return new PTuIntentBuilder(activity);
+        }
+
+
+        public static PTuIntentBuilder fromOtherApp(Activity activity, Intent sourceIntent) {
+            return new PTuIntentBuilder(activity, sourceIntent);
+        }
+
+        public PTuIntentBuilder setPicPath(@NotNull String url) {
+            intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, url);
+            return this;
+        }
+
+        public PTuIntentBuilder setPicResource(@NotNull PicResource picResource) {
+            intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, picResource);
+            return this;
+        }
+
 
         /**
          * 第二种模式：作为其它功能需要P图的一个中间步骤，这个中间步骤可能需要先进入P图界面的某个子功能，
@@ -486,6 +510,36 @@ public class PtuUtil {
 
         public PTuIntentBuilder putExtras(Intent other) {
             intent.putExtras(other);
+            return this;
+        }
+
+        public PTuIntentBuilder setTest() {
+            intent.putExtra(APPConstants.Test_FLAG, true);
+            return this;
+        }
+
+        public PTuIntentBuilder putExtra(String key, String value) {
+            intent.putExtra(key, value);
+            return this;
+        }
+
+        public PTuIntentBuilder putExtra(String key, Boolean value) {
+            intent.putExtra(key, value);
+            return this;
+        }
+
+        public PTuIntentBuilder setAction(String action) {
+            intent.setAction(action);
+            return this;
+        }
+
+        public PTuIntentBuilder putStringArrayListExtra(String key, ArrayList<String> picList) {
+            intent.putStringArrayListExtra(key, picList);
+            return this;
+        }
+
+        public PTuIntentBuilder putExtra(String key, int value) {
+            intent.putExtra(key, value);
             return this;
         }
     }

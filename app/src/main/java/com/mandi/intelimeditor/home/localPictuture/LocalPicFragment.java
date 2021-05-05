@@ -92,10 +92,13 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
         return R.layout.fragment_local_picture;
     }
 
+    /**
+     * @see a.baozouptu.common.BaseLazyLoadFragment#loadData(boolean)
+     */
     @Override
-    public void loadData(boolean isFirstVisible) {
-        super.loadData(isFirstVisible);
-        if (isFirstVisible) {
+    public void loadData(boolean isFirstLoad) {
+        super.loadData(isFirstLoad);
+        if (isFirstLoad) {
             mPresenter = new LocalPicPresenter(this, mContext);
             initLocalView();
             startLoad();
@@ -494,12 +497,6 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
         return false;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mPresenter != null)
-            mPresenter.destroy();
-    }
 
     @Override
     public void cancelChosen() {

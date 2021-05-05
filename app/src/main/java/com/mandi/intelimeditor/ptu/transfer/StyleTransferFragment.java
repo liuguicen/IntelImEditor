@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.bean.FunctionInfoBean;
 import com.mandi.intelimeditor.common.CommonConstant;
-import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
@@ -34,7 +33,6 @@ import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
 import com.mandi.intelimeditor.common.util.LogUtil;
-import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
@@ -50,23 +48,18 @@ import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
-import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Emitter;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -101,7 +94,6 @@ public class StyleTransferFragment extends BasePtuFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-        EventBus.getDefault().register(this);
     }
 
     /**
@@ -150,7 +142,9 @@ public class StyleTransferFragment extends BasePtuFragment {
                 if (!isChooseStyle && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
                     chooseFromAllPic();
                 } else {
-                    chooseContent(v);
+                    US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
+                    isChooseStyle = false;
+                    prepareShowChooseRcv(view, isChooseStyle);
                 }
             }
         });
@@ -161,7 +155,9 @@ public class StyleTransferFragment extends BasePtuFragment {
                 if (isChooseStyle && chooseRcv.getParent() != null) {
                     chooseFromAllPic();
                 } else {
-                    chooseStyle(v);
+                    US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
+                    isChooseStyle = true;
+                    prepareShowChooseRcv(view, isChooseStyle);
                 }
             }
         });
@@ -223,19 +219,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     }
 
-    private void chooseContent(View view) {
-        US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-        isChooseStyle = false;
-        prepareShowChooseRcv(view, isChooseStyle);
-    }
-
-    private void chooseStyle(View view) {
-        US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-        isChooseStyle = true;
-        prepareShowChooseRcv(view, isChooseStyle);
-    }
-
-
     private void prepareShowChooseRcv(View view, boolean isChooseStyle) {
         FirstUseUtil.myTietuGuide(mContext);
         ViewParent parent = view.getParent();
@@ -271,19 +254,26 @@ public class StyleTransferFragment extends BasePtuFragment {
     }
 
     private void prepareShowContentList() {
-        // 如果在注册之前完成扫描，那么不会收到事件, 不能在Frag的onCreate注册，View可能还没初始化
-        EventBus.getDefault().register(this);
-        // 如果在注册之后的这里完成扫描，那么会收到事件，会调用显示方法两次，但是比放到if判断后面有可能漏掉事件好
-        if (AllData.hasInitScanLocalPic) {
+        if (AllData.contentList.size() != 0) {
             showStyleOrContenList(AllData.contentList);
-        }
-        // 如果在注册之后的这里完成扫描，调用显示方法一次
-    }
+        } else { // 没有指定，显示最近图片列表
+            AllData.queryLocalPicList(new Emitter<String>() {
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull String value) {
+                    AllData.contentList = AllData.sMediaInfoScanner.convertRecentPath2PicResList();
+                    showStyleOrContenList(AllData.contentList);
+                }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    public void onEventMainThread(Integer event) {
-        if (EventBusConstants.INIT_SCAN_LOCAL_PIC_FINISH.equals(event)) {
-            showStyleOrContenList(AllData.contentList);
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable error) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
         }
     }
 

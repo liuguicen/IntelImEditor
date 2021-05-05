@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/ptu_appbar" />
-
+    <!-- 用户P图的时候一直显示的提示，可以点击叉关闭-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ptu_notice_layout"
         android:layout_width="wrap_content"
@@ -88,8 +88,8 @@
         android:id="@+id/gif_operation_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:background="@color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/fragment_main_function"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">

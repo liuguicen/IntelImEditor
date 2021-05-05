@@ -37,6 +37,7 @@ import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.tencentAD.TxBannerAd;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.FullScreenVadManager;
 import com.mandi.intelimeditor.common.BaseActivity;
+import com.mandi.intelimeditor.common.Constants.APPConstants;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
@@ -505,6 +506,11 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     private void initPtuNotice() {
         String ptuNotice = getIntent().getStringExtra(INTENT_EXTRA_PTU_NOTICE);
+
+        if (isStyle) {
+            ptuNotice = getString(R.string.choose_content_for_style);
+        }
+
         if (ptuNotice != null) {
             View noticeLayout = findViewById(R.id.ptu_notice_layout);
             noticeLayout.setVisibility(View.VISIBLE);
@@ -514,6 +520,11 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
     }
 
+    private void hidePtuNotice() {
+        findViewById(R.id.ptu_notice_layout).setVisibility(View.GONE);
+    }
+
+
     @Override
     public void showGuideDialog(List<String> keyWordList) {
         GuideDialog.Companion.newInstance().setGuideAdapter(
@@ -522,13 +533,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     private void initFragment() {
-        mainFrag = new MainFunctionFragment();
-        mainFrag.setPTuActivityInterface(this);
-        currentFrag = mainFrag;
         fm = getSupportFragmentManager();
-        fm.beginTransaction()
-                .replace(R.id.fragment_main_function, mainFrag)
-                .commitAllowingStateLoss();
         repealRedoListener = new RepealRedoListener() {
             @Override
             public void canRedo(boolean canRedo) {
@@ -1205,6 +1210,9 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @Override
     public void transfer(Object obj, boolean isStyle) {
+        if (this.isStyle) {
+            hidePtuNotice();
+        }
         showProgress(0);
 //      关于
         Observable
@@ -1884,7 +1892,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     private void test() {
-        if (getIntent().getBooleanExtra("is_test", false)) {
+        if (getIntent().getBooleanExtra(APPConstants.Test_FLAG, false)) {
             new Handler().postDelayed(() -> {
                 Log.e(TAG, "执行测试切换");
                 switchFragment(EDIT_TIETU, null);

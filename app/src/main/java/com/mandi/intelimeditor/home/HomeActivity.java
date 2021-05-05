@@ -196,9 +196,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         if (sourceIntent != null) {
             if (sourceIntent.getData() != null) { // 如果是从其它应用过来需要编辑图片的
                 US.putOtherEvent(US.OTHERS_EDIT_FROM_THIRD_APP);
-                sourceIntent.setComponent(new ComponentName(this, PtuActivity.class));
-                sourceIntent.setAction(PtuActivity.PTU_ACTION_THIRD_APP);
-                startActivity(sourceIntent);
+                PtuUtil.PTuIntentBuilder.fromOtherApp(this, sourceIntent).startActivity();
                 finish();
                 return;
             }
@@ -249,15 +247,12 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         if (isOnlyChoosePic()) return;
 //        switchFragment(TEMPLATE_FRAG_ID);
 
-        Intent testIntent = new Intent(this, PtuActivity.class);
-        testIntent.putExtras(getIntent());
         String thePath = Environment.getExternalStorageDirectory() + "/test.gif";
-
-
-        PtuUtil.PTuIntentBuilder pTuIntentBuilder = PtuUtil.buildPTuIntent(this, thePath)
-                .putExtras(getIntent());
-        pTuIntentBuilder.getIntent().putExtra("is_test", true);
-        pTuIntentBuilder.startActivityForResult(REQUEST_CODE_NORMAL);
+        PtuUtil.PTuIntentBuilder.build(this)
+                .setPicPath(thePath)
+                .putExtras(getIntent())
+                .setTest()
+                .startActivity();
 
 //        toChangeFace(null);
 //         不显示广告，频繁开发时需要
@@ -632,10 +627,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         String path = bmobFile.getUrl();
         String action = getIntent().getAction();
         Set<String> categories = getIntent().getCategories();
-        if (categories!= null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE) || isStyle) {
+        if (categories != null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE) || isStyle) {
             AllData.curStyleList = categoryList;
         }
-        if (categories!= null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT)) || !isStyle) {
+        if (categories != null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT)) || !isStyle) {
             AllData.contentList = categoryList;
         }
 
@@ -696,12 +691,14 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<List<String>>() {
                     @Override
-                    public void onNext(List<String> picList) {
-                        Intent intent = new Intent(HomeActivity.this, PtuActivity.class);
-                        intent.setAction(PtuActivity.PTU_ACTION_PICS_MAKE_GIF);
-                        intent.putStringArrayListExtra(PtuActivity.PTU_DATA_GIF_PIC_LIST, (ArrayList<String>) picList);
-                        intent.putExtra(PtuActivity.INTENT_EXTRA_TO_CHILD_FUNCTION, PtuUtil.CHILD_FUNCTION_GIF);
-                        startActivityForResult(intent, HomeActivity.REQUEST_CODE_MAKE_GIF);
+                    public void onNext(@NotNull List<String> picList) {
+                        PtuUtil.PTuIntentBuilder
+                                .build(HomeActivity.this)
+                                .setAction(PtuActivity.PTU_ACTION_PICS_MAKE_GIF)
+                                .putStringArrayListExtra(PtuActivity.PTU_DATA_GIF_PIC_LIST, (ArrayList<String>) picList)
+                                .putExtra(PtuActivity.INTENT_EXTRA_TO_CHILD_FUNCTION, PtuUtil.CHILD_FUNCTION_GIF)
+                                .startActivityForResult(HomeActivity.REQUEST_CODE_MAKE_GIF);
+
                         currentFrag.cancelChosen();
                         if (progressDialog != null) {
                             progressDialog.dismiss();
@@ -732,16 +729,14 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     }
 
     private void startPTuActivity(String chosenPath, PicResource picResource, boolean isStyle) {
-        Intent intent = new Intent(this, PtuActivity.class);
-        String action = getIntent().getAction();
-        mLocalPicFragment.addUsedPath(chosenPath);
-        intent.setAction(PtuActivity.PTU_ACTION_NORMAL);
-        intent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, chosenPath);
-        intent.putExtra(PtuActivity.INTENT_EXTRA_CHOSEN_TAGS, picResource.getTag());
-        intent.putExtra(PtuActivity.INTENT_EXTRA_IS_STYLE, isStyle);
+        PtuUtil.PTuIntentBuilder.build(this)
+                .setPicPath(chosenPath)
+                .putExtra(PtuActivity.INTENT_EXTRA_CHOSEN_TAGS, picResource.getTag())
+                .putExtra(PtuActivity.INTENT_EXTRA_IS_STYLE, isStyle)
+                .startActivityForResult(HomeActivity.REQUEST_CODE_NORMAL);
 
+        mLocalPicFragment.addUsedPath(chosenPath);
         // intent.putExtra(PtuActivity.PTU_DATA_PIC_INFO, picResource);
-        startActivityForResult(intent, HomeActivity.REQUEST_CODE_NORMAL);
     }
 
     /**

@@ -162,9 +162,9 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
 
 
     @Override
-    public void loadData(boolean isFirstVisible) {
-        super.loadData(isFirstVisible);
-        if (isFirstVisible) {
+    public void loadData(boolean isFirstLoad) {
+        super.loadData(isFirstLoad);
+        if (isFirstLoad) {
             LogUtil.d(TAG, " mLoadingView show");
             showLoading(true);
             presenter = new PicResourcesPresenter(mContext, this, mFirstClass, mSecondClass);
@@ -459,7 +459,10 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         showLoading(false);
         if (!isSuccess && getActivity() != null) {
             mTvDownloadInfo.setVisibility(View.VISIBLE);
-            mTvDownloadInfo.setText(R.string.pic_download_failed_info);
+            if (PicResource.SECOND_CLASS_MY.equals(mSecondClass)) {
+                mTvDownloadInfo.setText("暂未保存表情包,长按即可添加！");
+            } else
+                mTvDownloadInfo.setText(R.string.pic_download_failed_info);
         } else if (list != null && list.size() == 0 && getActivity() != null && PicResource.SECOND_CLASS_MY.equals(mSecondClass)) {
             mTvDownloadInfo.setText("暂未保存表情包,快去添加吧！");
             mTvDownloadInfo.setVisibility(View.VISIBLE);

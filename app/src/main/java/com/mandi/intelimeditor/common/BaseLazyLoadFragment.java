@@ -12,7 +12,7 @@ public abstract class BaseLazyLoadFragment extends BaseFragment {
     /**
      * 是否加载过数据
      */
-    protected boolean isLoaded;
+    private boolean isLoaded;
 
     /**
      * androidx Fragment+ViewPage2时，fragment加载时会走onResume,所以在这里处理懒加载
@@ -30,10 +30,11 @@ public abstract class BaseLazyLoadFragment extends BaseFragment {
     }
 
     /**
-     * 加载数据
+     * 加载数据, onResume的时候调用
+     * @param isFirstLoad 第一次加载数据
      */
-    public void loadData(boolean isFirstVisible) {
-        LogUtil.d(TAG, "懒加载 加载数据 " + isFirstVisible);
+    public void loadData(boolean isFirstLoad) {
+        LogUtil.d(TAG, "懒加载 加载数据 " + isFirstLoad);
     }
 
     /******************************************************************************

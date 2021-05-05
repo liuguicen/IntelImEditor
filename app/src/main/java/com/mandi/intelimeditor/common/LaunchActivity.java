@@ -39,7 +39,7 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.view.DialogFactory;
 import com.mandi.intelimeditor.home.HomeActivity;
-import com.mandi.intelimeditor.ptu.PtuActivity;
+import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.saveAndShare.PTuResultData;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.AppGuideActivity;
@@ -50,7 +50,6 @@ import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -162,11 +161,12 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
 
     @TestOnly
     private void test() {
-        Intent testIntent = new Intent(this, PtuActivity.class);
-        testIntent.putExtras(getIntent());
         String thePath = Environment.getExternalStorageDirectory() + "/test.jpg";
-        testIntent.putExtra(PtuActivity.INTENT_EXTRA_PIC_PATH, thePath);
-        testIntent.setAction(PtuActivity.PTU_ACTION_NORMAL);
+        PtuUtil.PTuIntentBuilder
+                .build(this)
+                .setPicPath(thePath)
+                .putExtras(getIntent())
+                .startActivity();
         //        startActivityForResult(testIntent, REQUEST_CODE_NORMAL);
         Log.e(TAG, "完成时间  " + System.currentTimeMillis());
         finish();
