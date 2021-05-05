@@ -75,7 +75,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     private RepealRedoListener repealRedoListener;
     private PtuBaseChooser ptuBaseChooser;
     private RecyclerView chooseRcv;
-    private boolean isChooseStyle = true;
+    private boolean isChooseStyleMode = true;
     private TietuRecyclerAdapter chooseListAdapter;
     private boolean isFirstShowChooseRcv;
     private Button chooseContenBtn;
@@ -126,25 +126,25 @@ public class StyleTransferFragment extends BasePtuFragment {
         GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(mContext, TietuRecyclerAdapter.DEFAULT_ROW_NUMBER,
                 GridLayoutManager.HORIZONTAL, false);
         chooseRcv.setLayoutManager(gridLayoutManager);
-        isChooseStyle = true;
+        isChooseStyleMode = true;
         if (transferController != null && transferController.contentBm == null) {
-            isChooseStyle = false;
+            isChooseStyleMode = false;
         }
         chooseListAdapter = new TietuRecyclerAdapter(mContext, true);
         chooseListAdapter.setOnItemClickListener(chooseRcvListener);
-        prepareShowChooseRcv(view, isChooseStyle);
+        prepareShowChooseRcv(view, isChooseStyleMode);
 
         chooseStyleBtn = rootView.findViewById(R.id.choose_style);
         chooseContenBtn = rootView.findViewById(R.id.choose_pic);
         chooseContenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isChooseStyle && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
+                if (!isChooseStyleMode && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
                     chooseFromAllPic();
                 } else {
                     US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-                    isChooseStyle = false;
-                    prepareShowChooseRcv(view, isChooseStyle);
+                    isChooseStyleMode = false;
+                    prepareShowChooseRcv(view, isChooseStyleMode);
                 }
             }
         });
@@ -152,12 +152,12 @@ public class StyleTransferFragment extends BasePtuFragment {
         chooseStyleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isChooseStyle && chooseRcv.getParent() != null) {
+                if (isChooseStyleMode && chooseRcv.getParent() != null) {
                     chooseFromAllPic();
                 } else {
                     US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-                    isChooseStyle = true;
-                    prepareShowChooseRcv(view, isChooseStyle);
+                    isChooseStyleMode = true;
+                    prepareShowChooseRcv(view, isChooseStyleMode);
                 }
             }
         });
@@ -165,6 +165,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             onChosenBm(transferController.contentBm, transferController.styleBm);
         }
         rootView.findViewById(R.id.go_ptu).setOnClickListener(v -> {
+            ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
             pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
         });
     }
@@ -186,7 +187,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     String url = oneTietu.getUrl().getUrl();
                     ViewGroup parent = (ViewGroup) chooseRcv.getParent();
                     FirstUseUtil.tietuGuide(mContext);
-                    pTuActivityInterface.transfer(url, isChooseStyle);
+                    pTuActivityInterface.transfer(url, isChooseStyleMode);
                     MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
                 } else {
                     Log.e(this.getClass().getSimpleName(), "点击贴图后获取失败");
@@ -199,9 +200,9 @@ public class StyleTransferFragment extends BasePtuFragment {
         US.putPTuTietuEvent(US.PTU_TIETU_MORE);
         Intent intent = new Intent(mContext, HomeActivity.class);
         intent.setAction(HomeActivity.INTENT_ACTION_ONLY_CHOSE_PIC);
-        intent.addCategory(isChooseStyle ? HomeActivity.CHOOSE_PIC_CATEGORY_STYLE : HomeActivity.CHOOSE_PIC_CATEGORY_CONTENT);
-        intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, isChooseStyle ? HomeActivity.TEMPLATE_FRAG_ID : HomeActivity.LOCAL_FRAG_ID);
-        startActivityForResult(intent, isChooseStyle ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
+        intent.addCategory(isChooseStyleMode ? HomeActivity.CHOOSE_PIC_CATEGORY_STYLE : HomeActivity.CHOOSE_PIC_CATEGORY_CONTENT);
+        intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, isChooseStyleMode ? HomeActivity.TEMPLATE_FRAG_ID : HomeActivity.LOCAL_FRAG_ID);
+        startActivityForResult(intent, isChooseStyleMode ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
     }
 
     @Override
@@ -281,6 +282,20 @@ public class StyleTransferFragment extends BasePtuFragment {
         AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
 
             @Override
+            public void onNext(List<PicResource> resList) {
+                if (isDetached()) {
+                    return;
+                }
+                int size = resList.size();
+                if (size == 0) {
+                    onNoStylePic();
+                    return;
+                }
+                Log.d("TAG", "onNext: 获取到的贴图数量" + size);
+                showStyleOrContenList(resList);
+            }
+
+            @Override
             public void onError(@NotNull Throwable throwable) {
                 if (isDetached()) {
                     return;
@@ -293,20 +308,6 @@ public class StyleTransferFragment extends BasePtuFragment {
             @Override
             public void onComplete() {
 
-            }
-
-            @Override
-            public void onNext(List<PicResource> resList) {
-                if (isDetached()) {
-                    return;
-                }
-                int size = resList.size();
-                if (size == 0) {
-                    onNoStylePic();
-                    return;
-                }
-                Log.d("TAG", "onNext: 获取到的贴图数量" + size);
-                showStyleOrContenList(resList);
             }
         });
     }

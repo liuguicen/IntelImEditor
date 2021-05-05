@@ -357,10 +357,10 @@ public class PicResSearchSortUtil {
     /**
      * 根据标签将图片列表分组
      */
-    public static List<PicResGroup> groupByTag(String firstClass, List<PicResource> resList) {
+    public static List<PicResGroup> groupByTag(String firstClass, String secondClass, List<PicResource> resList) {
         long start = System.currentTimeMillis();
         if (resList == null) return new ArrayList<>();
-        resList = filter(resList, firstClass, null);
+        resList = filter(resList, firstClass, secondClass);
         // 先用map将数据按照tag分组
         Map<String, PicResGroup> map = new HashMap<>();
         for (int i = 0; i < resList.size(); i++) {

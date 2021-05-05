@@ -27,6 +27,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -186,7 +187,7 @@ public class AllData {
     public static boolean hasInitScanLocalPic = false;
     private static final List<Emitter<String>> localPicQuery = new ArrayList<>();
 
-    public static void initScanLocalPic() {
+    public static synchronized void initScanLocalPic() {
         Observable
                 .create((ObservableOnSubscribe<String>) emitter -> {
                     usuManager = new UsuPathManger(AllData.appContext);
@@ -252,10 +253,12 @@ public class AllData {
     public static List<Emitter<List<PicResGroup>>> styleGroupQuery = new ArrayList<>();
     public static List<Emitter<List<PicResource>>> allResQuery = new ArrayList<>();
 
-    public static void downLoadALLPicRes() {
+    public static synchronized void downLoadALLPicRes() {
+        if (allPicRes_downloadState == PROCESS_STATE_ING || allPicRes_downloadState == PROCESS_STATE_SUCCESS)
+            return;
+        allPicRes_downloadState = PROCESS_STATE_ING;
         Log.e(TAG, "开始下载所有图片资源，重要log别删");
         allResList.clear();
-        allPicRes_downloadState = PROCESS_STATE_ING;
         Observable
                 .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
                     PicResourceDownloader.downloadAllPicRes(emitter);
@@ -299,6 +302,29 @@ public class AllData {
                     @Override
                     public void onComplete() {
                         LockUtil.updateUnlockIfNeeded(allResList); // 加锁
+
+                        String thePath = Environment.getExternalStorageDirectory().toString();
+                        PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
+                        p1.setCategory(PicResource.CATEGORY_STYLE);
+                        p1.setHeat(1000);
+                        p1.setTag("梵高 星空");
+                        allResList.add(p1);
+                        p1 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
+                        p1.setCategory(PicResource.CATEGORY_STYLE);
+                        p1.setHeat(100);
+                        p1.setTag("动漫 新海诚");
+                        allResList.add(p1);
+                        p1 = PicResource.path2PicResource(thePath + File.separator + "test3.jpg");
+                        p1.setCategory(PicResource.CATEGORY_STYLE);
+                        allResList.add(p1);
+                        p1 = PicResource.path2PicResource(thePath + File.separator + "test4.jpg");
+                        p1.setCategory(PicResource.CATEGORY_STYLE);
+                        allResList.add(p1);
+                        p1 = PicResource.path2PicResource(thePath + File.separator + "test5.jpg");
+                        p1.setCategory(PicResource.CATEGORY_STYLE);
+                        allResList.add(p1);
+
+
                         for (Emitter<List<PicResource>> emitter : allResQuery) {
                             emitter.onNext(allResList);
                         }
@@ -319,7 +345,7 @@ public class AllData {
         allPicRes_groupState = PROCESS_STATE_ING;
         Observable
                 .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-                    styleGroupList = PicResSearchSortUtil.groupByTag(PicResource.CATEGORY_STYLE, allResList);
+                    styleGroupList = PicResSearchSortUtil.groupByTag(null, PicResource.CATEGORY_STYLE, allResList);
                     emitter.onNext(new ArrayList<>());
                 })
                 .subscribeOn(Schedulers.computation())

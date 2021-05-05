@@ -61,6 +61,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
         this.secondClass = secondClass;
     }
 
+
     private List<PicResource> originList; // 里面采用的默认排序，和其它排序不太一样
 
     /**
@@ -75,27 +76,14 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
             @Override
             public void onNext(@NonNull List<PicResource> resList) {
                 try {
-                    LogUtil.d(TAG, "获取图片资源成功 = " + " - " + resList.size());
 //                Log.e(TAG, "onNext: test error");
                     mIsDownloadSuccess = true;
                     originList = PicResSearchSortUtil.filter(resList, firstClass, secondClass);
-
-                    String thePath = Environment.getExternalStorageDirectory().toString();
-                    PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
-                    p1.setHeat(1000);
-                    p1.setTag("梵高 星空");
-                    originList.add(p1);
-                    PicResource p2 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
-                    p1.setHeat(100);
-                    p1.setTag("动漫 新海诚");
-                    originList.add(p2);
-                    originList.add(PicResource.path2PicResource(thePath + File.separator + "test3.jpg"));
-                    originList.add(PicResource.path2PicResource(thePath + File.separator + "test4.jpg"));
-                    originList.add(PicResource.path2PicResource(thePath + File.separator + "test5.jpg"));
+                    LogUtil.d(TAG, "获取图片资源成功 = " + " - " + originList.size());
 
                     PicResourcesAdapter.randomInsertForHeat(originList);
                     picResAdapter.setImageUrls(originList, null);
-                    mView.onDownloadStateChange(true, resList);
+                    mView.onDownloadStateChange(true, originList);
                 } catch (Exception e) {
                     // 注意，这个方法比较关键，上面的代码出错， onError 不会调用，可能是目前对RxJava emitter的使用方式有问题
                     // 文档上面说只能同步使用
@@ -200,5 +188,9 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     @Override
     public boolean isDownloadSuccess() {
         return mIsDownloadSuccess;
+    }
+
+    public List<PicResource> getOriginList() {
+        return originList;
     }
 }

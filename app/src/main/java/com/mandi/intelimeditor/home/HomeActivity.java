@@ -105,8 +105,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
     // 下面这两个可以合并复用
     public static final String PTU_ACTION_CHOOSE_TIETU = "choose_tietu";
-    public static final String CHOOSE_PIC_CATEGORY_STYLE = "action_choose_base";
-    public static final String CHOOSE_PIC_CATEGORY_CONTENT = "action_choose_base";
+    public static final String CHOOSE_PIC_CATEGORY_STYLE = "action_choose_style";
+    public static final String CHOOSE_PIC_CATEGORY_CONTENT = "action_choose_content";
 
     public static final int REQUEST_CODE_NORMAL = 0;
     public static final int REQUEST_CODE_CHOOSE_PIC_FROM_SYSTEM = 12;
@@ -411,8 +411,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
         Log.e(TAG, "启动了 mTemplateChooseFragment == null:" + (mLocalPicFragment == null));
         if (mTemplateFragment == null) {
-            mTemplateFragment = PicResourcesFragment.newInstance(PicResource.CATEGORY_STYLE,
-                    null, isOnlyChoosePic());
+            mTemplateFragment = PicResourcesFragment.newInstance(null, PicResource.CATEGORY_STYLE, isOnlyChoosePic());
         }
 
         Log.e(TAG, "启动了 mTietuChooseFragment == null:" + (mLocalPicFragment == null));
@@ -627,10 +626,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         String path = bmobFile.getUrl();
         String action = getIntent().getAction();
         Set<String> categories = getIntent().getCategories();
-        if (categories != null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE) || isStyle) {
+        if (categories != null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE)) {
             AllData.curStyleList = categoryList;
         }
-        if (categories != null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT)) || !isStyle) {
+        if (categories != null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT))) {
             AllData.contentList = categoryList;
         }
 

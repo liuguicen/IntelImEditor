@@ -3,7 +3,6 @@ package com.mandi.intelimeditor.home.tietuChoose;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
@@ -274,12 +273,12 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                 }
                 PicResource chosenResource = itemData.data;
                 if (chosenResource == null) return;
-                choosePic(chosenResource);
+                choosePic(chosenResource, picResGroup.resList);
             } else {
                 PicResourceItemData itemData = picResAdapter.getImageUrlList().get(position);
                 PicResource chosenResource = itemData.data;
                 if (chosenResource == null) return;
-                choosePic(chosenResource);
+                choosePic(chosenResource, presenter.getOriginList());
             }
         });
         picResAdapter.setLongClickListener((itemHolder) -> {
@@ -316,7 +315,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
 
     }
 
-    private void choosePic(@NotNull PicResource chosenResource) {
+    private void choosePic(@NotNull PicResource chosenResource, List<PicResource> resList) {
         chosenResource.updateHeat();
         if (mActivity == null) {
             ToastUtils.show(R.string.no_momery_notice);
@@ -329,7 +328,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                     US.putEditPicEvent(US.EDIT_PIC_FROM_TIETU);
                 }
             }
-            mActivity.choosePic(chosenResource, null, true);
+            mActivity.choosePic(chosenResource, resList, true);
         }
     }
 

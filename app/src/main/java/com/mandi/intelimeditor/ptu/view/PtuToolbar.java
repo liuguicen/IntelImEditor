@@ -35,6 +35,7 @@ public class PtuToolbar extends FrameLayout {
             Color.WHITE);
     private static Bitmap cancelBitmap = IconBitmapCreator.createTietuCancelBm(Util.dp2Px(32),
             Color.WHITE);
+    private TextView backTv;
 
     public PtuToolbar(Context context) {
         super(context);
@@ -59,6 +60,7 @@ public class PtuToolbar extends FrameLayout {
         sureBtn = rootView.findViewById(R.id.iv_sure);
         sureBtn.setImageBitmap(sureBitmap);
         backView = rootView.findViewById(R.id.back_group);
+        backTv = rootView.findViewById(R.id.back_tv);
         cancelBtn = rootView.findViewById(R.id.iv_cancel);
         cancelBtn.setImageBitmap(cancelBitmap);
         sendBtn = rootView.findViewById(R.id.iv_help);
@@ -137,10 +139,14 @@ public class PtuToolbar extends FrameLayout {
     /**
      * 将SaveSet文字描述等转换成P图作为中间步骤的，所需要的文字描述
      */
-    public void switchSaveSet2InterOp(String description) {
+    public void setRightTopText(String description) {
         if (description == null) {
             description = IntelImEditApplication.appContext.getString(R.string.finish);
         }
-        ((TextView) findViewById(R.id.iv_save)).setText(description);
+        saveBtn.setText(description);
+    }
+
+    public void setLeftTopText(String string) {
+        backTv.setText(string);
     }
 }

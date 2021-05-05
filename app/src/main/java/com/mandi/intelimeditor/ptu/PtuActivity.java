@@ -443,7 +443,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         ptuSeeView.setPTuActivityInterface(this);
         mPtuToolbar = findViewById(R.id.ptu_toolbar_relative);
         if (isIntermediatePtu) {
-            mPtuToolbar.switchSaveSet2InterOp(getIntent().getStringExtra(INTENT_EXTRA_INTERMEDIATE_PTU_FINISH_NAME));
+            mPtuToolbar.setRightTopText(getIntent().getStringExtra(INTENT_EXTRA_INTERMEDIATE_PTU_FINISH_NAME));
         }
         mPtuToolbar.setOnToolClickListener(v -> {
             switch (v.getId()) {
@@ -459,6 +459,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     break;
                 case R.id.iv_save:
                     if (!Util.DoubleClick.isDoubleClick()) {
+                        if (currentFrag == mainFrag) {
+                            switchFragment(EDIT_TRANSFER, null);
+                            break;
+                        }
                         if (!isIntermediatePtu) {
                             saveSet();
                         } else {
@@ -476,7 +480,11 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     }
                     break;
                 case R.id.back_group:
-                    certainLeavePage();
+                    if (currentFrag == mainFrag) {
+                        certainCancelEdit();
+                    } else {
+                        certainLeavePage();
+                    }
                     break;
                 case R.id.iv_cancel:
                     if (currentFrag != null) {
@@ -502,7 +510,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         mPtuToolbar.switchToolbarBtn(false);
         initPtuNotice();
     }
-
 
     private void initPtuNotice() {
         String ptuNotice = getIntent().getStringExtra(INTENT_EXTRA_PTU_NOTICE);
@@ -941,9 +948,13 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             currentFrag = mainFrag;
             ptuSeeView.switchStatus2Main();
             mPtuToolbar.switchToolbarBtn(false);
+            mPtuToolbar.setRightTopText(getString(R.string.finish));
+            mPtuToolbar.setLeftTopText(getString(R.string.cancel));
             judgeShowBannerAd();
         } else if (function == EDIT_TRANSFER) {
             mPtuToolbar.switch2Transfer();
+            mPtuToolbar.setRightTopText(getString(R.string.save_add));
+            mPtuToolbar.setLeftTopText(getString(R.string.the_return));
             switch2Transfer(secondFuncControl instanceof TransferController ? (TransferController) secondFuncControl : null);
         } else {
             ui2SecondFunction();
@@ -1749,6 +1760,19 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             setReturnResultAndFinish(PTuResultData.LEAVE, null);
     }
 
+
+    private void certainCancelEdit() {
+        if (repealRedoManager.hasChange()) {
+            CertainLeaveDialog certainLeaveDialog = new CertainLeaveDialog(PtuActivity.this);
+            certainLeaveDialog.createDialog("已经修改了图片,确定取消吗？", null,
+                    () -> {
+                        while (repealRedoManager.canRepeal())
+                            bigRepeal();
+                        switchFragment(EDIT_TRANSFER, null);
+                    });
+        } else
+            switchFragment(EDIT_TRANSFER, null);
+    }
 
     /******************************* 撤消重做部分 *******************************/
 
