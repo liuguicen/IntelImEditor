@@ -497,7 +497,8 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.destroy();
+        if (mPresenter != null)
+            mPresenter.destroy();
     }
 
     @Override

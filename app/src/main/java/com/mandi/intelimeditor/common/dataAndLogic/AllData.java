@@ -63,7 +63,7 @@ public class AllData {
     public static boolean hasInitDataNeedAc = false;
 
 
-    public static List<PicResource> allResList;
+    public static List<PicResource> allResList = new ArrayList<>();
     public static List<PicResGroup> mAllGroupList = new ArrayList<>(); // 分组列表，分组操作比较麻烦，所以存下来
     public static boolean hasLoadGuide = false;
     public static List<PicResource> curStyleList = new ArrayList<>();

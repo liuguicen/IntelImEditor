@@ -59,10 +59,12 @@ import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
@@ -257,13 +259,13 @@ public class StyleTransferFragment extends BasePtuFragment {
             chooseRcv.setAdapter(chooseListAdapter);
         }
         if (isChooseStyle) {
-            prepareShowStyle(view);
+            prepareShowStyleList(view);
         } else {
             prepareShowContentList();
         }
         if (isFirstShowChooseRcv) { // 本地贴图第一次加载显示不了，尝试多种办法不行，目前只能用这个
-            view.post(() -> prepareShowStyle(view));
-            view.post(() -> prepareShowStyle(view));
+            view.post(() -> prepareShowStyleList(view));
+            view.post(() -> prepareShowStyleList(view));
         }
         isFirstShowChooseRcv = false;
     }
@@ -285,37 +287,38 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     }
 
-    private void prepareShowStyle(View view) {
-        Observable
-                .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-                    PicResourceDownloader.queryPicResByCategory("", PicResource.CATEGORY_STYLE, emitter);
-                })
-                .subscribe(new SimpleObserver<List<PicResource>>() {
+    private void prepareShowStyleList(View view) {
+        AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
 
-                    @Override
-                    public void onError(Throwable throwable) {
-                        if (isDetached()) {
-                            return;
-                        }
-                        onNoStylePic();
-                        LogUtil.e(throwable.getMessage());
-                        showStyleOrContenList(null);
-                    }
+            @Override
+            public void onError(@NotNull Throwable throwable) {
+                if (isDetached()) {
+                    return;
+                }
+                onNoStylePic();
+                LogUtil.e(throwable.getMessage());
+                showStyleOrContenList(null);
+            }
 
-                    @Override
-                    public void onNext(List<PicResource> tietumaterials) {
-                        if (isDetached()) {
-                            return;
-                        }
-                        int size = tietumaterials.size();
-                        if (size == 0) {
-                            onNoStylePic();
-                            return;
-                        }
-                        Log.d("TAG", "onNext: 获取到的贴图数量" + size);
-                        showStyleOrContenList(tietumaterials);
-                    }
-                });
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onNext(List<PicResource> resList) {
+                if (isDetached()) {
+                    return;
+                }
+                int size = resList.size();
+                if (size == 0) {
+                    onNoStylePic();
+                    return;
+                }
+                Log.d("TAG", "onNext: 获取到的贴图数量" + size);
+                showStyleOrContenList(resList);
+            }
+        });
     }
 
     private void showStyleOrContenList(List<PicResource> list) {

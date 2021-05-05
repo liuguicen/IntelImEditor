@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.reactivex.Emitter;
-import io.reactivex.ObservableEmitter;
+import io.reactivex.Emitter;
 
 import static com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup.MIN_GROUP_SIZE;
 
@@ -37,7 +37,6 @@ import static com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup.MIN_GROU
  */
 public class PicResSearchSortUtil {
     public static final String TAG = "SearchUtil";
-
 
     /**
      * 推荐功能用，根据用户使用的tag，搜索类似的图片
@@ -197,7 +196,7 @@ public class PicResSearchSortUtil {
         return false;
     }
 
-    public static void getHotestTietuList(ObservableEmitter<List<PicResource>> emitter) {
+    public static void getHotestTietuList(Emitter<List<PicResource>> emitter) {
         AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
             @Override
             public void onNext(@NonNull List<PicResource> resList) {
@@ -218,7 +217,7 @@ public class PicResSearchSortUtil {
         });
     }
 
-    public static void getNewestTietuList(ObservableEmitter<List<PicResource>> emitter) {
+    public static void getNewestTietuList(Emitter<List<PicResource>> emitter) {
         AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
             @Override
             public void onNext(@NonNull List<PicResource> resList) {
@@ -267,8 +266,11 @@ public class PicResSearchSortUtil {
     // --------------------------------------------------------------------------------------------
     // 排序分组
     // --------------------------------------------------------------------------------------------
+    public static final int SORT_TYPE_DEFAULT = 0; // = hot + 随机
     public static final int SORT_TYPE_HOT = 1;
     public static final int SORT_TYPE_TIME = 2;
+    public static final int SORT_TYPE_GROUP = 3;
+
 
     public static void sortPicRes(List<PicResource> resList, int sortType, boolean isReduce) {
         Comparator<PicResource> comparator = new Comparator<PicResource>() {

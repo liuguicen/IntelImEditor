@@ -39,9 +39,10 @@ public final class LogUtil {
     public static final boolean debugRecommend = false;
     public static final boolean debugTietuGesture = false;
     public static boolean debugDeformation = false;
-    public static final boolean debugFace = true; // 人脸检测 对齐 相关的调试
+    public static final boolean debugFace = false; // 人脸检测 对齐 相关的调试
     public static boolean debugGif = false;
     public static boolean testSplashAd = false;
+    public static boolean debugPtuTietuList = true;
 
     /**
      * 控制一些调试操作，发版本时记得修改
@@ -224,8 +225,12 @@ public final class LogUtil {
         startTime = System.currentTimeMillis();
     }
 
-    public static void printAndRecord(String msg) {
-        d(msg + "，耗时 = " + (System.currentTimeMillis() - startTime));
+    public static void logTimeConsumeAndRecord(String msg) {
+        d("-", msg + "，耗时 = " + (System.currentTimeMillis() - startTime), 3);
         startTime = System.currentTimeMillis();
+    }
+
+    public static void logTimeConsume(String msg) {
+        d("-", msg + "，耗时 = " + (System.currentTimeMillis() - startTime), 2);
     }
 }

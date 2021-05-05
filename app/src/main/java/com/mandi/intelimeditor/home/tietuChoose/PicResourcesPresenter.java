@@ -2,33 +2,23 @@ package com.mandi.intelimeditor.home.tietuChoose;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.mandi.intelimeditor.common.Constants.EventBusConstants;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
-import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.home.search.PicResSearchSortUtil;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
-import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Emitter;
-import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 
 /**
  * <pre>
@@ -59,8 +49,6 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
      */
     private int curSortType = 0;
 
-    public static final int SORT_TYPE_GROUP = 3;
-
     /**
      * @param firstClass  一级分类
      * @param secondClass 二级分类
@@ -86,11 +74,25 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
             @Override
             public void onNext(@NonNull List<PicResource> resList) {
                 try {
-                    LogUtil.d(TAG, "获取贴图成功 = " + " - " + resList.size());
+                    LogUtil.d(TAG, "获取图片资源成功 = " + " - " + resList.size());
 //                Log.e(TAG, "onNext: test error");
                     mIsDownloadSuccess = true;
                     originList = PicResSearchSortUtil.filter(resList, firstClass, secondClass);
-                    PicResourcesAdapter.randomInsertForHeat(resList);
+
+                    String thePath = Environment.getExternalStorageDirectory().toString();
+                    PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
+                    p1.setHeat(1000);
+                    p1.setTag("梵高 星空");
+                    originList.add(p1);
+                    PicResource p2 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
+                    p1.setHeat(100);
+                    p1.setTag("动漫 新海诚");
+                    originList.add(p2);
+                    originList.add(PicResource.path2PicResource(thePath + File.separator + "test3.jpg"));
+                    originList.add(PicResource.path2PicResource(thePath + File.separator + "test4.jpg"));
+                    originList.add(PicResource.path2PicResource(thePath + File.separator + "test5.jpg"));
+
+                    PicResourcesAdapter.randomInsertForHeat(originList);
                     picResAdapter.setImageUrls(originList, null);
                     mView.onDownloadStateChange(true, resList);
                 } catch (Exception e) {
@@ -130,7 +132,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     public void refreshPicList(int sortType, boolean isReduce) {
         curSortType = sortType;
         LogUtil.d(TAG, "排序方式 = " + curSortType);
-        if (curSortType == SORT_TYPE_GROUP) {
+        if (curSortType == PicResSearchSortUtil.SORT_TYPE_GROUP) {
             showGroup();
         } else {
             picResAdapter.sortPicList(originList, curSortType, isReduce);
@@ -164,8 +166,8 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
             case PicResSearchSortUtil.SORT_TYPE_HOT:
                 return PicResSearchSortUtil.SORT_TYPE_TIME;
             case PicResSearchSortUtil.SORT_TYPE_TIME:
-                return SORT_TYPE_GROUP;
-            case SORT_TYPE_GROUP:
+                return PicResSearchSortUtil.SORT_TYPE_GROUP;
+            case PicResSearchSortUtil.SORT_TYPE_GROUP:
                 return PicResSearchSortUtil.SORT_TYPE_HOT;
         }
         return sortType;

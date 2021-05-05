@@ -36,7 +36,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/dp_2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/searchImageIv"
+                app:layout_constraintEnd_toStartOf="@+id/searchBtn"
                 app:layout_constraintStart_toEndOf="@+id/localPicIv"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tabContentStart="0dp"
@@ -48,28 +48,28 @@
                 app:tabTextColor="@color/white" />
 
             <ImageView
-                android:id="@+id/searchImageIv"
+                android:id="@+id/searchBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingStart="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_16"
-                android:src="@drawable/round_image_search"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:src="@drawable/ic_search"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <FrameLayout
-                android:id="@+id/searchView"
+                android:id="@+id/searchBarLayout"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/searchBtn"
                 app:layout_constraintStart_toEndOf="@+id/localPicIv"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/searchEditText"
+                    android:id="@+id/tietu_search_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
@@ -77,6 +77,8 @@
                     android:layout_marginBottom="4dp"
                     android:background="@null"
                     android:drawablePadding="8dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="@string/search_hint"
                     android:imeOptions="actionSearch|flagNoFullscreen"
                     android:inputType="textFilter|textNoSuggestions"
@@ -85,7 +87,7 @@
                     android:paddingEnd="@dimen/dp_48"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sp_14" />
 
                 <View
                     android:layout_width="match_parent"
@@ -119,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tietu_appbar" />
 
     <FrameLayout
-        android:id="@+id/search_result"
+        android:id="@+id/fragment_layout_search_result"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -127,4 +129,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tietu_appbar"
         android:visibility="gone"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

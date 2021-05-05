@@ -22,6 +22,7 @@ import com.mandi.intelimeditor.ad.ttAD.videoAd.TTRewardVad;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.BmobUtil;
+import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.view.TencentPicADHolder;
@@ -71,7 +72,6 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 //        }
     }
 
-
     public void setUpdateHeat(boolean updateHeat) {
         isUpdateHeat = updateHeat;
     }
@@ -88,7 +88,7 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 groupedList.add(new PicResourceItemData("", PicResourceItemData.PicListItemType.TX_PIC_AD));
             }
         }
-        // 刷新列表数据，修复友盟bug
+        //刷新列表数据，修复友盟bug
         notifyDataSetChanged();
     }
 
@@ -114,7 +114,6 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         ConstraintLayout layout = (ConstraintLayout) layoutInflater.inflate(R.layout.item_tietu_list,
                 parent, false);
-
         if (viewType == PicResourceItemData.PicListItemType.TX_PIC_AD) {
             FrameLayout frameLayout;
             frameLayout = createADContainer(parent);
@@ -190,6 +189,8 @@ public class TietuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+        LogUtil.logTimeConsume("开始产生视图");
         if (holder instanceof MyItemHolder) {
             PicResource tietu = groupedList.get(position).data;
             if (tietu != null && tietu.getUrl() != null) {

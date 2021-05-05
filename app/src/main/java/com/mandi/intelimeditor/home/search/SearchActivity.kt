@@ -30,6 +30,7 @@ import com.mandi.intelimeditor.home.viewHolder.FolderHolder
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource
 import com.mandi.intelimeditor.home.data.PicDirInfoManager
 import com.mandi.intelimeditor.R
+import com.mandi.intelimeditor.common.util.FileTool
 import io.reactivex.Emitter
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.toolbar_search_layout.*
@@ -149,7 +150,7 @@ class SearchActivity : BaseActivity() {
         data?.forEach { info ->
             LogUtil.d(TAG, "Pic Info =" + info.dirPath)
             queryString?.let {
-                if (info.dirPath.toUpperCase(locale = Locale.ROOT).contains(it.toUpperCase(locale = Locale.ROOT))) {
+                if (FileTool.getFileNameInPath(info.dirPath).toUpperCase(locale = Locale.ROOT).contains(it.toUpperCase(locale = Locale.ROOT))) {
                     LogUtil.d(TAG, "Pic 搜索结果 =" + info.dirPath)
                     searchFolderResults.add(info)
                 }

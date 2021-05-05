@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Emitter;
@@ -33,9 +34,14 @@ import io.reactivex.annotations.NonNull;
  */
 public class PTuTietuListViewModel extends ViewModel {
     private String TAG = "PicResourceViewModel";
-    private MutableLiveData<List<PicResourceItemData>> picResList;
+    private MutableLiveData<List<PicResourceItemData>> picResList; // 为了让所有Fragement共用这个list
     private MutableLiveData<List<PicResGroup>> groupList;
     public MutableLiveData<String> loadStatus = new MutableLiveData<>();
+
+    public PTuTietuListViewModel() {
+        if (LogUtil.debugPtuTietuList)
+            LogUtil.logTimeConsume("创建P图贴图列表ViewModel");
+    }
 
     /**
      * 获取图片资源LiveData
@@ -62,11 +68,11 @@ public class PTuTietuListViewModel extends ViewModel {
      * 获取分组列表
      */
     public void loadGroupList() {
-        LogUtil.d(TAG, "loadPicTagList");
+        LogUtil.logTimeConsume("开始加载分组列表");
         AllData.queryPicResGroup(new Emitter<List<PicResGroup>>() {
             @Override
             public void onNext(@NonNull List<PicResGroup> value) {
-                LogUtil.d("加载贴图分组完成");
+                LogUtil.logTimeConsume("加载贴图分组完成");
                 groupList.postValue(AllData.tieTuGroupList);
             }
 
@@ -84,42 +90,53 @@ public class PTuTietuListViewModel extends ViewModel {
     }
 
     public void loadOtherGroup(String title) {
-        Observable
-                .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
-                    if (BottomTietuListDialog.TITLE_MY.equals(title)) {
-                        PicResourceDownloader.queryMyTietu(emitter);
-                    } else if (BottomTietuListDialog.TITLE_HOTEST.equals(title)) {
-                        PicResSearchSortUtil.getHotestTietuList(emitter);
-                    } else if (BottomTietuListDialog.TITLE_NEWEST.equals(title)) {
-                        PicResSearchSortUtil.getNewestTietuList(emitter);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new SimpleObserver<List<PicResource>>() {
-                            @Override
-                            public void onNext(@NonNull List<PicResource> picResources) {
-                                picResList.postValue(PicResourceItemData.picResList2PicResItemList(picResources));
-                            }
+        if (LogUtil.debugPtuTietuList)
+            LogUtil.logTimeConsume("加载其它分组");
+//        Observable
+//                .create((ObservableOnSubscribe<List<PicResource>>) emitter -> {
+        Emitter<List<PicResource>> emitter = new Emitter<List<PicResource>>() {
+            @Override
+            public void onNext(@NonNull List<PicResource> picResources) {
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("开始转换最热分组数据");
+                List<PicResourceItemData> value = PicResourceItemData.picResList2PicResItemList(picResources);
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("转换最热分组数据完成");
+                picResList.postValue(value);
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("加载其它分组  " + title + " 完成");
+            }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                super.onError(e);
-                                String msg = BottomTietuListDialog.TITLE_MY.equals(title)
-                                        ? "暂无使用过的贴图"
-                                        : IntelImEditApplication.appContext.getString(R.string.network_error_try_latter);
-                                loadStatus.postValue(msg);
-                            }
-                        }
-                );
-    }
+            @Override
+            public void onError(Throwable e) {
+                String msg = BottomTietuListDialog.TITLE_MY.equals(title)
+                        ? "暂无使用过的贴图"
+                        : IntelImEditApplication.appContext.getString(R.string.network_error_try_latter);
+                loadStatus.postValue(msg);
+            }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, priority = 100)
-    public void onEventMainThread(Integer event) {
-        if (EventBusConstants.DOWNLOAD_ALL_PIC_RES_FINISH.equals(event)) {
-            Log.d(TAG, "通过EventBus 更新图片资源");
-            EventBus.getDefault().unregister(this);
-            groupList.postValue(AllData.tieTuGroupList);
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        if (BottomTietuListDialog.TITLE_MY.equals(title)) {
+            PicResourceDownloader.queryMyTietu(emitter);
+        } else if (BottomTietuListDialog.TITLE_HOTEST.equals(title)) {
+            LogUtil.logTimeConsume("开始获取最热分组");
+            PicResSearchSortUtil.getHotestTietuList(emitter);
+            LogUtil.logTimeConsume("获取最热分组完成");
+        } else if (BottomTietuListDialog.TITLE_NEWEST.equals(title)) {
+            LogUtil.logTimeConsume("开始获取最新分组");
+            PicResSearchSortUtil.getNewestTietuList(emitter);
+            LogUtil.logTimeConsume("获取最新分组完成");
+        } else {
+            emitter.onNext(new ArrayList<PicResource>());
         }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+
+//                );
     }
 }

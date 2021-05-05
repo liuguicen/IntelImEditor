@@ -416,8 +416,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
         Log.e(TAG, "启动了 mTemplateChooseFragment == null:" + (mLocalPicFragment == null));
         if (mTemplateFragment == null) {
-            mTemplateFragment = PicResourcesFragment.newInstance(PicResource.FIRST_CLASS_TEMPLATE,
-                    PicResource.SECOND_CLASS_BASE, isOnlyChoosePic());
+            mTemplateFragment = PicResourcesFragment.newInstance(PicResource.CATEGORY_STYLE,
+                    null, isOnlyChoosePic());
         }
 
         Log.e(TAG, "启动了 mTietuChooseFragment == null:" + (mLocalPicFragment == null));

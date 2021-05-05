@@ -541,10 +541,10 @@ public class PicResourcesAdapter extends BasePicAdapter {
         List<PicResource> newList = new ArrayList<>(resList);
         LogUtil.recordTime();
         PicResSearchSortUtil.sortPicRes(newList, sortType, isReduce);
-        LogUtil.printAndRecord("排序");
+        LogUtil.logTimeConsumeAndRecord("排序");
         //刷新列表
         setImageUrls(newList, null);
-        LogUtil.printAndRecord("放入数据");
+        LogUtil.logTimeConsumeAndRecord("放入数据");
     }
 
     public static List<PicResource> randomInsertForHeat(List<PicResource> groupedList) {

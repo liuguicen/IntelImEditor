@@ -663,4 +663,5 @@ b) 在使用暴走P图网络服务进行网上交易时，您不可避免的要�
     <string name="qq_group_feedback">910595711</string>
     <string name="hotest_pic">最热图片</string>
     <string name="newest_pic">最新图片</string>
+    <string name="no_search_result">暂无搜索结果</string>
 </resources>

@@ -47,9 +47,9 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     private BottomSheetBehavior mBehavior;
     private View rootView;
     private TabLayout mTabs;
-    private ViewPager2 mViewPager;
-    private FrameLayout mSearchView;
-    private View mSearchImageIv;
+    private ViewPager2 viewPager;
+    private FrameLayout mSearchBarLayout;
+    private View mSearchBtn;
     private TabLayoutMediator tabLayoutMediator;
     private String TAG = getClass().getSimpleName();
     private PTuTietuListViewModel mViewModel;
@@ -60,11 +60,11 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     public static final String TITLE_MY = "我的";
     public static final String TITLE_HOTEST = "最热";
     public static final String TITLE_NEWEST = "最新";
-    private static final String TITLE_SEARCH = "搜索";
+    public static final String TITLE_SEARCH = "搜索";
     private PtuTietuListFragment searchResultFrag;
     private View serchResultView;
     private FragmentManager fm;
-    private EditText serchContetnTv;
+    private EditText searchContentTv;
 
     public void setSelectIndex(int selectIndex) {
         if (selectIndex == 0) {//我的
@@ -100,6 +100,8 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     @Override
     public void onStart() {
         super.onStart();
+        if (LogUtil.debugPtuTietuList)
+        LogUtil.logTimeConsume("开始创建P图贴图列表弹窗");
         //获取dialog对象
         BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
         WindowManager.LayoutParams layoutParams1 = dialog.getWindow().getAttributes();
@@ -127,6 +129,8 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
 //            });
             bottomSheet.setBackgroundColor(0xaa000000);
         }
+        if (LogUtil.debugPtuTietuList)
+        LogUtil.logTimeConsume("创建弹窗完成");
     }
 
 
@@ -172,16 +176,15 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
 
     private void initViews(View view) {
         mTabs = view.findViewById(R.id.tietuListTabs);
-        mViewPager = view.findViewById(R.id.tietuViewPager);
-        mViewPager.setSaveEnabled(false);
-        mSearchView = view.findViewById(R.id.searchView);
-        mSearchImageIv = view.findViewById(R.id.searchImageIv);
+        viewPager = view.findViewById(R.id.tietuViewPager);
+        viewPager.setSaveEnabled(false);
+        mSearchBarLayout = view.findViewById(R.id.searchBarLayout);
+        mSearchBtn = view.findViewById(R.id.searchBtn);
         view.findViewById(R.id.localPicIv).setOnClickListener(this);
         view.findViewById(R.id.clearSearchIv).setOnClickListener(this);
-        serchContetnTv = view.findViewById(R.id.searchEditText);
-        serchResultView = view.findViewById(R.id.search_result);
-        Util.showInputMethod(serchContetnTv);
-        serchContetnTv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        searchContentTv = view.findViewById(R.id.tietu_search_content);
+        serchResultView = view.findViewById(R.id.fragment_layout_search_result);
+        searchContentTv.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -195,19 +198,20 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
             }
         });
 
-        mSearchImageIv.setOnClickListener(this);
-        mViewPager.registerOnPageChangeCallback(pageChangeCallback);
+        mSearchBtn.setOnClickListener(this);
+        viewPager.registerOnPageChangeCallback(pageChangeCallback);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         //点击贴图时，因为分组列表多，添加到viewpager上时候会有延时，所以要延时加载，否则点击贴图时，会先卡顿一下，才会弹出对话框
+        LogUtil.logTimeConsume("进入弹窗resume");
         if (mViewModel == null && getActivity() != null && mData.size() == 0) {
-            mViewPager.postDelayed(() -> {
-                mViewModel = new ViewModelProvider(getActivity()).get(PTuTietuListViewModel.class);
-                mViewModel.getGroupList().observe(getViewLifecycleOwner(), this::updateTabList);
-            }, 100);
+//            viewPager.postDelayed(() -> {
+            mViewModel = new ViewModelProvider(getActivity()).get(PTuTietuListViewModel.class);
+            mViewModel.getGroupList().observe(getViewLifecycleOwner(), this::updateTabList);
+//            }, 50);
         } else {
             updateTabList(mData);
         }
@@ -215,15 +219,20 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
 
     private void updateTabList(List<PicResGroup> groupList) {
         try {
-            LogUtil.d(TAG, "updateTabList " + groupList.size());
+            if (LogUtil.debugPtuTietuList)
+                LogUtil.logTimeConsume("开始设置ViewPage的Fragment");
             if (getActivity() != null) {
                 mData = groupList;
-                LogUtil.d(TAG, "updateTabList pagerAdapter == null");
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.d(TAG, "updateTabList pagerAdapter == null");
                 if (pagerAdapter == null) {
                     pagerAdapter = new ViewPager2FragmentAdapter(this);
                 }
                 pagerAdapter.clearAll();
                 //默认分组
+
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("开始创建所有Fragment");
                 pagerAdapter.addFragment(PtuTietuListFragment.newInstance(TITLE_MY, false), TITLE_MY);
                 pagerAdapter.addFragment(PtuTietuListFragment.newInstance(TITLE_HOTEST, false), TITLE_HOTEST);
                 pagerAdapter.addFragment(PtuTietuListFragment.newInstance(TITLE_NEWEST, false), TITLE_NEWEST);
@@ -233,23 +242,29 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
                     fragment.setPicList(picResGroup.resList);
                     pagerAdapter.addFragment(fragment, picResGroup.title);
                 }
-                mViewPager.setAdapter(pagerAdapter);
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("创建所有Fragment完成");
+                viewPager.setAdapter(pagerAdapter);
                 if (isMyTietu) {
-                    mViewPager.setCurrentItem(0, false);
+                    viewPager.setCurrentItem(0, false);
                 } else {
-                    mViewPager.setCurrentItem(selectIndex, false);
+                    viewPager.setCurrentItem(selectIndex, false);
                 }
-                mViewPager.setOffscreenPageLimit(pagerAdapter.getItemCount());
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("ViewPage装载adapter并设置起始项");
+                viewPager.setOffscreenPageLimit(pagerAdapter.getItemCount());
                 //使用viewpager+tabLayout界面切换
                 LogUtil.d(TAG, "updateTabList tabLayoutMediator ==null");
                 if (tabLayoutMediator == null) {
-                    tabLayoutMediator = new TabLayoutMediator(mTabs, mViewPager, true, (tab, position) -> {
+                    tabLayoutMediator = new TabLayoutMediator(mTabs, viewPager, true, (tab, position) -> {
                         //这里需要根据position修改tab的样式和文字等
                         tab.setText(pagerAdapter.getCurTitle(position));
                         mTabs.setScrollPosition(position, 0, true, true);
                     });
                     tabLayoutMediator.attach();
                 }
+                if (LogUtil.debugPtuTietuList)
+                    LogUtil.logTimeConsume("ViewPage设置其它内容");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,7 +276,7 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     public void onDestroy() {
         super.onDestroy();
         LogUtil.d(TAG, "onDestroy");
-        if (mViewPager != null) mViewPager.unregisterOnPageChangeCallback(pageChangeCallback);
+        if (viewPager != null) viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
         if (pagerAdapter != null) pagerAdapter.clearAll();
         pagerAdapter = null;
         tabLayoutMediator = null;
@@ -284,15 +299,11 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.clearSearchIv:
-                mTabs.setVisibility(View.VISIBLE);
-                mSearchView.setVisibility(View.GONE);
-                mSearchImageIv.setVisibility(View.VISIBLE);
-                serchResultView.setVisibility(View.GONE);
-                fm.beginTransaction().remove(searchResultFrag).commitAllowingStateLoss();
+                cancelSearch();
                 break;
-            case R.id.searchImageIv:
-                if (mSearchView.getVisibility() == View.VISIBLE) {
-                    search(serchContetnTv.getText().toString());
+            case R.id.searchBtn:
+                if (mSearchBarLayout.getVisibility() == View.VISIBLE) {
+                    search(searchContentTv.getText().toString());
                 } else {
                     prepareSearch();
                 }
@@ -306,17 +317,30 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
         }
     }
 
+    private void cancelSearch() {
+        mTabs.setVisibility(View.VISIBLE);
+        mSearchBarLayout.setVisibility(View.GONE);
+        serchResultView.setVisibility(View.GONE);
+        rootView.findViewById(R.id.fragment_layout_search_result).setVisibility(View.GONE);
+        viewPager.setVisibility(View.VISIBLE);
+        fm.beginTransaction().remove(searchResultFrag).commitAllowingStateLoss();
+        Util.hideInputMethod(getActivity(), searchContentTv);
+        searchContentTv.setText("");
+    }
+
     private void prepareSearch() {
         mTabs.setVisibility(View.GONE);
-        mSearchView.setVisibility(View.VISIBLE);
-        mSearchImageIv.setVisibility(View.GONE);
+        mSearchBarLayout.setVisibility(View.VISIBLE);
         serchResultView.setVisibility(View.VISIBLE);
-        fm = getActivity().getSupportFragmentManager();
-        searchResultFrag = PtuTietuListFragment.newInstance(TITLE_NEWEST, false);
+        rootView.findViewById(R.id.fragment_layout_search_result).setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.GONE);
+        fm = getChildFragmentManager();
+        searchResultFrag = PtuTietuListFragment.newInstance(TITLE_SEARCH, false);
         fm.beginTransaction()
-                .replace(R.id.fragment_main_function, searchResultFrag)
+                .replace(R.id.fragment_layout_search_result, searchResultFrag)
                 .commitAllowingStateLoss();
-
+        searchContentTv.requestFocus();
+        Util.showInputMethod(searchContentTv);
     }
 
 
@@ -324,8 +348,8 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
         PicResSearchSortUtil.searchPicResByQueryString(searchString, PicResource.FIRST_CLASS_TIETU, new Emitter<List<PicResource>>() {
             @Override
             public void onNext(@io.reactivex.annotations.NonNull List<PicResource> value) {
-                searchResultFrag.setPicList(value);
-                mViewPager.setVisibility(View.GONE);
+                searchResultFrag.refresh(value);
+                Util.hideInputMethod(getActivity(), searchContentTv);
             }
 
             @Override

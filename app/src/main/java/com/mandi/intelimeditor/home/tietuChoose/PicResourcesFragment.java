@@ -47,7 +47,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.mandi.intelimeditor.home.tietuChoose.PicResourcesPresenter.SORT_TYPE_GROUP;
+import static com.mandi.intelimeditor.home.search.PicResSearchSortUtil.SORT_TYPE_GROUP;
 
 /**
  * 目前贴图用这个Fragment显示，通过传入不同的参数控制
@@ -188,7 +188,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         initPicListView();
         mTvDownloadInfo.setVisibility(View.VISIBLE);
         /* 较长时间没有加载出图片时提醒用户，尤其第一次加载时，似乎bmob请求图片列表较慢，等待时间较长，*/
-        new Handler().postDelayed(() -> mTvDownloadInfo.setText(R.string.download_pic_resources_note), 1200);
+//        new Handler().postDelayed(() -> mTvDownloadInfo.setText(R.string.download_pic_resources_note), 1200);
     }
 
     /**

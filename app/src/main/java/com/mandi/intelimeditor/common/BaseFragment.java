@@ -91,25 +91,30 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 带文字的LoadingView
      *
-     * @param show      是否显示
-     * @param message   提示信息
-     * @param textColor 文字颜色
+     * @param onlyShowText 是否显示
+     * @param message      提示信息
+     * @param textColor    文字颜色
      */
-    public void showLoading(boolean show, String message, int textColor) {
+    public void showLoading(boolean onlyShowText, String message, int textColor) {
         if (loadingLayout != null) {
-            if (show) {
+            if (!onlyShowText) {
                 loadingLayout.setVisibility(View.VISIBLE);
-                loadingTv.setTextColor(textColor);
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                showLoadingText(message, textColor);
             } else {
                 if (TextUtils.isEmpty(message)) {
                     loadingLayout.setVisibility(View.GONE);
-                } else {
+                } else { // 信息不为空
+                    loadingLayout.setVisibility(View.VISIBLE);
                     loadingProgressBar.setVisibility(View.GONE);
-                    loadingTv.setVisibility(View.VISIBLE);
-                    loadingTv.setText(message);
-                    loadingTv.setTextColor(textColor);
+                    showLoadingText(message, textColor);
                 }
             }
         }
+    }
+
+    protected void showLoadingText(String message, int textColor) {
+        loadingTv.setText(message);
+        loadingTv.setTextColor(textColor);
     }
 }
