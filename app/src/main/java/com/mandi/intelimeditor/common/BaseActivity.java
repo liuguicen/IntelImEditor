@@ -22,14 +22,22 @@ public abstract class BaseActivity extends AppCompatActivity {
     public String TAG = this.getClass().getSimpleName();
     public Toolbar mToolbar;
     private boolean mIsDestroyed = false;
+    private boolean isHideStatusBar = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        StatusBarUtil.setTransparentForWindow(this);
+        if (isHideStatusBar) {
+            StatusBarUtil.setTransparentForWindow(this);
+        }
         super.onCreate(savedInstanceState);
+        StatusBarUtil.setDarkMode(this);
         setContentView(getLayoutResId());
         initToolbar();
         mIsDestroyed = false;
+    }
+
+    public void setHideStatusBar(boolean hideStatusBar) {
+        isHideStatusBar = hideStatusBar;
     }
 
     /**

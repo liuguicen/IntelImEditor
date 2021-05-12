@@ -337,7 +337,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         mMenuIv.setImageResource(R.drawable.ic_menu_black);
         //如果选择贴图，或者选择图片状态,从贴图过来时，就切换到贴图的情况
         if (isOnlyChoosePic()) {
-            mMenuIv.setImageResource(R.drawable.ic_arrow_back_white);
+            mMenuIv.setImageResource(R.drawable.round_arrow_back);
         }
         mMenuIv.setOnClickListener(this);
         mSearchIv.setOnClickListener(this);

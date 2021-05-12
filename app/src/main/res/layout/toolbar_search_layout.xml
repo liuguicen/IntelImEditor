@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/base_toolbar_background"
         android:fitsSystemWindows="true"
-        app:navigationIcon="@drawable/ic_arrow_back_white"
+        app:navigationIcon="@drawable/round_arrow_back"
         app:popupTheme="?android:popupMenuStyle"
         app:titleTextAppearance="@style/SettingToolBarText">
 
@@ -39,6 +39,8 @@
                 android:imeOptions="actionSearch|flagNoFullscreen"
                 android:inputType="textFilter|textNoSuggestions"
                 android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/half_transparent_black"
                 android:textSize="@dimen/sp_16"
                 tools:ignore="RtlHardcoded" />
 
@@ -56,7 +58,7 @@
                 android:layout_gravity="end|center"
                 android:contentDescription="@string/search"
                 android:padding="12dp"
-                android:src="@drawable/ic_clear"
+                android:src="@drawable/round_close_black"
                 android:visibility="gone" />
 
         </FrameLayout>

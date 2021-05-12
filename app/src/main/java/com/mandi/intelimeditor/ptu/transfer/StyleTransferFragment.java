@@ -165,7 +165,9 @@ public class StyleTransferFragment extends BasePtuFragment {
             onChosenBm(transferController.contentBm, transferController.styleBm);
         }
         rootView.findViewById(R.id.go_ptu).setOnClickListener(v -> {
-            ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+            if (chooseRcv.getParent() != null) {
+                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+            }
             pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
         });
     }

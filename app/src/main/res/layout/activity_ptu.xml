@@ -7,21 +7,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/ptu_appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <com.mandi.intelimeditor.ptu.view.PtuToolbar
-            android:id="@+id/ptu_toolbar_relative"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/ptu_top_bar_height"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </com.google.android.material.appbar.AppBarLayout>
 
     <com.mandi.intelimeditor.ptu.view.PtuFrameLayout
         android:id="@+id/ptu_frame"
@@ -31,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@+id/fragment_main_function"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ptu_appbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="85">
 
         <com.mandi.intelimeditor.ptu.view.PtuSeeView
@@ -47,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/ptu_appbar" />
+        app:layout_constraintTop_toBottomOf="@+id/ptu_toolbar_relative" />
     <!-- 用户P图的时候一直显示的提示，可以点击叉关闭-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ptu_notice_layout"
@@ -61,7 +46,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ptu_appbar">
+        app:layout_constraintTop_toBottomOf="@+id/ptu_toolbar_relative">
 
         <TextView
             android:id="@+id/ptu_notice_tv"
@@ -144,6 +129,16 @@
             app:layout_constraintRight_toRightOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.mandi.intelimeditor.ptu.view.PtuToolbar
+        android:id="@+id/ptu_toolbar_relative"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ptu_top_bar_height"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/fragment_main_function"

@@ -53,7 +53,7 @@
     <color name="divider_pic_operation">#222222</color>
 
     <!--ptu功能-->
-    <color name="base_toolbar_background">#ff8a65</color>
+    <color name="base_toolbar_background">#ffffff</color>
     <color name="can_repeal_redo">#dd2c00</color>
     <color name="canot_repeal_redo">#a0ffffff</color>
     <color name="mat_pen_line1">#ff111111</color>
