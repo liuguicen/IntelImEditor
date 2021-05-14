@@ -2,6 +2,7 @@ package com.mandi.intelimeditor.home.tietuChoose;
 
 import androidx.annotation.Nullable;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.home.data.PicDirInfo;
 import com.mandi.intelimeditor.home.localPictuture.LocalGroupedItemData;
@@ -20,7 +21,7 @@ import java.util.List;
  *      version : 1.0
  * <pre>
  */
-public class PicResourceItemData {
+public class PicResourceItemData implements MultiItemEntity {
 
     /**
      * {@link PicResourceItemData.PicListItemType}
@@ -97,6 +98,11 @@ public class PicResourceItemData {
             return data.getCreatedAt();
         }
         return "0000-00-00 00:00:00";
+    }
+
+    @Override
+    public int getItemType() {
+        return type;
     }
 
     /**

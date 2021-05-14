@@ -93,7 +93,7 @@
     <dimen name="open_vip_group_title_left_margin">12dp</dimen>
     <dimen name="open_vip_group_item_left_margin">16dp</dimen>
     <dimen name="open_vip_item_margin_title">8dp</dimen>
-    <dimen name="dp_96">96</dimen>
+    <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_05">0.5dp</dimen>
     <!--PTu主界面-->
     <dimen name="gif_frame_height">88dp</dimen>
