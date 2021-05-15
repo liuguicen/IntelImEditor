@@ -9,13 +9,11 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,10 +21,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.bean.FunctionInfoBean;
 import com.mandi.intelimeditor.common.CommonConstant;
-import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
@@ -36,7 +35,9 @@ import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
+import com.mandi.intelimeditor.common.view.ImageDecoration;
 import com.mandi.intelimeditor.home.HomeActivity;
+import com.mandi.intelimeditor.home.view.BottomFunctionView;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
 import com.mandi.intelimeditor.ptu.PTuActivityInterface;
 import com.mandi.intelimeditor.ptu.PtuActivity;
@@ -47,6 +48,7 @@ import com.mandi.intelimeditor.ptu.common.TransferController;
 import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
+import com.mandi.intelimeditor.ptu.tietu.onlineTietu.ImageMaterialAdapter;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
@@ -76,10 +78,9 @@ public class StyleTransferFragment extends BasePtuFragment {
     private PtuBaseChooser ptuBaseChooser;
     private RecyclerView chooseRcv;
     private boolean isChooseStyleMode = true;
-    private TietuRecyclerAdapter chooseListAdapter;
+    private ImageMaterialAdapter chooseListAdapter;
     private boolean isFirstShowChooseRcv;
-    private Button chooseContenBtn;
-    private Button chooseStyleBtn;
+    private BottomFunctionView choosePicBtn, chooseStyleBtn;
     static final int bottonWidth = Util.dp2Px(20);
     private TransferController transferController;
 
@@ -130,59 +131,52 @@ public class StyleTransferFragment extends BasePtuFragment {
         if (transferController != null && transferController.contentBm == null) {
             isChooseStyleMode = false;
         }
-        chooseListAdapter = new TietuRecyclerAdapter(mContext, true);
+        chooseListAdapter = new ImageMaterialAdapter();
         chooseListAdapter.setOnItemClickListener(chooseRcvListener);
         prepareShowChooseRcv(view, isChooseStyleMode);
 
         chooseStyleBtn = rootView.findViewById(R.id.choose_style);
-        chooseContenBtn = rootView.findViewById(R.id.choose_pic);
-        chooseContenBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isChooseStyleMode && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
-                    chooseFromAllPic();
-                } else {
-                    US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-                    isChooseStyleMode = false;
-                    prepareShowChooseRcv(view, isChooseStyleMode);
-                }
+        choosePicBtn = rootView.findViewById(R.id.choose_pic);
+        choosePicBtn.setOnClickListener(v -> {
+            if (!isChooseStyleMode && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
+                chooseFromAllPic();
+            } else {
+                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
+                isChooseStyleMode = false;
+                prepareShowChooseRcv(view, isChooseStyleMode);
             }
         });
 
-        chooseStyleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isChooseStyleMode && chooseRcv.getParent() != null) {
-                    chooseFromAllPic();
-                } else {
-                    US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-                    isChooseStyleMode = true;
-                    prepareShowChooseRcv(view, isChooseStyleMode);
-                }
+        chooseStyleBtn.setOnClickListener(v -> {
+            if (isChooseStyleMode && chooseRcv.getParent() != null) {
+                chooseFromAllPic();
+            } else {
+                US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
+                isChooseStyleMode = true;
+                prepareShowChooseRcv(view, isChooseStyleMode);
             }
         });
         if (transferController != null) {
             onChosenBm(transferController.contentBm, transferController.styleBm);
         }
         rootView.findViewById(R.id.go_ptu).setOnClickListener(v -> {
-            ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+            if (chooseRcv.getParent() != null) {
+                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+            }
             pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
         });
     }
 
-    private RcvItemClickListener1 chooseRcvListener = new RcvItemClickListener1() {
+    private OnItemClickListener chooseRcvListener = new OnItemClickListener() {
         @Override
-        public void onItemClick(RecyclerView.ViewHolder itemHolder, View view) {
-            int position = itemHolder.getLayoutPosition();
+        public void onItemClick(@NonNull @NotNull BaseQuickAdapter<?, ?> adapter, @NonNull @NotNull View view, int position) {
             if (position < 0) return;
             if (position == 0) {
                 chooseFromAllPic();
                 return;
-//                String thePath = Environment.getExternalStorageDirectory() + "/test1.jpg";
-//                pTuActivityInterface.transfer(thePath, true);
             }
             if (chooseListAdapter != null) {
-                PicResource oneTietu = chooseListAdapter.get(position).data;
+                PicResource oneTietu = chooseListAdapter.getData().get(position).data;
                 if (oneTietu != null && oneTietu.getUrl() != null) {
                     String url = oneTietu.getUrl().getUrl();
                     ViewGroup parent = (ViewGroup) chooseRcv.getParent();
@@ -212,12 +206,12 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     public void onChosenBm(Bitmap contentBm, Bitmap styleBm) {
         Resources resources = IntelImEditApplication.appContext.getResources();
-        if (contentBm != null) {
-            chooseContenBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(contentBm)));
-        }
-        if (styleBm != null) {
-            chooseStyleBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(styleBm)));
-        }
+//        if (contentBm != null) {
+//            chooseContenBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(contentBm)));
+//        }
+//        if (styleBm != null) {
+//            chooseStyleBtn.setBackground(new BitmapDrawable(resources, getCircleBitmap(styleBm)));
+//        }
     }
 
     private void prepareShowChooseRcv(View view, boolean isChooseStyle) {
@@ -230,7 +224,6 @@ public class StyleTransferFragment extends BasePtuFragment {
             return;
         }
         PtuConstraintLayout ptuFrameLayout = (PtuConstraintLayout) parent;
-
         if (ptuFrameLayout.indexOfChild(chooseRcv) == -1) { //
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, Util.dp2Px(100));
@@ -240,6 +233,9 @@ public class StyleTransferFragment extends BasePtuFragment {
             layoutParams.setMargins(0, 0, 0, Util.dp2Px(4f));
             chooseRcv.setTag(PtuConstraintLayout.TAG_TIETU_RCV);
             ptuFrameLayout.addView(chooseRcv, layoutParams);
+            if (chooseRcv.getItemDecorationCount() == 0) {
+                chooseRcv.addItemDecoration(new ImageDecoration(getActivity()));
+            }
             chooseRcv.setAdapter(chooseListAdapter);
         }
         if (isChooseStyle) {
@@ -320,7 +316,7 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     private void onNoStylePic() {
         if (chooseListAdapter != null) { // 这个方法会异步回调，此时tietuListAdapter已经回收置空了，原来自己就没处理，GG
-            chooseListAdapter.setList(new ArrayList<>());
+            chooseListAdapter.setList(new ArrayList<PicResource>());
             String msg;
             msg = mContext.getString(R.string.no_network_style_notice);
             PtuUtil.onNoPicResource(msg);

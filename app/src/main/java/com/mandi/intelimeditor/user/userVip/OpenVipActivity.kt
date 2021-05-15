@@ -1,6 +1,5 @@
 package com.mandi.intelimeditor.user.userVip;
 
-import USerVip.PayProblemMeasureActivity
 import USerVip.SetMealsAdapter
 import android.app.Activity
 import android.app.AlertDialog

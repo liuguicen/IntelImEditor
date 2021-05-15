@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ import com.mandi.intelimeditor.common.util.ProgressCallback;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
+import com.mandi.intelimeditor.common.view.StatusBarUtil;
 import com.mandi.intelimeditor.dialog.LoadingDialog;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.network.NetWorkState;
@@ -227,7 +229,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * 整个PtuFragment的范围,初始时为0,要用与判断是否已经加载了图片
      */
     @NotNull
-    private Rect totalBound = new Rect(0, 0, 0, 0);
+    private final Rect totalBound = new Rect(0, 0, 0, 0);
 
     @Nullable
     private SaveShareManager saveSetManager;
@@ -261,7 +263,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private boolean mIsInLoading;
     private boolean isIntermediatePtu = false;
 
-    private ArrayList<String> useTagsList = new ArrayList<>();
+    private final ArrayList<String> useTagsList = new ArrayList<>();
     private TxBannerAd bannerAd;
     private PopupWindow pop;
     private Tensor contentFeature;
@@ -271,7 +273,9 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setHideStatusBar(false);
         super.onCreate(savedInstanceState);
+        StatusBarUtil.setColor(this, Color.parseColor("#eeeeee"));
         // TODO: 2017/3/3 0003 这里开一条线程处理，不是直接的处理
         initBaseData();
         setTitle("");
@@ -479,7 +483,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         sure(null);
                     }
                     break;
-                case R.id.back_group:
+                case R.id.back_iv:
                     if (currentFrag == mainFrag) {
                         certainCancelEdit();
                     } else {
@@ -575,7 +579,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         boolean isReplace = url != null;
         picLoadMode = PtuUtil.NORMAL_OPEN;
         Observable
-                .create((ObservableOnSubscribe<Object>) emitter -> {
+                .create(emitter -> {
                     // 非主线程解析路径
                     // first 获取路径或者url
                     String oldPath = picPath;

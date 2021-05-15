@@ -33,12 +33,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorColor="@color/deepOrange"
                 app:tabIndicatorFullWidth="false"
                 app:tabMaxWidth="64dp"
-                app:tabSelectedTextColor="@color/white"
+                app:tabSelectedTextColor="@color/black"
                 app:tabTextAppearance="@style/TabLayoutTextStyle"
-                app:tabTextColor="@color/text_ad_mark" />
+                app:tabTextColor="@color/half_transparent_black" />
 
             <ImageView
                 android:id="@+id/iv_action_filter"
@@ -55,9 +55,9 @@
                 android:id="@+id/iv_action_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="end|center"
                 android:padding="@dimen/dp_8"
-                android:src="@drawable/icon_search" />
+                android:src="@drawable/round_image_search" />
 
         </FrameLayout>
 

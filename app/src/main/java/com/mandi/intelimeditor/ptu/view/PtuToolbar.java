@@ -23,8 +23,8 @@ import com.mandi.intelimeditor.R;
  */
 public class PtuToolbar extends FrameLayout {
     View rootView;
-    private ImageView cancelBtn;
-    private View backView;
+    private ImageView cancelBtn, backBtn;
+//    private View backView;
     private ImageView sureBtn;
     private TextView saveBtn;
     private ImageView undoBtn;
@@ -35,7 +35,7 @@ public class PtuToolbar extends FrameLayout {
             Color.WHITE);
     private static Bitmap cancelBitmap = IconBitmapCreator.createTietuCancelBm(Util.dp2Px(32),
             Color.WHITE);
-    private TextView backTv;
+//    private TextView backTv;
 
     public PtuToolbar(Context context) {
         super(context);
@@ -58,11 +58,11 @@ public class PtuToolbar extends FrameLayout {
         redoBtn = rootView.findViewById(R.id.iv_redo);
         saveBtn = rootView.findViewById(R.id.iv_save);
         sureBtn = rootView.findViewById(R.id.iv_sure);
-        sureBtn.setImageBitmap(sureBitmap);
-        backView = rootView.findViewById(R.id.back_group);
-        backTv = rootView.findViewById(R.id.back_tv);
+//        sureBtn.setImageBitmap(sureBitmap);
+        backBtn = rootView.findViewById(R.id.back_iv);
+//        backTv = rootView.findViewById(R.id.back_tv);
         cancelBtn = rootView.findViewById(R.id.iv_cancel);
-        cancelBtn.setImageBitmap(cancelBitmap);
+//        cancelBtn.setImageBitmap(cancelBitmap);
         sendBtn = rootView.findViewById(R.id.iv_help);
     }
 
@@ -78,12 +78,12 @@ public class PtuToolbar extends FrameLayout {
         if (is2LevelFunction) {
             cancelBtn.setVisibility(VISIBLE);
             sureBtn.setVisibility(VISIBLE);
-            backView.setVisibility(INVISIBLE);
+            backBtn.setVisibility(INVISIBLE);
             saveBtn.setVisibility(INVISIBLE);
         } else {
             cancelBtn.setVisibility(GONE);
             sureBtn.setVisibility(GONE);
-            backView.setVisibility(VISIBLE);
+            backBtn.setVisibility(VISIBLE);
             saveBtn.setVisibility(VISIBLE);
         }
     }
@@ -94,7 +94,7 @@ public class PtuToolbar extends FrameLayout {
         rootView.findViewById(R.id.iv_redo).setVisibility(GONE);
         rootView.findViewById(R.id.iv_undo).setVisibility(GONE);
         saveBtn.setVisibility(VISIBLE);
-        backView.setVisibility(VISIBLE);
+        backBtn.setVisibility(VISIBLE);
     }
 
     /**
@@ -128,7 +128,7 @@ public class PtuToolbar extends FrameLayout {
      */
     public void setOnToolClickListener(OnClickListener listener) {
         sureBtn.setOnClickListener(listener);
-        backView.setOnClickListener(listener);
+        backBtn.setOnClickListener(listener);
         cancelBtn.setOnClickListener(listener);
         saveBtn.setOnClickListener(listener);
         undoBtn.setOnClickListener(listener);
@@ -147,6 +147,6 @@ public class PtuToolbar extends FrameLayout {
     }
 
     public void setLeftTopText(String string) {
-        backTv.setText(string);
+//        backTv.setText(string);
     }
 }

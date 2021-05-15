@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/base_toolbar_background"
         android:fitsSystemWindows="true"
-        app:navigationIcon="@drawable/ic_arrow_back_white"
+        app:navigationIcon="@drawable/round_arrow_back"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:titleTextAppearance="@style/SettingToolBarText">

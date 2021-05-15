@@ -1,4 +1,4 @@
-package USerVip
+package com.mandi.intelimeditor.user.userVip
 
 import android.os.Bundle
 import com.mandi.intelimeditor.common.BaseActivity

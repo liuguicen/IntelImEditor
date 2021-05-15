@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.mandi.intelimeditor.ad.LockUtil;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.home.data.PicDirInfo;
@@ -24,7 +25,7 @@ import java.util.List;
  *      version : 1.0
  * <pre>
  */
-public class PicResourceItemData {
+public class PicResourceItemData implements MultiItemEntity {
 
     /**
      * {@link PicResourceItemData.PicListItemType}
@@ -101,6 +102,11 @@ public class PicResourceItemData {
             return data.getCreatedAt();
         }
         return "0000-00-00 00:00:00";
+    }
+
+    @Override
+    public int getItemType() {
+        return type;
     }
 
     private void setLockData() {

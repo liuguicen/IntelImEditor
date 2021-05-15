@@ -6,37 +6,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/choose_pic"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/dp_16"
-        android:text="@string/choose_pic"
+        app:bfv_icon="@drawable/round_photo_library"
+        app:bfv_title="@string/choose_pic"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/choose_style"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <Button
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/choose_style"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/choose_style"
+        app:bfv_icon="@drawable/ic_style_transfer"
+        app:bfv_title="@string/choose_style"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/go_ptu"
+        app:layout_constraintStart_toEndOf="@+id/choose_pic"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/go_ptu"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:bfv_color="@color/deepOrange"
+        app:bfv_icon="@drawable/outline_mode_edit"
+        app:bfv_title="@string/go_ptu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/go_ptu"/>
+        app:layout_constraintStart_toEndOf="@+id/choose_style"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

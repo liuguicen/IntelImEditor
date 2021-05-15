@@ -8,11 +8,14 @@
 
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_16">16dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_48">48dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_72">72dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -90,14 +93,13 @@
     <dimen name="open_vip_group_title_left_margin">12dp</dimen>
     <dimen name="open_vip_group_item_left_margin">16dp</dimen>
     <dimen name="open_vip_item_margin_title">8dp</dimen>
-    <dimen name="dp_96">96</dimen>
+    <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_05">0.5dp</dimen>
     <!--PTu主界面-->
     <dimen name="gif_frame_height">88dp</dimen>
     <dimen name="unlock_with_vip_dialog_width">280dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
-    <dimen name="dp_32">32dp</dimen>
     <dimen name="ptu_tietu_list_padding">8dp</dimen>
 </resources>
 

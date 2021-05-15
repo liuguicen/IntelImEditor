@@ -22,8 +22,8 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 穿山甲广告要求 -->
     <uses-permission android:name="android.permission.GET_TASKS" />
     <!-- 穿山甲3400版本新增：建议添加“query_all_package”权限，穿山甲将通过此权限在Android R系统上判定广告对应的应用是否在用户的app上安装，避免投放错误的广告，以此提高用户的广告体验。若添加此权限，需要在您的用户隐私文档中声明！ -->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
-    
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
     <permission
         android:name="${applicationId}.permission.KW_SDK_BROADCAST"
         android:protectionLevel="signature" />
@@ -77,7 +77,7 @@
             android:label="@string/save_and_share"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.HelpActivity"
+            android:name=".user.useruse.tutorial.HelpActivity"
             android:label="@string/title_help" />
         <activity
             android:name=".user.userSetting.SettingActivity"
@@ -112,11 +112,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/search"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".home.tietuChoose.MorePicInfoActivity"
-            android:label="@string/title_activity_more_pic_info"
-            android:theme="@style/MyAppTheme.NoActionBar" /> <!-- 腾讯qq分享的 -->
+            android:windowSoftInputMode="adjustPan|stateHidden" /><!-- 腾讯qq分享的 -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
