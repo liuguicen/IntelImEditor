@@ -1235,62 +1235,56 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
         showProgress(0);
 //      关于
-        Observable
-                .create(new ObservableOnSubscribe<Bitmap>() {
-                    @Override
-                    public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
-                        if (LogUtil.debugStyleTransfer) {
-                            LogUtil.printMemoryInfo(TAG + "开始风格迁移", PtuActivity.this);
-                        }
-                        // 第一步，主要解析Bm
-                        if (obj instanceof Bitmap) {
-                            emitter.onNext((Bitmap) obj);
-                            emitter.onComplete();
-                            return;
-                        }
-
-                        AtomicReference<String> path = new AtomicReference<>((String) obj);
-                        // 判断是否是url并解析成路径
-                        if (obj instanceof String && FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) {
-                            BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {
-                                if (!TextUtils.isEmpty(inner_path)) {
-                                    path.set(inner_path);
-                                } else {
-                                    ToastUtils.show(R.string.load_tietu_failed);
-                                    emitter.onError(new Exception(""));
-                                }
-                            });
-                        }
+        Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
+            if (LogUtil.debugStyleTransfer) {
+                LogUtil.printMemoryInfo(TAG + "开始风格迁移", PtuActivity.this);
+            }
+            // 第一步，主要解析Bm
+            if (obj instanceof Bitmap) {
+                emitter.onNext((Bitmap) obj);
+                emitter.onComplete();
+                return;
+            }
+            AtomicReference<String> path = new AtomicReference<>((String) obj);
+            // 判断是否是url并解析成路径
+            if (obj instanceof String && FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) {
+                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {//异步任务
+                    if (!TextUtils.isEmpty(inner_path)) {
+                        path.set(inner_path);
                         // 将路径解析成Bm
                         int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
                                 AllData.globalSettings.styleContentRatio)
                                 : AllData.globalSettings.maxSupportContentSize;
                         Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
-                        emitter.onNext(bitmap);
+                        if (bitmap != null) {
+                            emitter.onNext(bitmap);
+                        } else {
+                            emitter.onError(new Throwable("图片加载异常，请稍后重试！"));
+                        }
                         emitter.onComplete();
                         if (LogUtil.debugStyleTransfer) {
                             LogUtil.printMemoryInfo(TAG + "风格迁移，解析bitmap完成", PtuActivity.this);
                         }
+                    } else {
+                        ToastUtils.show(R.string.load_tietu_failed);
+                        emitter.onError(new Exception(""));
                     }
-                })
-                .map(new Function<Bitmap, Bitmap>() {
-                    @Override
-                    public Bitmap apply(@NotNull Bitmap bm) throws Exception {
-                        // 更新UI进度和图片
-                        runOnUiThread(() -> {
-                            showProgress(10);
-                            transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
-                        });
+                });
+            }
+        }).map(bm -> {
+            // 更新UI进度和图片
+            runOnUiThread(() -> {
+                showProgress(10);
+                transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
+            });
 
-                        //
-                        StyleTransfer transfer = StyleTransfer.getInstance();
-                        if (LogUtil.debugStyleTransfer) {
-                            LogUtil.printMemoryInfo(TAG + "创建风格迁移模型完成", PtuActivity.this);
-                        }
-                        Bitmap rstBm = transferWithSuitSize(bm, transfer, isStyle);
-                        return rstBm;
-                    }
-                })
+            //
+            StyleTransfer transfer = StyleTransfer.getInstance();
+            if (LogUtil.debugStyleTransfer) {
+                LogUtil.printMemoryInfo(TAG + "创建风格迁移模型完成", PtuActivity.this);
+            }
+            return transferWithSuitSize(bm, transfer, isStyle);
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Bitmap>() {
@@ -1303,6 +1297,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
+                        ToastUtils.show(e.getMessage());
+                        dismissProgress();
                     }
                 });
 
@@ -1391,7 +1387,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             runOnUiThread(() -> showProgress(66));
         }
         Bitmap res = transfer.transfer(contentFeature, styleFeature, 1f);
-        if(LogUtil.debugStyleTransfer) {
+        if (LogUtil.debugStyleTransfer) {
             LogUtil.printMemoryInfo(TAG + "风格迁移完成 ", this);
         }
         return res;
@@ -1982,7 +1978,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setCanceledOnTouchOutside(false); // 加载过程中不能取消
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setTitle(title);
             if (max > 0) {
                 mProgressDialog.setMax(max);

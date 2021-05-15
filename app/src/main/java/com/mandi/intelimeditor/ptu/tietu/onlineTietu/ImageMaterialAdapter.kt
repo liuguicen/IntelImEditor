@@ -1,5 +1,6 @@
 package com.mandi.intelimeditor.ptu.tietu.onlineTietu
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -7,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.mandi.intelimeditor.R
+import com.mandi.intelimeditor.ad.LockUtil
 import com.mandi.intelimeditor.ad.tencentAD.ListAdStrategyController
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
 import util.CoverLoader
@@ -29,14 +31,16 @@ class ImageMaterialAdapter :
     override fun convert(holder: BaseViewHolder, item: PicResourceItemData) {
         if (holder.itemViewType == PicResourceItemData.PicListItemType.TX_PIC_AD) {
             val frameLayout = createADContainer(holder)
-            holder.getView<ConstraintLayout>(R.id.container)
-                .addView(frameLayout, frameLayout.layoutParams)
+            holder.getView<ConstraintLayout>(R.id.container).addView(frameLayout, frameLayout.layoutParams)
         } else {
-            CoverLoader.loadImageView(
-                context,
-                item.data.url?.url,
-                holder.getView<ImageView>(R.id.iv_pic)
-            )
+            CoverLoader.loadImageView(context, item.data.url?.url, holder.getView<ImageView>(R.id.iv_pic))
+            // 注意不能用转换后的url
+            val isUnlocked = LockUtil.sUnlockData[item.data.url?.url.hashCode().toString()]
+            if (isUnlocked != null && !isUnlocked) {
+                holder.getView<View>(R.id.iv_lock).visibility = View.VISIBLE
+            } else {
+                holder.getView<View>(R.id.iv_lock).visibility = View.GONE
+            }
         }
     }
 
