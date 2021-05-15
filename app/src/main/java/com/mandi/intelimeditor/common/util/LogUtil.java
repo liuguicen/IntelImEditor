@@ -15,9 +15,12 @@
 
 package com.mandi.intelimeditor.common.util;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.util.Log;
 
 import com.mandi.intelimeditor.BuildConfig;
+import com.mandi.intelimeditor.common.dataAndLogic.MemoryManager;
 
 
 /**
@@ -42,7 +45,8 @@ public final class LogUtil {
     public static final boolean debugFace = false; // 人脸检测 对齐 相关的调试
     public static boolean debugGif = false;
     public static boolean testSplashAd = false;
-    public static boolean debugPtuTietuList = true;
+    public static boolean debugPtuTietuList = false;
+    public static boolean debugStyleTransfer = true;
 
     /**
      * 控制一些调试操作，发版本时记得修改
@@ -232,5 +236,18 @@ public final class LogUtil {
 
     public static void logTimeConsume(String msg) {
         d("-", msg + "，耗时 = " + (System.currentTimeMillis() - startTime), 2);
+    }
+
+    public static void printMemoryInfo(String tag, Context context) {
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        am.getMemoryInfo(memInfo);
+
+        d(tag, "方法一： \n 总内存  ：" + memInfo.totalMem
+                + "\n 可用内存：" + memInfo.availMem
+                + "\n 内存阈值：" + memInfo.threshold);
+        d(tag, "方法二： \n 最大内存: " + Runtime.getRuntime().maxMemory()
+                + " \n总内存  : " + Runtime.getRuntime().totalMemory()
+                + " \n可用内存 : " + Runtime.getRuntime().freeMemory() + "\n\n\n");
     }
 }

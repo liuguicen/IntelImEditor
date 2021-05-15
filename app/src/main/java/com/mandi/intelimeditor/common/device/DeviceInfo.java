@@ -189,11 +189,7 @@ public class DeviceInfo {
       ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
       ActivityManager am = (ActivityManager) c.getSystemService(Context.ACTIVITY_SERVICE);
       am.getMemoryInfo(memInfo);
-      if (memInfo != null) {
-        return memInfo.totalMem;
-      } else {
-        return DEVICEINFO_UNKNOWN;
-      }
+      return memInfo.totalMem;
     } else {
       long totalMem = DEVICEINFO_UNKNOWN;
       try {

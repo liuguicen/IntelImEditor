@@ -228,7 +228,7 @@ public class SPUtil {
         return userSp.getBoolean(SPConstants.AppSettings.GIF_AUTO_ADD, true);
     }
 
-    public static int getStyleMaxSupportBmSize() {
+    public static int getContentMaxSupportBmSize() {
         return userSp.getInt(SPConstants.AppSettings.CONTENT_MAX_SUPPORT_BM_SIZE, -1);
     }
     public static void putContentMaxSupportBmSize(int size) {

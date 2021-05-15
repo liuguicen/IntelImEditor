@@ -71,7 +71,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
     private ListAdStrategyController mAdController_feed;
 
     private List<PicResourceItemData> itemDataList = new ArrayList<>();
-    private List<PicResource> originalList = new ArrayList<>();
 
     private float numberInOneScreen;
 
@@ -193,7 +192,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
             //遍历文件夹所有数据，根据数据分类型添加到集合中
             for (int i = 0; i < folders.size(); i++) {
                 PicDirInfo picDirInfo = folders.get(i);
-                PicResourceItemData item = new PicResourceItemData(picDirInfo, PicResourceItemData.PicListItemType.ITEM_FOLDER, false);
+                PicResourceItemData item = new PicResourceItemData(picDirInfo, PicResourceItemData.PicListItemType.ITEM_FOLDER);
                 itemDataList.add(item);
             }
         }
@@ -212,7 +211,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 continue;
             }
             itemDataList.add(item);
-            setLockData(item);
 
             // 插入信息流大广告
             // 这里isAddAd(groupedList.size() + extraSize) 判断一行的末尾，因为加大广告多占了位置，忽略之
@@ -244,19 +242,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
     public void clear() {
         itemDataList.clear();
         notifyDataSetChanged();
-    }
-
-    private void setLockData(PicResourceItemData item) {
-        if (item.data == null) return;
-        // 要解锁的
-        item.isUnlock = true;
-        String key = String.valueOf(item.data.getUrl().getUrl().hashCode());
-        if (LogUtil.debugRewardAd) {
-            Log.d("PicResourcesAdapter", "key = " + key);
-        }
-        if (LockUtil.sUnlockData.get(key) != null) {
-            item.isUnlock = LockUtil.sUnlockData.get(key);
-        }
     }
 
     @NotNull

@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
+import com.mandi.intelimeditor.common.util.LogUtil;
+import com.mandi.intelimeditor.ptu.PtuActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +30,6 @@ public class StyleTransfer {
     private Module vgg_encoder = null;
     private Module decoder = null;
     private Context context;
-    public static int MAX_SUPPORT_SIZE = 90000;
 
     private static class InnerClass {
         private static StyleTransfer staticInnerClass = new StyleTransfer(IntelImEditApplication.appContext);
@@ -57,10 +58,18 @@ public class StyleTransfer {
             long time = System.currentTimeMillis();
             final Tensor tensor = TensorImageUtils.bitmapToFloat32Tensor(bm,
                     TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
+            if (LogUtil.debugStyleTransfer) {
+                Log.d(TAG, "bm转换tensor完成");
+                LogUtil.printMemoryInfo(TAG + "bm转换tensor完成", context);
+            }
             feature = vgg_encoder.forward(IValue.from(tensor)).toTensor();
-            Log.d(TAG, "获取特征时间 = " + (System.currentTimeMillis() - time));
+            if (LogUtil.debugStyleTransfer) {
+                Log.d(TAG, "获取特征时间 = " + (System.currentTimeMillis() - time));
+                LogUtil.printMemoryInfo(TAG  + " 通过Vgg完成", context);
+            }
         } catch (Exception e) {
             Log.d(TAG, "模型获取VGG特征失败" + e.getMessage());
+            LogUtil.printMemoryInfo(TAG, context);
         }
         return feature;
     }
@@ -166,7 +175,7 @@ public class StyleTransfer {
         msg = "adain完成 time= " + (System.currentTimeMillis() - time);
         Log.d(TAG, msg);
         Log.d(TAG, "总耗时: " + (System.currentTimeMillis() - startTime));
-		return rstBm;
+        return rstBm;
     }
 
     /**

@@ -13,6 +13,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.GlobalSettings;
 
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
+import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.TimeDateUtil;
 import com.mandi.intelimeditor.BuildConfig;
 import com.qq.e.comm.managers.GDTADManager;
@@ -77,6 +78,7 @@ public class IntelImEditApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         appContext = this;
+        LogUtil.printMemoryInfo(TAG,this);
         initAppData();
     }
 

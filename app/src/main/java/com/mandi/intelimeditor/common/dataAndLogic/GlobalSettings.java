@@ -23,9 +23,11 @@ public class GlobalSettings {
     public int performanceYear;
     public int maxSupportBmSize;
     /**
-     * 难以保证各个机型的适配，通过实际使用不爆内存来设置
+     * 可用内存波动很大，自己测试接近至少5倍波动
+     * android无法获取机型实际可用内存不准确，然后模型实际消耗内存也不好算（单纯模型可算，但是放到移动端，框架有优化，不了解算不了了），
+     * 通过实际使用不爆内存来设置
      */
-    public int contentMaxSupportBmSize;
+    public int maxSupportContentSize;
     public float styleContentRatio = 1.5f;
     public int maxSupportGifBmSize;
 
@@ -36,27 +38,30 @@ public class GlobalSettings {
     }
 
     private void updateOther(int performanceYear) {
-        contentMaxSupportBmSize = 800 * 800;
+        maxSupportContentSize = 2800 * 3800;
         if (performanceYear >= YearClass.PERFORMANCE_8G_UP) {
             maxSupportBmSize = 6000 * 4000;
         } else if (performanceYear >= YearClass.PERFORMANCE_6G_8G) {
             maxSupportBmSize = 5000 * 4000;
-            contentMaxSupportBmSize *= 16f / 25;
+            maxSupportContentSize *= 16f / 25;
         } else if (performanceYear >= YearClass.PERFORMANCE_4G_6G) {
             maxSupportBmSize = 4000 * 3000;
-            contentMaxSupportBmSize *= 9f / 25;
+            maxSupportContentSize *= 9f / 25;
         } else if (performanceYear >= YearClass.PERFORMANCE_2G_4G) {
             maxSupportBmSize = 3000 * 2000;
-            contentMaxSupportBmSize *= 4f / 25;
+            maxSupportContentSize *= 4f / 25;
         } else {
             maxSupportBmSize = 2000 * 1000;
-            contentMaxSupportBmSize *= 4f / 25;
+            maxSupportContentSize *= 4f / 25;
         }
         maxSupportGifBmSize = maxSupportBmSize / 16;
-        // 难以保证各个机型的适配，通过实际使用不爆内存来设置
         SPUtil.putContentMaxSupportBmSize(-1);
-        int experimental_size = SPUtil.getStyleMaxSupportBmSize();
-        contentMaxSupportBmSize = experimental_size <= 0 ? contentMaxSupportBmSize : experimental_size;
+        int last_content_support_size = SPUtil.getContentMaxSupportBmSize();
+        if (last_content_support_size > 0) {
+            last_content_support_size *= 1.05; // 因为目前的最大尺寸获取方法是保证不爆内存下最小尺寸，所以尺寸会一直边笑，这里主动放大一次
+            SPUtil.putContentMaxSupportBmSize(last_content_support_size);
+        }
+        maxSupportContentSize = last_content_support_size <= 0 ? maxSupportContentSize : last_content_support_size;
     }
 
     public void saveSendShortCutNotify(boolean isSend) {

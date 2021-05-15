@@ -1,8 +1,12 @@
 package com.mandi.intelimeditor.home.tietuChoose;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
+import com.mandi.intelimeditor.ad.LockUtil;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
+import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.home.data.PicDirInfo;
 import com.mandi.intelimeditor.home.localPictuture.LocalGroupedItemData;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResGroup;
@@ -38,15 +42,15 @@ public class PicResourceItemData {
         this.isUnlock = false;
     }
 
-    public PicResourceItemData(PicDirInfo data, int type, boolean isUnlock) {
+    public PicResourceItemData(PicDirInfo data, int type) {
         this.picDirInfo = data;
         this.type = type;
-        this.isUnlock = isUnlock;
     }
 
     public PicResourceItemData(@Nullable PicResource data, int type) {
         this.data = data;
         this.type = type;
+        setLockData();
     }
 
     public PicResourceItemData(PicResGroup group, int type) {
@@ -97,6 +101,19 @@ public class PicResourceItemData {
             return data.getCreatedAt();
         }
         return "0000-00-00 00:00:00";
+    }
+
+    private void setLockData() {
+        if (data == null) return;
+        // 要解锁的
+        isUnlock = true;
+        String key = String.valueOf(data.getUrl().getUrl().hashCode());
+        if (LogUtil.debugRewardAd) {
+            Log.d("PicResourcesAdapter", "key = " + key);
+        }
+        if (LockUtil.sUnlockData.get(key) != null) {
+            isUnlock = LockUtil.sUnlockData.get(key);
+        }
     }
 
     /**

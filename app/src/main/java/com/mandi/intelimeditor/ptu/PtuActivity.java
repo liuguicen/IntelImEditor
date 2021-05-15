@@ -278,7 +278,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         initView();
         initFragment();
         analysisPicPath(null); // 开始图片加载流程
-        LogUtil.d(TAG, "onCreate()");
+        LogUtil.printMemoryInfo(TAG + " 启动 ", this);
     }
 
     private void initBaseData() {
@@ -705,7 +705,12 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private void loadBitmapData(boolean isReplace) {
         Observable
                 .create((ObservableOnSubscribe<Bitmap>) emitter -> {
-                    emitter.onNext(BitmapUtil.decodeLossslessInSize(picPath, AllData.globalSettings.contentMaxSupportBmSize));
+                    int maxSupportSize = isStyle ?
+                            (int) (AllData.globalSettings.maxSupportContentSize * AllData.globalSettings.styleContentRatio)
+                            : AllData.globalSettings.maxSupportContentSize;
+                    Bitmap bm = BitmapUtil.decodeLossslessInSize(picPath, maxSupportSize);
+                    if (bm == null) emitter.onError(new Exception("加载图片出错"));
+                    emitter.onNext(bm);
                     LogUtil.d("加载图片的Bitmap完成");
                     emitter.onComplete();
                 })
@@ -1230,6 +1235,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 .create(new ObservableOnSubscribe<Bitmap>() {
                     @Override
                     public void subscribe(@NotNull ObservableEmitter<Bitmap> emitter) throws Exception {
+                        if (LogUtil.debugStyleTransfer) {
+                            LogUtil.printMemoryInfo(TAG + "开始风格迁移", PtuActivity.this);
+                        }
+                        // 第一步，主要解析Bm
                         if (obj instanceof Bitmap) {
                             emitter.onNext((Bitmap) obj);
                             emitter.onComplete();
@@ -1237,66 +1246,44 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         }
 
                         AtomicReference<String> path = new AtomicReference<>((String) obj);
-                        if (obj instanceof String) {
-                            if (FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) { // 判断是否是url
-                                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {
-                                    if (!TextUtils.isEmpty(inner_path)) {
-                                        path.set(inner_path);
-                                    } else {
-                                        ToastUtils.show(R.string.load_tietu_failed);
-                                        emitter.onError(new Exception(""));
-                                    }
-                                });
-                            }
+                        // 判断是否是url并解析成路径
+                        if (obj instanceof String && FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) {
+                            BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {
+                                if (!TextUtils.isEmpty(inner_path)) {
+                                    path.set(inner_path);
+                                } else {
+                                    ToastUtils.show(R.string.load_tietu_failed);
+                                    emitter.onError(new Exception(""));
+                                }
+                            });
                         }
-                        int decodeSize = isStyle ? (int) (AllData.globalSettings.contentMaxSupportBmSize *
+                        // 将路径解析成Bm
+                        int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
                                 AllData.globalSettings.styleContentRatio)
-                                : AllData.globalSettings.contentMaxSupportBmSize;
+                                : AllData.globalSettings.maxSupportContentSize;
                         Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
-                        runOnUiThread(() -> {
-                            showProgress(10);
-                            transferFrag.onChosenBm(isStyle ? null : bitmap, isStyle ? bitmap : null);
-                        });
                         emitter.onNext(bitmap);
                         emitter.onComplete();
+                        if (LogUtil.debugStyleTransfer) {
+                            LogUtil.printMemoryInfo(TAG + "风格迁移，解析bitmap完成", PtuActivity.this);
+                        }
                     }
                 })
                 .map(new Function<Bitmap, Bitmap>() {
                     @Override
                     public Bitmap apply(@NotNull Bitmap bm) throws Exception {
+                        // 更新UI进度和图片
+                        runOnUiThread(() -> {
+                            showProgress(10);
+                            transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
+                        });
+
+                        //
                         StyleTransfer transfer = StyleTransfer.getInstance();
-                        Log.e(TAG, "创建迁移模型完成");
-                        Bitmap rstBm = null;
-                        int testSize = 5;
-                        while (testSize > 0) { // 尝试找到合适的尺寸
-                            try {
-                                rstBm = realTransfer(bm, transfer, isStyle);
-                                runOnUiThread(() -> showProgress(90));
-                                testSize = -1;
-                            } catch (Exception e) {
-                                if (e instanceof RuntimeException) { // 尺寸太大，主动调小
-                                    AllData.globalSettings.contentMaxSupportBmSize *= 0.80f;
-                                    Bitmap contentBm = repealRedoManager.getBaseBitmap();
-                                    double ratio = Math.sqrt(AllData.globalSettings.contentMaxSupportBmSize * 1f / (contentBm.getWidth() * contentBm.getHeight()));
-                                    contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
-                                            (int) (ratio * contentBm.getHeight()), true);
-                                    repealRedoManager.setBaseBm(contentBm);
-                                    contentFeature = null;
-                                    styleFeature = null;
-                                    Log.e(TAG, "风格迁移失败，最大尺寸 = " + AllData.globalSettings.contentMaxSupportBmSize);
-                                    testSize--;
-                                } else {
-                                    testSize = -1;
-                                }
-                                e.printStackTrace();
-                            }
+                        if (LogUtil.debugStyleTransfer) {
+                            LogUtil.printMemoryInfo(TAG + "创建风格迁移模型完成", PtuActivity.this);
                         }
-                        // 第一次成功，放入合适的尺寸
-                        if (SPUtil.getStyleMaxSupportBmSize() <= 0) {
-                            SPUtil.putContentMaxSupportBmSize(AllData.globalSettings.contentMaxSupportBmSize);
-                            Log.e(TAG, "放入风格尺寸，最大尺寸 = " + AllData.globalSettings.contentMaxSupportBmSize);
-                        }
-                        Log.e(TAG, "通过Adain和解码器");
+                        Bitmap rstBm = transferWithSuitSize(bm, transfer, isStyle);
                         return rstBm;
                     }
                 })
@@ -1317,24 +1304,74 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     }
 
+    @org.jetbrains.annotations.Nullable
+    private Bitmap transferWithSuitSize(@NotNull Bitmap bm, StyleTransfer transfer, boolean isStyle) {
+        Bitmap rstBm = null;
+        int testSize = 5;
+        while (testSize > 0) { // 尝试找到合适的尺寸
+            try {
+                rstBm = realTransfer(bm, transfer, isStyle);
+                runOnUiThread(() -> showProgress(90));
+                testSize = -1;
+            } catch (Exception e) {
+                if (e instanceof RuntimeException) { // 尺寸太大，主动调小
+                    if (LogUtil.debugStyleTransfer) {
+                        Log.d(TAG, String.format("尝试尺寸 %d 失败，剩余 %d 次", AllData.globalSettings.maxSupportContentSize, testSize - 1));
+                    }
+                    AllData.globalSettings.maxSupportContentSize *= 0.80f;
+                    Bitmap contentBm = repealRedoManager.getBaseBitmap();
+                    double ratio = Math.sqrt(AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight()));
+                    contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
+                            (int) (ratio * contentBm.getHeight()), true);
+                    repealRedoManager.setBaseBm(contentBm);
+                    contentFeature = null;
+                    styleFeature = null;
+                    testSize--;
+                } else {
+                    testSize = -1;
+                }
+                e.printStackTrace();
+            }
+        }
+        // 第一次成功，放入合适的尺寸
+        if (SPUtil.getContentMaxSupportBmSize() <= 0) {
+            SPUtil.putContentMaxSupportBmSize(AllData.globalSettings.maxSupportContentSize);
+            if (LogUtil.debugStyleTransfer) {
+                Log.e(TAG, "放入风格尺寸，最大尺寸 = " + AllData.globalSettings.maxSupportContentSize);
+            }
+        }
+        Log.e(TAG, "通过Adain和解码器");
+        return rstBm;
+    }
+
     private Bitmap realTransfer(@NotNull Bitmap bm, StyleTransfer transfer, boolean isStyle) {
         Bitmap contentBm = repealRedoManager.getBaseBitmap();
         if (!isStyle) {
             contentFeature = transfer.getVggFeature(bm);
             runOnUiThread(() -> showProgress(33));
-            Log.e(TAG, "内容图片通过VGG, size = " + bm.getWidth() + " * " + bm.getHeight());
+            if (LogUtil.debugStyleTransfer) {
+                Log.e(TAG, "内容图片通过VGG完成, size = " + bm.getWidth() + " * " + bm.getHeight());
+                LogUtil.printMemoryInfo(TAG + "内容图片通过VGG完成", PtuActivity.this);
+            }
             repealRedoManager.setBaseBm(bm);
             // 风格特征不存在，或者风格特征大小不够
             if (styleBm != null && (styleFeature == null || styleBm.getByteCount() <
                     contentBm.getByteCount() * AllData.globalSettings.styleContentRatio)) {
                 styleFeature = transfer.getVggFeature(styleBm);
+                if (LogUtil.debugStyleTransfer) {
+                    Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
+                    LogUtil.printMemoryInfo(TAG + "风格图片通过vgg完成", PtuActivity.this);
+                }
                 runOnUiThread(() -> showProgress(66));
             }
         } else {
             if (contentBm != null && contentFeature == null) {
                 contentFeature = transfer.getVggFeature(contentBm);
-                Log.e(TAG, "内容图片通过vgg, size = " + contentBm.getWidth()
-                        + " * " + contentBm.getHeight());
+                if (LogUtil.debugStyleTransfer) {
+                    Log.e(TAG, "内容图片通过vgg, size = " + contentBm.getWidth()
+                            + " * " + contentBm.getHeight());
+                    LogUtil.printMemoryInfo(TAG + "内容图片通过vgg完成", PtuActivity.this);
+                }
                 runOnUiThread(() -> showProgress(33));
             }
             // 比例不对的
@@ -1343,10 +1380,17 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 styleBm = Bitmap.createScaledBitmap(styleBm, styleBm.getWidth(), styleBm.getHeight(), true);
             }
             PtuActivity.this.styleFeature = transfer.getVggFeature(styleBm);
-            Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
+            if (LogUtil.debugStyleTransfer) {
+                Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
+                LogUtil.printMemoryInfo(TAG + "风格图片通过vgg完成", PtuActivity.this);
+            }
             runOnUiThread(() -> showProgress(66));
         }
-        return transfer.transfer(contentFeature, styleFeature, 1f);
+        Bitmap res = transfer.transfer(contentFeature, styleFeature, 1f);
+        if(LogUtil.debugStyleTransfer) {
+            LogUtil.printMemoryInfo(TAG + "风格迁移完成 ", this);
+        }
+        return res;
     }
 
 
