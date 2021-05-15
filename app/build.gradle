@@ -352,7 +352,9 @@ dependencies {
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'
 
 
-    // pytorch 机器学习相关
+
+    // 机器学习相关
+    // pytorch 还是不行 它运行了之后不释放内存，不管是创建tensor还是forward之后
     implementation 'org.pytorch:pytorch_android:1.8.0'
     implementation 'org.pytorch:pytorch_android_torchvision:1.8.0'
 

@@ -2,19 +2,14 @@ package com.mandi.intelimeditor.ptu.imageProcessing;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.Log;
 
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
-import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.geoutil.MPoint;
-import com.mandi.intelimeditor.mnn.MNNForwardType;
-import com.mandi.intelimeditor.mnn.MNNImageProcess;
-import com.mandi.intelimeditor.mnn.MNNNetInstance;
+import com.mandi.intelimeditor.ml.mnn.MNNForwardType;
+import com.mandi.intelimeditor.ml.mnn.MNNImageProcess;
+import com.mandi.intelimeditor.ml.mnn.MNNNetInstance;
 
 import java.io.File;
 import java.io.FileOutputStream;

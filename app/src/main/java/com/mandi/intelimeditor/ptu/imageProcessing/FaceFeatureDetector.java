@@ -16,9 +16,9 @@ import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.geoutil.MPoint;
-import com.mandi.intelimeditor.mnn.MNNForwardType;
-import com.mandi.intelimeditor.mnn.MNNImageProcess;
-import com.mandi.intelimeditor.mnn.MNNNetInstance;
+import com.mandi.intelimeditor.ml.mnn.MNNForwardType;
+import com.mandi.intelimeditor.ml.mnn.MNNImageProcess;
+import com.mandi.intelimeditor.ml.mnn.MNNNetInstance;
 import com.mandi.intelimeditor.ptu.gif.GifDecoderFromVideo;
 
 import java.io.File;

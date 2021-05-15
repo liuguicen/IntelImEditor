@@ -1,4 +1,4 @@
-package com.mandi.intelimeditor.mnn;
+package com.mandi.intelimeditor.ml.mnn;
 
 public enum MNNForwardType {
     /**
