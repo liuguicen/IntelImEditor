@@ -9,13 +9,11 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,11 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.google.android.flexbox.FlexboxItemDecoration;
 import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.bean.FunctionInfoBean;
 import com.mandi.intelimeditor.common.CommonConstant;
-import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
@@ -38,9 +34,8 @@ import com.mandi.intelimeditor.common.util.FileTool;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
-import com.mandi.intelimeditor.common.view.MyDividerItemDecoration;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
-import com.mandi.intelimeditor.common.view.SimplePaddingDecoration;
+import com.mandi.intelimeditor.common.view.ImageDecoration;
 import com.mandi.intelimeditor.home.HomeActivity;
 import com.mandi.intelimeditor.home.view.BottomFunctionView;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
@@ -229,7 +224,6 @@ public class StyleTransferFragment extends BasePtuFragment {
             return;
         }
         PtuConstraintLayout ptuFrameLayout = (PtuConstraintLayout) parent;
-
         if (ptuFrameLayout.indexOfChild(chooseRcv) == -1) { //
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, Util.dp2Px(100));
@@ -239,7 +233,9 @@ public class StyleTransferFragment extends BasePtuFragment {
             layoutParams.setMargins(0, 0, 0, Util.dp2Px(4f));
             chooseRcv.setTag(PtuConstraintLayout.TAG_TIETU_RCV);
             ptuFrameLayout.addView(chooseRcv, layoutParams);
-            chooseRcv.addItemDecoration(new SimplePaddingDecoration(getActivity()));
+            if (chooseRcv.getItemDecorationCount() == 0) {
+                chooseRcv.addItemDecoration(new ImageDecoration(getActivity()));
+            }
             chooseRcv.setAdapter(chooseListAdapter);
         }
         if (isChooseStyle) {

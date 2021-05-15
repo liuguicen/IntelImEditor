@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mandi.intelimeditor.R;
 
-public class SimplePaddingDecoration extends RecyclerView.ItemDecoration {
+public class ImageDecoration extends RecyclerView.ItemDecoration {
 
     private int dividerHeight;
 
-    public SimplePaddingDecoration(Context context) {
+    public ImageDecoration(Context context) {
         dividerHeight = context.getResources().getDimensionPixelSize(R.dimen.dp_8);
     }
 
@@ -21,5 +21,12 @@ public class SimplePaddingDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
         outRect.bottom = dividerHeight;//类似加了一个bottom padding
         outRect.left = dividerHeight;//类似加了一个bottom padding
+        // 当前 item 的 position
+        int childLayoutPosition = parent.getChildLayoutPosition(view);
+        // 最后一条 item 的 position
+        int lastItemPosition = state.getItemCount() - 1;
+        if (childLayoutPosition == lastItemPosition) {
+            outRect.right = dividerHeight;//类似加了一个bottom padding
+        }
     }
 }
