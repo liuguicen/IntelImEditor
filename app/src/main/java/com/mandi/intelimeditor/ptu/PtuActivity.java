@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -102,16 +101,17 @@ import org.jetbrains.annotations.NotNull;
 import org.pytorch.Tensor;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mandi.intelimeditor.ptu.PtuUtil.EDIT_CUT;
@@ -266,6 +266,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private final ArrayList<String> useTagsList = new ArrayList<>();
     private TxBannerAd bannerAd;
     private PopupWindow pop;
+    private FloatBuffer contentTensor;
+    private Tensor styleTensor;
     private Tensor contentFeature;
     private Bitmap styleBm;
     private Tensor styleFeature;
@@ -283,6 +285,16 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         initFragment();
         analysisPicPath(null); // 开始图片加载流程
         LogUtil.printMemoryInfo(TAG + " 启动 ", this);
+        // contentTensor = createTensor();
+    }
+
+    private FloatBuffer createTensor(int size) {
+        FloatBuffer inTensorBuffer = ByteBuffer.allocate(size * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+
+        return inTensorBuffer;
+        // Tensor tensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, 3, wh[0], wh[1]});
     }
 
     private void initBaseData() {
@@ -1200,77 +1212,28 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 //        ptuSeeView.switchStatus2Main();
     }
 
-    private void getVggFeature(Bitmap bm, boolean isContent) {
-        Observable
-                .create(new ObservableOnSubscribe<List<String>>() {
-                    @Override
-                    public void subscribe(@NotNull ObservableEmitter<List<String>> emitter) throws Exception {
-                        if (bm != null) {
-                            StyleTransfer transfer = StyleTransfer.getInstance();
-                            if (isContent) {
-                                PtuActivity.this.contentFeature = transfer.getVggFeature(bm);
-                            } else {
-                                styleBm = bm;
-                                PtuActivity.this.styleFeature = transfer.getVggFeature(bm);
-                            }
-                            emitter.onComplete();
-                        }
-
-                    }
-                })
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<List<String>>() {
-                    @Override
-                    public void onNext(@NonNull List<String> strings) {
-
-                    }
-                });
-    }
-
     @Override
     public void transfer(Object obj, boolean isStyle) {
         if (this.isStyle) {
             hidePtuNotice();
         }
         showProgress(0);
-//      关于
+
         Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
             if (LogUtil.debugStyleTransfer) {
-                LogUtil.printMemoryInfo(TAG + "开始风格迁移", PtuActivity.this);
+                LogUtil.d(TAG + "开始风格迁移");
             }
-            // 第一步，主要解析Bm
-            if (obj instanceof Bitmap) {
-                emitter.onNext((Bitmap) obj);
-                emitter.onComplete();
-                return;
-            }
-            AtomicReference<String> path = new AtomicReference<>((String) obj);
             // 判断是否是url并解析成路径
-            if (obj instanceof String && FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) {
-                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {//异步任务
-                    if (!TextUtils.isEmpty(inner_path)) {
-                        path.set(inner_path);
-                        // 将路径解析成Bm
-                        int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
-                                AllData.globalSettings.styleContentRatio)
-                                : AllData.globalSettings.maxSupportContentSize;
-                        Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
-                        if (bitmap != null) {
-                            emitter.onNext(bitmap);
-                        } else {
-                            emitter.onError(new Throwable("图片加载异常，请稍后重试！"));
-                        }
-                        emitter.onComplete();
-                        if (LogUtil.debugStyleTransfer) {
-                            LogUtil.printMemoryInfo(TAG + "风格迁移，解析bitmap完成", PtuActivity.this);
-                        }
-                    } else {
-                        ToastUtils.show(R.string.load_tietu_failed);
-                        emitter.onError(new Exception(""));
-                    }
-                });
+            // 第一步，主要解析Bm
+            // 将路径解析成Bm
+            int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
+                    AllData.globalSettings.styleContentRatio)
+                    : AllData.globalSettings.maxSupportContentSize;
+            BitmapUtil.decodeFromObj(obj, emitter, decodeSize);
+            if (LogUtil.debugStyleTransfer) {
+                LogUtil.d(TAG + "风格迁移，解析bitmap完成");
             }
+            emitter.onComplete();
         }).map(bm -> {
             // 更新UI进度和图片
             runOnUiThread(() -> {
@@ -1278,14 +1241,14 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
             });
 
-            //
+            // 第二步，使用合适的尺寸迁移图片
             StyleTransfer transfer = StyleTransfer.getInstance();
             if (LogUtil.debugStyleTransfer) {
-                LogUtil.printMemoryInfo(TAG + "创建风格迁移模型完成", PtuActivity.this);
+                LogUtil.d(TAG + "创建风格迁移模型完成");
             }
             return transferWithSuitSize(bm, transfer, isStyle);
         })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Bitmap>() {
                     @Override
@@ -1300,12 +1263,19 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                         ToastUtils.show(e.getMessage());
                         dismissProgress();
                     }
+
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        dismissProgress();
+                    }
                 });
 
     }
 
     @org.jetbrains.annotations.Nullable
-    private Bitmap transferWithSuitSize(@NotNull Bitmap bm, StyleTransfer transfer, boolean isStyle) {
+    private Bitmap transferWithSuitSize(@NotNull Bitmap bm, StyleTransfer transfer,
+                                        boolean isStyle) {
         Bitmap rstBm = null;
         int testSize = 5;
         while (testSize > 0) { // 尝试找到合适的尺寸
@@ -1313,8 +1283,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 rstBm = realTransfer(bm, transfer, isStyle);
                 runOnUiThread(() -> showProgress(90));
                 testSize = -1;
-            } catch (Exception e) {
-                if (e instanceof RuntimeException) { // 尺寸太大，主动调小
+            } catch (Throwable e) {
+                if (e instanceof OutOfMemoryError || e instanceof StackOverflowError) { // 尺寸太大，爆内存，主动调小
                     if (LogUtil.debugStyleTransfer) {
                         Log.d(TAG, String.format("尝试尺寸 %d 失败，剩余 %d 次", AllData.globalSettings.maxSupportContentSize, testSize - 1));
                     }
@@ -1346,12 +1316,13 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     private Bitmap realTransfer(@NotNull Bitmap bm, StyleTransfer transfer, boolean isStyle) {
         Bitmap contentBm = repealRedoManager.getBaseBitmap();
+        Log.d(TAG, "realTransfer: 开始运行风格迁移算法");
         if (!isStyle) {
             contentFeature = transfer.getVggFeature(bm);
             runOnUiThread(() -> showProgress(33));
             if (LogUtil.debugStyleTransfer) {
                 Log.e(TAG, "内容图片通过VGG完成, size = " + bm.getWidth() + " * " + bm.getHeight());
-                LogUtil.printMemoryInfo(TAG + "内容图片通过VGG完成", PtuActivity.this);
+                // LogUtil.printMemoryInfo(TAG + "内容图片通过VGG完成", PtuActivity.this);
             }
             repealRedoManager.setBaseBm(bm);
             // 风格特征不存在，或者风格特征大小不够
@@ -1360,7 +1331,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 styleFeature = transfer.getVggFeature(styleBm);
                 if (LogUtil.debugStyleTransfer) {
                     Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
-                    LogUtil.printMemoryInfo(TAG + "风格图片通过vgg完成", PtuActivity.this);
+                    // LogUtil.printMemoryInfo(TAG + "风格图片通过vgg完成", PtuActivity.this);
                 }
                 runOnUiThread(() -> showProgress(66));
             }
@@ -1370,7 +1341,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 if (LogUtil.debugStyleTransfer) {
                     Log.e(TAG, "内容图片通过vgg, size = " + contentBm.getWidth()
                             + " * " + contentBm.getHeight());
-                    LogUtil.printMemoryInfo(TAG + "内容图片通过vgg完成", PtuActivity.this);
+                    // LogUtil.printMemoryInfo(TAG + "内容图片通过vgg完成", PtuActivity.this);
                 }
                 runOnUiThread(() -> showProgress(33));
             }
@@ -1388,7 +1359,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
         Bitmap res = transfer.transfer(contentFeature, styleFeature, 1f);
         if (LogUtil.debugStyleTransfer) {
-            LogUtil.printMemoryInfo(TAG + "风格迁移完成 ", this);
+            LogUtil.d(TAG + "风格迁移完成 ");
         }
         return res;
     }
@@ -1747,7 +1718,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * @return 返回保存的路径
      */
     @NotNull
-    private String saveResultBm(final float saveRatio, String savePath, @Nullable Bitmap resultBm) throws IOException {
+    private String saveResultBm(final float saveRatio, String savePath, @Nullable Bitmap
+            resultBm) throws IOException {
         BitmapUtil.SaveResult result;
         String saveSuffix;
         if (resultBm == null) {

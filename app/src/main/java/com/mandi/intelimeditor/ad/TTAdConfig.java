@@ -1,9 +1,6 @@
 package com.mandi.intelimeditor.ad;
 
 public class TTAdConfig {
-    // public static String REWARD_VIDEO_AD_ID = "930119005";
-    // public static String FULL_SCREEN_VIDEO_AD_ID = "930119554"; // 老版本的，不用了
-    // public static String NATIVE_EXPRESS_AD_ID = "930119237";
 
     public static final String REWARD_VIDEO_AD_ID = "930119032";
     public static final String FULL_SCREEN_VIDEO_AD_ID = "930119403";

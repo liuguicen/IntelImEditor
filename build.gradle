@@ -42,7 +42,7 @@ allprojects {
         // 友盟统计
         maven { url 'https://dl.bintray.com/umsdk/release' }
         //Bmob的maven仓库地址--必填
-        maven {url 'https://dl.bintray.com/chaozhouzhang/maven' }
+        maven { url 'https://dl.bintray.com/chaozhouzhang/maven' }
         // RangeSeekBar需要的
         maven { url 'https://jitpack.io' }
     }
@@ -56,4 +56,7 @@ allprojects {
 }
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }

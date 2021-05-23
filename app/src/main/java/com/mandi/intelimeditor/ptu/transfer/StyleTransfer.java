@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.util.LogUtil;
+import com.mandi.intelimeditor.ml.mnn.MNNNetInstance;
 import com.mandi.intelimeditor.ptu.PtuActivity;
 
 import java.io.File;
@@ -18,6 +19,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.Map;
 
 import org.pytorch.IValue;
@@ -52,6 +56,9 @@ public class StyleTransfer {
     }
 
 
+    // 规律：1、  floatBuffer = ByteBuffer.allocateDirect分配buff，buff会增加内存，然后利用buff创建tensor，还会增加内存，增加量比buff增加了多一点
+    //      2、  多次使用同一个floatBuffer创建不同的tensor 仍然会增加内存，但是垃圾回收器可以将内存回收掉
+
     public Tensor getVggFeature(Bitmap bm) {
         Tensor feature = null;
         try {
@@ -59,8 +66,7 @@ public class StyleTransfer {
             final Tensor tensor = TensorImageUtils.bitmapToFloat32Tensor(bm,
                     TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
             if (LogUtil.debugStyleTransfer) {
-                Log.d(TAG, "bm转换tensor完成");
-                LogUtil.printMemoryInfo(TAG + "bm转换tensor完成", context);
+                Log.d(TAG, "准备bm转换tensor");
             }
             feature = vgg_encoder.forward(IValue.from(tensor)).toTensor();
             if (LogUtil.debugStyleTransfer) {

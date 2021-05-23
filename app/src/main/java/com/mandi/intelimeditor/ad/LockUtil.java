@@ -86,6 +86,7 @@ public class LockUtil {
         add(290);
         add(296);
     }};
+
     /**
      * 包含了需要解锁的资源，即key，用图片url的hashcode生成，
      * 以及需要解锁的资源的解锁结果
@@ -100,6 +101,7 @@ public class LockUtil {
                 start += j;
                 LockUtil.picResLockedPosition.add(start);
             }
+        picResLockedPosition.clear();
     }
     /**
      * 长时间没看激励视频, 资源加锁的

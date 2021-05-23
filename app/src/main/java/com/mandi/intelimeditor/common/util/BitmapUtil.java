@@ -19,6 +19,7 @@ import android.graphics.Xfermode;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -27,9 +28,11 @@ import androidx.exifinterface.media.ExifInterface;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
+import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.geoutil.MRect;
+import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.draw.MPaint;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +45,7 @@ import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -87,10 +91,49 @@ public class BitmapUtil {
         return new Point(width, height);
     }
 
+    // TODO: 2021/5/23 这个方法可以和其它地方类似方法的合并优化
+    /**
+     * @param decodeSize {@link #decodeLossslessInSize(String, int)}
+     * @param emitter    不会调用onComplete();
+     */
+    public static void decodeFromObj(Object obj, ObservableEmitter<Bitmap> emitter, int decodeSize) {
+        if (obj instanceof Bitmap) {
+            emitter.onNext((Bitmap) obj);
+        } else if (obj instanceof String) {
+            String path = (String) obj;
+            if (FileTool.urlType(path).equals(FileTool.UrlType.URL)) { // 如果是URL
+                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> { // 异步任务,不能合并到后面
+                    if (!TextUtils.isEmpty(inner_path)) {
+                        Bitmap bitmap = BitmapUtil.decodeLossslessInSize(inner_path, decodeSize);
+                        if (bitmap != null) {
+                            emitter.onNext(bitmap);
+                        } else {
+                            emitter.onError(new Throwable("从url解析图片错误"));
+                        }
+                    } else {
+                        ToastUtils.show(R.string.load_tietu_failed);
+                        emitter.onError(new Exception(""));
+                    }
+                });
+            } else { // 正常路径
+                Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path, decodeSize);
+                if (bitmap != null) {
+                    emitter.onNext(bitmap);
+                } else {
+                    emitter.onError(new Throwable("从路径解析图片错误"));
+                }
+            }
+        } else {
+            emitter.onError(new Throwable("不支持的图片解析对象，支持url， path，bm对象"));
+        }
+    }
+
+
     /**
      * 获取glide加载之后图片的绝对路径
      */
     public static void getBmPathInGlide(Object obj, DecodeCallback callback) {
+        // TODO: 2021/5/23 可以和decodeFromObj合并一下
         if (obj == null || callback == null) return;
         // glide似乎不能通通过上面的方式获取本机图片的路径，只能直接用
         Observable.create((ObservableOnSubscribe<String>) emitter -> {
@@ -125,11 +168,7 @@ public class BitmapUtil {
 
 
     /**
-     * 解析出指定大小的图片 ，返回其Bitmap对象
-     *
-     * @param path     String 图片，
-     * @param needSize 需要的size = w * h
-     * @return Bitmap 路径下适应大小的图片
+     * @see #decodeLossslessInSize(String, int, Bitmap.Config)
      */
     public static @Nullable
     Bitmap decodeLossslessInSize(String path, int needSize) {
@@ -139,9 +178,9 @@ public class BitmapUtil {
     /**
      * 解析出指定大小的图片 ，返回其Bitmap对象
      *
-     * @param path      String 图片，
-     * @param needSize 需要的size = w * h
-     * @param config    格式配置
+     * @param path     String 图片，
+     * @param needSize 需要的size = w * h, <= 0表示原始尺寸
+     * @param config   格式配置
      * @return Bitmap 路径下适应大小的图片
      */
     @Nullable
@@ -153,6 +192,9 @@ public class BitmapUtil {
 
         optsa.inJustDecodeBounds = false;
         /** 不同尺寸图片的缩放比例 */
+        if (needSize <= 0) {
+            needSize = (int) (height * width);
+        }
         optsa.inSampleSize = (int) Math.ceil(Math.sqrt(height * width / needSize));
         if (optsa.inSampleSize < 1) { // 如果小于1，系统会当成1，这里直接变成1，避免后面处理出问题
             optsa.inSampleSize = 1;
