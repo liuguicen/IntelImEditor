@@ -2,13 +2,13 @@ package com.mandi.intelimeditor.dialog;
 
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.mandi.intelimeditor.dialog.IBaseDialog;
 import com.mandi.intelimeditor.R;
 
 import org.jetbrains.annotations.Nullable;
-
 
 
 /**
@@ -18,8 +18,9 @@ import org.jetbrains.annotations.Nullable;
  * 描述：
  */
 public class LoadingDialog extends IBaseDialog {
-    private TextView tv;
+    private TextView tv, progressTv;
     private String loadingInfo = "";
+    private String progress = "";
     private static final String MSG_KEY = "loading";
 
     public static LoadingDialog newInstance(String loadingInfo) {
@@ -32,12 +33,21 @@ public class LoadingDialog extends IBaseDialog {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.loading_layout;
+        return R.layout.loading_ptu_layout;
     }
-
 
     public void setLoadingInfo(String loadingInfo) {
         this.loadingInfo = loadingInfo;
+        if (tv != null) {
+            tv.setText(loadingInfo);
+        }
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
+        if (progressTv != null) {
+            progressTv.setText(progress);
+        }
     }
 
     @Override
@@ -46,16 +56,14 @@ public class LoadingDialog extends IBaseDialog {
         if (getArguments() != null) {
             loadingInfo = getArguments().getString(MSG_KEY);
         }
-        if (loadingInfo == null || loadingInfo.length() == 0) {
-
-        }
     }
 
     @Override
     public void onActivityCreated(@androidx.annotation.Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getRootView() != null && !loadingInfo.isEmpty()) {
+        if (getRootView() != null && !TextUtils.isEmpty(loadingInfo)) {
             tv = getRootView().findViewById(R.id.progressTips);
+            progressTv = getRootView().findViewById(R.id.progressTv);
             tv.setText(loadingInfo);
         }
     }

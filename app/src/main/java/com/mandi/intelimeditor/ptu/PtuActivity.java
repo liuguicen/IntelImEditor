@@ -1,7 +1,6 @@
 package com.mandi.intelimeditor.ptu;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.mandi.intelimeditor.CertainLeaveDialog;
+import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.tencentAD.TxBannerAd;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.FullScreenVadManager;
@@ -44,7 +45,6 @@ import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.device.YearClass;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
-
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.ProgressCallback;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
@@ -56,6 +56,7 @@ import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.network.NetWorkState;
 import com.mandi.intelimeditor.ptu.common.DigController;
 import com.mandi.intelimeditor.ptu.common.DrawController;
+import com.mandi.intelimeditor.ptu.common.MainFunctionFragment;
 import com.mandi.intelimeditor.ptu.common.SecondFuncController;
 import com.mandi.intelimeditor.ptu.common.TietuController;
 import com.mandi.intelimeditor.ptu.common.TransferController;
@@ -88,14 +89,8 @@ import com.mandi.intelimeditor.ptu.view.PtuToolbar;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-
-import USeruse.tutorial.GuideDialog;
-
-import com.mandi.intelimeditor.ptu.common.MainFunctionFragment;
-
 import com.mandi.intelimeditor.user.useruse.tutorial.GuideData;
 import com.mandi.intelimeditor.user.useruse.tutorial.Tutorial;
-import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +103,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import USeruse.tutorial.GuideDialog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -243,7 +240,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * 加载进度相关
      */
     private LoadingDialog dialog;
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
 
     private RepealRedoListener repealRedoListener;
     private SaveSetInstance saveSetInstance;
@@ -1219,58 +1216,70 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         if (this.isStyle) {
             hidePtuNotice();
         }
+        LogUtil.d(TAG, "开始风格迁移功能");
         showProgress(0);
-
-        Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
-            if (LogUtil.debugStyleTransfer) {
-                LogUtil.d(TAG + "开始风格迁移");
-            }
+        if (obj instanceof String) {
+            //加载图片
+            AtomicReference<String> path = new AtomicReference<>((String) obj);
             // 判断是否是url并解析成路径
-            // 第一步，主要解析Bm
-            // 将路径解析成Bm
-            int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
-                    AllData.globalSettings.styleContentRatio)
-                    : AllData.globalSettings.maxSupportContentSize;
-            BitmapUtil.decodeFromObj(obj, emitter, decodeSize);
-            if (LogUtil.debugStyleTransfer) {
-                LogUtil.d(TAG + "风格迁移，解析bitmap完成");
-            }
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .map(bm -> {
-                    // 更新UI进度和图片
-                    runOnUiThread(() -> {
+            if (FileTool.urlType(path.get()).equals(FileTool.UrlType.URL)) {
+                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> {//异步任务
+                    if (!TextUtils.isEmpty(inner_path)) {
+                        path.set(inner_path);
+                        // 将路径解析成Bm
+                        int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
+                                AllData.globalSettings.styleContentRatio)
+                                : AllData.globalSettings.maxSupportContentSize;
+                        Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path.get(), decodeSize);
+//                        BitmapUtil.decodeFromObj(obj, emitter, decodeSize);
+                        //图片获取成功
                         showProgress(10);
-                        transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
-                    });
+                        transferFrag.onChosenBm(isStyle ? null : bitmap, isStyle ? bitmap : null);
+                        //开始风格迁移
+                        Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
+                            LogUtil.d(TAG, "开始风格迁移");
+                            if (bitmap != null) {
+                                Bitmap resultBm = realTransferTf(bitmap, isStyle);
+                                if (resultBm != null) {
+                                    // 第一步，主要解析Bm
+                                    emitter.onNext(resultBm);
+                                    return;
+                                }
+                            }
+                            emitter.onError(new Throwable("风格迁移失败，请稍后重试！"));
+                            emitter.onComplete();
+                        }).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new SimpleObserver<Bitmap>() {
+                                    @Override
+                                    public void onNext(@NonNull Bitmap bitmap) {
+                                        ptuSeeView.replaceSourceBm(bitmap);
+                                        dismissProgress();
+                                    }
 
-                    // 第二步，使用合适的尺寸迁移图片
-                    return realTransferTf(bm, isStyle);
-                    // return transferWithSuitSize(bm, transfer, isStyle);
-                }).subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<Bitmap>() {
-                    @Override
-                    public void onNext(@NonNull Bitmap bitmap) {
-                        ptuSeeView.replaceSourceBm(bitmap);
-                        dismissProgress();
+                                    @Override
+                                    public void onComplete() {
+                                        super.onComplete();
+                                        dismissProgress();
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        super.onError(e);
+                                        ToastUtils.show(e.getMessage());
+                                        dismissProgress();
+                                    }
+                                });
+                        if (LogUtil.debugStyleTransfer) {
+                            LogUtil.printMemoryInfo(TAG + "风格迁移，解析bitmap完成", PtuActivity.this);
+                        }
+                    } else {
+                        ToastUtils.show(R.string.load_tietu_failed);
                     }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        ToastUtils.show(e.getMessage());
-                        dismissProgress();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        super.onComplete();
-                        dismissProgress();
-                    }
                 });
-
+            }
+        }
     }
 
     @org.jetbrains.annotations.Nullable
@@ -1994,36 +2003,28 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @UiThread
     private void initProgress(String title, int max) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setCanceledOnTouchOutside(false); // 加载过程中不能取消
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setTitle(title);
-            if (max > 0) {
-                mProgressDialog.setMax(max);
-            } else {
-                mProgressDialog.setMax(100);
-            }
+        if (dialog == null) {
+            dialog = LoadingDialog.newInstance(title);
+            dialog.showIt(this);
             dismissLoading();
-            mProgressDialog.show();
+            dialog.showIt(this);
         }
     }
 
     private void showProgress(int progress) {
-        if (mProgressDialog == null) {
+        if (dialog == null) {
             initProgress(null, -1);
         }
-        if (!isDestroyed() && mProgressDialog.isShowing()) { // 可能已被其它地方取消显示，就不显示了
-            mProgressDialog.setProgress(progress);
+        if (!isDestroyed() && dialog.isShowing()) { // 可能已被其它地方取消显示，就不显示了
+            dialog.setProgress(progress + "");
         }
     }
 
     @Override
     public void setMax(int max) {
-        if (mProgressDialog != null) {
-            mProgressDialog.setMax(max);
-        }
+//        if (dialog != null) {
+//            dialog.setProgress(max + "");
+//        }
     }
 
     @Override
@@ -2032,8 +2033,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     private void dismissProgress() {
-        if (mProgressDialog != null && !isDestroyed()) {
-            mProgressDialog.dismiss();
+        if (dialog != null && !isDestroyed()) {
+            dialog.dismiss();
         }
     }
 
@@ -2099,4 +2100,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public String getBasePicPath() {
         return picPath;
     }
+
+
 }
