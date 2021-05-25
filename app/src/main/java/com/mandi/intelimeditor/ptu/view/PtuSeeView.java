@@ -221,7 +221,7 @@ public class PtuSeeView extends PicGestureView {
      * <p>获取当前何种的Ratio
      */
     public void setBitmapAndInit(String path, Rect totalBound) {
-        setBitmapAndInit(BitmapUtil.getLosslessBitmap(path), totalBound);
+        setBitmapAndInit(BitmapUtil.decodeLosslessBitmap(path), totalBound);
     }
 
     /**

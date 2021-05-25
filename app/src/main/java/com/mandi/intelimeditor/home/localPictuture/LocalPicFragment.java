@@ -164,7 +164,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
                 if (!isInMultiChoose) {
                     LocalGroupedItemData chosenItem = mPresenter.getCurrentPath(position);
                     List<String> currentPicPathList = mPresenter.getCurrentPicPathList();
-                    int min = Math.max(currentPicPathList.size(), 200);
+                    int min = Math.min(currentPicPathList.size(), 200);
                     currentPicPathList = currentPicPathList.subList(0, min);
                     chooseItem(chosenItem, PicResource.pathList2PicResList(currentPicPathList));
                 } else {

@@ -318,7 +318,7 @@ public class DeformationFragment extends BasePtuFragment {
 
     public static void addBigStep(StepData sd, PTuActivityInterface pTuActivityInterface) {
         PtuSeeView ptuSeeView = pTuActivityInterface.getPtuSeeView();
-        Bitmap bm = BitmapUtil.getLosslessBitmap(sd.picPath);
+        Bitmap bm = BitmapUtil.decodeLosslessBitmap(sd.picPath);
         ptuSeeView.post(() -> ptuSeeView.replaceSourceBm(bm));
     }
 

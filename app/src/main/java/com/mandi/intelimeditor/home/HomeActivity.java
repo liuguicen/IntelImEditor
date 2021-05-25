@@ -170,7 +170,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         mIsFromCreate = true;
         LogUtil.printMemoryInfo(TAG + "AC 启动", this);
 //测试代码不要提交
-//        test();
+       test();
     }
 
     /**
@@ -248,7 +248,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         if (isOnlyChoosePic()) return;
 //        switchFragment(TEMPLATE_FRAG_ID);
 
-        String thePath = Environment.getExternalStorageDirectory() + "/test.gif";
+        String thePath = Environment.getExternalStorageDirectory() + "/test1.jpg";
         PtuUtil.PTuIntentBuilder.build(this)
                 .setPicPath(thePath)
                 .putExtras(getIntent())

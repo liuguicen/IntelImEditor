@@ -17,6 +17,7 @@ buildscript {
 
         jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.0'
@@ -45,6 +46,12 @@ allprojects {
         maven { url 'https://dl.bintray.com/chaozhouzhang/maven' }
         // RangeSeekBar需要的
         maven { url 'https://jitpack.io' }
+        // tensorflow lite 需要的
+        mavenCentral()
+        maven {
+            name 'ossrh-snapshot'
+            url 'http://oss.sonatype.org/content/repositories/snapshots'
+        }
     }
 
 

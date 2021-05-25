@@ -81,6 +81,7 @@ import com.mandi.intelimeditor.ptu.tietu.TietuFragment;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.transfer.StyleTransfer;
 import com.mandi.intelimeditor.ptu.transfer.StyleTransferFragment;
+import com.mandi.intelimeditor.ptu.transfer.StyleTransferTf;
 import com.mandi.intelimeditor.ptu.view.PtuFrameLayout;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.ptu.view.PtuToolbar;
@@ -99,6 +100,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
 import org.pytorch.Tensor;
+import org.pytorch.torchvision.TensorImageUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -108,7 +110,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -266,7 +267,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private final ArrayList<String> useTagsList = new ArrayList<>();
     private TxBannerAd bannerAd;
     private PopupWindow pop;
-    private FloatBuffer contentTensor;
+    private FloatBuffer contentBuffer;
+    private FloatBuffer styleBuffer;
     private Tensor styleTensor;
     private Tensor contentFeature;
     private Bitmap styleBm;
@@ -1234,21 +1236,19 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 LogUtil.d(TAG + "风格迁移，解析bitmap完成");
             }
             emitter.onComplete();
-        }).map(bm -> {
-            // 更新UI进度和图片
-            runOnUiThread(() -> {
-                showProgress(10);
-                transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
-            });
+        }).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .map(bm -> {
+                    // 更新UI进度和图片
+                    runOnUiThread(() -> {
+                        showProgress(10);
+                        transferFrag.onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
+                    });
 
-            // 第二步，使用合适的尺寸迁移图片
-            StyleTransfer transfer = StyleTransfer.getInstance();
-            if (LogUtil.debugStyleTransfer) {
-                LogUtil.d(TAG + "创建风格迁移模型完成");
-            }
-            return transferWithSuitSize(bm, transfer, isStyle);
-        })
-                .subscribeOn(Schedulers.computation())
+                    // 第二步，使用合适的尺寸迁移图片
+                    return realTransferTf(bm, isStyle);
+                    // return transferWithSuitSize(bm, transfer, isStyle);
+                }).subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Bitmap>() {
                     @Override
@@ -1280,7 +1280,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         int testSize = 5;
         while (testSize > 0) { // 尝试找到合适的尺寸
             try {
-                rstBm = realTransfer(bm, transfer, isStyle);
+                // rstBm = realTransfer(bm, transfer, isStyle);
+                rstBm = realTransferTf(bm, isStyle);
                 runOnUiThread(() -> showProgress(90));
                 testSize = -1;
             } catch (Throwable e) {
@@ -1314,11 +1315,23 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         return rstBm;
     }
 
-    private Bitmap realTransfer(@NotNull Bitmap bm, StyleTransfer transfer, boolean isStyle) {
+    private Bitmap realTransferTf(@NotNull Bitmap bm, boolean isStyle) {
+        if (isStyle) {
+            styleBm = bm;
+        } else {
+            repealRedoManager.setBaseBm(bm);
+        }
         Bitmap contentBm = repealRedoManager.getBaseBitmap();
+        return StyleTransferTf.getInstance().transfer(contentBm, styleBm, this);
+    }
+
+
+    private Bitmap realTransfer(@NotNull Bitmap bm, boolean isStyle) {
+        Bitmap contentBm = repealRedoManager.getBaseBitmap();
+        StyleTransfer transfer = StyleTransfer.getInstance();
         Log.d(TAG, "realTransfer: 开始运行风格迁移算法");
         if (!isStyle) {
-            contentFeature = transfer.getVggFeature(bm);
+            // contentFeature = transfer.getVggFeature(bm);
             runOnUiThread(() -> showProgress(33));
             if (LogUtil.debugStyleTransfer) {
                 Log.e(TAG, "内容图片通过VGG完成, size = " + bm.getWidth() + " * " + bm.getHeight());
@@ -1328,7 +1341,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             // 风格特征不存在，或者风格特征大小不够
             if (styleBm != null && (styleFeature == null || styleBm.getByteCount() <
                     contentBm.getByteCount() * AllData.globalSettings.styleContentRatio)) {
-                styleFeature = transfer.getVggFeature(styleBm);
+                // styleFeature = transfer.getVggFeature(styleBm);
                 if (LogUtil.debugStyleTransfer) {
                     Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
                     // LogUtil.printMemoryInfo(TAG + "风格图片通过vgg完成", PtuActivity.this);
@@ -1336,28 +1349,63 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 runOnUiThread(() -> showProgress(66));
             }
         } else {
-            if (contentBm != null && contentFeature == null) {
-                contentFeature = transfer.getVggFeature(contentBm);
-                if (LogUtil.debugStyleTransfer) {
-                    Log.e(TAG, "内容图片通过vgg, size = " + contentBm.getWidth()
-                            + " * " + contentBm.getHeight());
-                    // LogUtil.printMemoryInfo(TAG + "内容图片通过vgg完成", PtuActivity.this);
-                }
-                runOnUiThread(() -> showProgress(33));
+            // if (contentBm != null && contentFeature == null) {
+            int cw = contentBm.getWidth();
+            int ch = contentBm.getHeight();
+            if (contentBuffer == null) {
+                contentBuffer = ByteBuffer.allocateDirect(3 * cw * ch * 4)
+                        .order(ByteOrder.nativeOrder())
+                        .asFloatBuffer();
+                Log.e(TAG, "realTransfer: 创建内容buffer完成");
             }
+            Log.e(TAG, "内容bm放入floabuffer");
+            StyleTransfer.bitmapToFloatBuffer(contentBm, 0, 0, cw, ch, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
+                    TensorImageUtils.TORCHVISION_NORM_STD_RGB, contentBuffer, 0);
+            Log.e(TAG, "内容buffer创建tensor");
+            Tensor contentTensor = Tensor.fromBlob(contentBuffer, new long[]{1, 3, ch, cw});
+            Log.e(TAG, "内容buffer创建tensor完成");
+            contentFeature = transfer.getVggFeature(contentTensor);
+            if (LogUtil.debugStyleTransfer) {
+                Log.e(TAG, "内容图片通过vgg, size = " + cw
+                        + " * " + contentBm.getHeight());
+                // LogUtil.printMemoryInfo(TAG + "内容图片通过vgg完成", PtuActivity.this);
+            }
+            runOnUiThread(() -> showProgress(33));
+            // }
             // 比例不对的
             styleBm = bm;
             if (styleBm.getByteCount() < contentBm.getByteCount() * AllData.globalSettings.styleContentRatio) {
                 styleBm = Bitmap.createScaledBitmap(styleBm, styleBm.getWidth(), styleBm.getHeight(), true);
             }
-            PtuActivity.this.styleFeature = transfer.getVggFeature(styleBm);
+
+            int sw = styleBm.getWidth();
+            int sh = styleBm.getHeight();
+            if (styleBuffer == null) {
+                styleBuffer = ByteBuffer.allocateDirect(3 * sw * sh * 4)
+                        .order(ByteOrder.nativeOrder())
+                        .asFloatBuffer();
+                Log.e(TAG, "realTransfer: 创建风格buffer");
+            }
+            Log.e(TAG, "风格bm放入floabuffer");
+            StyleTransfer.bitmapToFloatBuffer(styleBm, 0, 0, sw, sh, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
+                    TensorImageUtils.TORCHVISION_NORM_STD_RGB, styleBuffer, 0);
+            Log.e(TAG, "风格buffer创建tensor");
+            Tensor styleTensor = Tensor.fromBlob(styleBuffer, new long[]{1, 3, sh, sw});
+            Log.e(TAG, "风格buffer创建tensor完成");
+            PtuActivity.this.styleFeature = transfer.getVggFeature(styleTensor);
+
             if (LogUtil.debugStyleTransfer) {
                 Log.e(TAG, "风格图片通过vgg, size = " + styleBm.getWidth() + " * " + styleBm.getHeight());
-                LogUtil.printMemoryInfo(TAG + "风格图片通过vgg完成", PtuActivity.this);
             }
             runOnUiThread(() -> showProgress(66));
         }
         Bitmap res = transfer.transfer(contentFeature, styleFeature, 1f);
+        // Buffer不能回收，出问题
+        // contentBuffer.clear();
+        // styleBuffer.clear();
+        // contentBuffer = null;
+        // styleBuffer = null;
+        System.gc();
         if (LogUtil.debugStyleTransfer) {
             LogUtil.d(TAG + "风格迁移完成 ");
         }

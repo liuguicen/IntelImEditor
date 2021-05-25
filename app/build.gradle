@@ -353,6 +353,10 @@ dependencies {
 
 
 
+    def tfl_version = "0.0.0-nightly-SNAPSHOT"
+    implementation("org.tensorflow:tensorflow-lite:${tfl_version}") { changing = true }
+    implementation("org.tensorflow:tensorflow-lite-gpu:${tfl_version}") { changing = true }
+
     // 机器学习相关
     // pytorch 还是不行 它运行了之后不释放内存，不管是创建tensor还是forward之后
     implementation 'org.pytorch:pytorch_android:1.8.0'

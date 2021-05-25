@@ -35,6 +35,13 @@ public class StyleTransfer {
     private Module decoder = null;
     private Context context;
 
+    public void clear() {
+        vgg_encoder.destroy();
+        vgg_encoder = null;
+        decoder.destroy();
+        decoder = null;
+    }
+
     private static class InnerClass {
         private static StyleTransfer staticInnerClass = new StyleTransfer(IntelImEditApplication.appContext);
 
@@ -55,23 +62,69 @@ public class StyleTransfer {
         }
     }
 
+    /**
+     * Writes tensor content from specified {@link android.graphics.Bitmap}, normalized with specified
+     * in parameters mean and std to specified {@link java.nio.FloatBuffer} with specified offset.
+     *
+     * @param bitmap      {@link android.graphics.Bitmap} as a source for Tensor data
+     * @param x           - x coordinate of top left corner of bitmap's area
+     * @param y           - y coordinate of top left corner of bitmap's area
+     * @param width       - width of bitmap's area
+     * @param height      - height of bitmap's area
+     * @param normMeanRGB means for RGB channels normalization, length must equal 3, RGB order
+     * @param normStdRGB  standard deviation for RGB channels normalization, length must equal 3, RGB
+     *                    order
+     */
+    public static void bitmapToFloatBuffer(
+            final Bitmap bitmap,
+            final int x,
+            final int y,
+            final int width,
+            final int height,
+            final float[] normMeanRGB,
+            final float[] normStdRGB,
+            final FloatBuffer outBuffer,
+            final int outBufferOffset) {
+
+        final int pixelsCount = height * width;
+        final int[] pixels = new int[pixelsCount];
+        bitmap.getPixels(pixels, 0, width, x, y, width, height);
+        final int offset_g = pixelsCount;
+        final int offset_b = 2 * pixelsCount;
+        for (int i = 0; i < pixelsCount; i++) {
+            final int c = pixels[i];
+            float r = (((c >> 16) & 0xff) / 255.0f - normMeanRGB[0]) / normStdRGB[0];
+            float g = (((c >> 8) & 0xff) / 255.0f - normMeanRGB[1]) / normStdRGB[1];
+            float b = (((c) & 0xff) / 255.0f - normMeanRGB[2]) / normStdRGB[2];
+            // 这里会出现栈溢出stackoverflow 大图会出现，小图分配floatbuffer，然后置空，然后再分配一个，也会出现
+            // 如果floatbuffer是通过直接分配allocatedirect得到的，似乎不会出现
+            // 综上，原因是直接分配的内存过大所致？？
+            outBuffer.put(outBufferOffset + i, r)
+                    .put(outBufferOffset + offset_g + i, g)
+                    .put(outBufferOffset + offset_b + i, b);
+            if (i % 1000 == 0) {
+                Log.e(TAG, "bitmapToFloatBuffer: " + i);
+            }
+        }
+    }
 
     // 规律：1、  floatBuffer = ByteBuffer.allocateDirect分配buff，buff会增加内存，然后利用buff创建tensor，还会增加内存，增加量比buff增加了多一点
-    //      2、  多次使用同一个floatBuffer创建不同的tensor 仍然会增加内存，但是垃圾回收器可以将内存回收掉
+    //      2、  多次使用同一个floatBuffer创建不同的tensor 仍然会增加内存，但是若干次之后垃圾回收器可以将内存回收掉
+    //      3、  第2个条件，但是传入模型之后，就又不回收了
 
-    public Tensor getVggFeature(Bitmap bm) {
+    public Tensor getVggFeature(Tensor tensor) {
         Tensor feature = null;
         try {
             long time = System.currentTimeMillis();
-            final Tensor tensor = TensorImageUtils.bitmapToFloat32Tensor(bm,
-                    TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
+            // final Tensor tensor = TensorImageUtils.bitmapToFloat32Tensor(bm,
+            //         TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB);
             if (LogUtil.debugStyleTransfer) {
                 Log.d(TAG, "准备bm转换tensor");
             }
             feature = vgg_encoder.forward(IValue.from(tensor)).toTensor();
             if (LogUtil.debugStyleTransfer) {
                 Log.d(TAG, "获取特征时间 = " + (System.currentTimeMillis() - time));
-                LogUtil.printMemoryInfo(TAG  + " 通过Vgg完成", context);
+                LogUtil.printMemoryInfo(TAG + " 通过Vgg完成", context);
             }
         } catch (Exception e) {
             Log.d(TAG, "模型获取VGG特征失败" + e.getMessage());

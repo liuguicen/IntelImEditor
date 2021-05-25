@@ -73,7 +73,6 @@ import com.mandi.intelimeditor.ptu.rendpic.RendDrawDate;
 import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
 import com.mandi.intelimeditor.ptu.repealRedo.TietuStepData;
-import com.mandi.intelimeditor.ptu.saveAndShare.PTuResultData;
 import com.mandi.intelimeditor.ptu.threeLevelFunction.ThreeLevelToolUtil;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResourceDownloader;
@@ -576,7 +575,7 @@ public class TietuFragment extends BasePtuFragment {
         Iterator<TietuStepData.OneTietu> iterator = ttsd.iterator();
         while (iterator.hasNext()) {
             TietuStepData.OneTietu oneTietu = iterator.next();
-            Bitmap tietuBm = BitmapUtil.getLosslessBitmap(oneTietu.getPicPath());
+            Bitmap tietuBm = BitmapUtil.decodeLosslessBitmap(oneTietu.getPicPath());
             Log.e(TAG, "addBigStep: 重做贴图" + tietuBm);
             PtuUtil.addBm2Canvas(ptuSeeView.getSourceCanvas(), tietuBm, oneTietu.getBoundRectInPic(), oneTietu.getRotateAngle());
         }

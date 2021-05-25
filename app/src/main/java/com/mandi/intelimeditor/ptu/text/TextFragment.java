@@ -446,7 +446,7 @@ public class TextFragment extends BasePtuFragment {
     }
 
     public static void addBigStep(StepData sd, PTuActivityInterface pTuActivityInterface) {
-        addBigStep((TextStepData) sd, sd.picPath == null ? null : BitmapUtil.getLosslessBitmap(sd.picPath), pTuActivityInterface);
+        addBigStep((TextStepData) sd, sd.picPath == null ? null : BitmapUtil.decodeLosslessBitmap(sd.picPath), pTuActivityInterface);
     }
 
     /**

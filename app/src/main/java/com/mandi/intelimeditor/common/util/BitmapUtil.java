@@ -24,6 +24,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.bumptech.glide.Glide;
@@ -43,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -93,28 +95,33 @@ public class BitmapUtil {
 
     // TODO: 2021/5/23 这个方法可以和其它地方类似方法的合并优化
     /**
+     * 注意，不能在主线程调用
      * @param decodeSize {@link #decodeLossslessInSize(String, int)}
      * @param emitter    不会调用onComplete();
      */
+    @WorkerThread
     public static void decodeFromObj(Object obj, ObservableEmitter<Bitmap> emitter, int decodeSize) {
         if (obj instanceof Bitmap) {
             emitter.onNext((Bitmap) obj);
         } else if (obj instanceof String) {
             String path = (String) obj;
             if (FileTool.urlType(path).equals(FileTool.UrlType.URL)) { // 如果是URL
-                BitmapUtil.getBmPathInGlide(obj, (inner_path, msg) -> { // 异步任务,不能合并到后面
-                    if (!TextUtils.isEmpty(inner_path)) {
-                        Bitmap bitmap = BitmapUtil.decodeLossslessInSize(inner_path, decodeSize);
-                        if (bitmap != null) {
-                            emitter.onNext(bitmap);
-                        } else {
-                            emitter.onError(new Throwable("从url解析图片错误"));
-                        }
+                FutureTarget<File> future = Glide.with(IntelImEditApplication.appContext)
+                        .asFile()
+                        .load(obj)
+                        .submit();
+                try {
+                    String inner_path = future.get().getAbsolutePath();
+                    Bitmap bitmap = BitmapUtil.decodeLossslessInSize(inner_path, decodeSize);
+                    if (bitmap != null) {
+                        emitter.onNext(bitmap);
                     } else {
-                        ToastUtils.show(R.string.load_tietu_failed);
-                        emitter.onError(new Exception(""));
+                        emitter.onError(new Throwable("从url解析图片错误"));
                     }
-                });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    emitter.onError(new Exception(""));
+                }
             } else { // 正常路径
                 Bitmap bitmap = BitmapUtil.decodeLossslessInSize(path, decodeSize);
                 if (bitmap != null) {
@@ -224,14 +231,14 @@ public class BitmapUtil {
      * 将整个图片获取出来，不损失精度
      */
     public static @Nullable
-    Bitmap getLosslessBitmap(String path) {
+    Bitmap decodeLosslessBitmap(String path) {
         BitmapFactory.Options optsa = getLosslessOptions();
         int degree = getSrcBmRotateDegree(path);  // 有些图片有旋转角度，必须转过来
         return decodeBitmap(path, optsa, degree);
     }
 
     public static @Nullable
-    Bitmap getLosslessBitmap(String path, int degree) {
+    Bitmap decodeLosslessBitmap(String path, int degree) {
         BitmapFactory.Options optsa = getLosslessOptions();
         return decodeBitmap(path, optsa, degree);
     }

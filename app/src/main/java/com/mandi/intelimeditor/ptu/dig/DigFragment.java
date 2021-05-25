@@ -281,7 +281,7 @@ public class DigFragment extends BasePtuFragment {
         PtuSeeView ptuSeeView = pTuActivityInterface.getPtuSeeView();
         Bitmap bitmap = AllData.getPTuBmPool().get(sd.picPath);
         if (bitmap == null) {
-            bitmap = BitmapUtil.getLosslessBitmap(sd.picPath);
+            bitmap = BitmapUtil.decodeLosslessBitmap(sd.picPath);
         }
         Bitmap finalBitmap = bitmap;
         ptuSeeView.post(() -> ptuSeeView.replaceSourceBm(finalBitmap));
