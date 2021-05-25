@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -36,8 +35,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.FullScreenVadManager;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.TTRewardVadManager;
+import com.mandi.intelimeditor.bean.PicInfoEvent;
 import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.common.CommonConstant;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
@@ -47,15 +48,16 @@ import com.mandi.intelimeditor.common.appInfo.TheUserUtil;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.FileTool;
-
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.TimeDateUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.dialog.LoadingDialog;
+import com.mandi.intelimeditor.dialog.LoginDialog;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.home.localPictuture.LocalPicFragment;
+import com.mandi.intelimeditor.home.search.SearchActivity;
 import com.mandi.intelimeditor.home.tietuChoose.PicResourcesFragment;
 import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.PtuUtil;
@@ -70,11 +72,6 @@ import com.mandi.intelimeditor.user.userSetting.SettingActivity;
 import com.mandi.intelimeditor.user.userVip.OpenVipActivity;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.user.useruse.tutorial.HelpActivity;
-import com.mandi.intelimeditor.bean.PicInfoEvent;
-import com.mandi.intelimeditor.dialog.LoginDialog;
-import com.mandi.intelimeditor.home.search.SearchActivity;
-import com.mandi.intelimeditor.R;
-
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -170,7 +167,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         mIsFromCreate = true;
         LogUtil.printMemoryInfo(TAG + "AC 启动", this);
 //测试代码不要提交
-       test();
+//       test();
     }
 
     /**

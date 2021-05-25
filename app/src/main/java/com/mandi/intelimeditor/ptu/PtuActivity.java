@@ -1,7 +1,6 @@
 package com.mandi.intelimeditor.ptu;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
 import com.mandi.intelimeditor.CertainLeaveDialog;
+import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.tencentAD.TxBannerAd;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.FullScreenVadManager;
@@ -56,6 +57,7 @@ import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.network.NetWorkState;
 import com.mandi.intelimeditor.ptu.common.DigController;
 import com.mandi.intelimeditor.ptu.common.DrawController;
+import com.mandi.intelimeditor.ptu.common.MainFunctionFragment;
 import com.mandi.intelimeditor.ptu.common.SecondFuncController;
 import com.mandi.intelimeditor.ptu.common.TietuController;
 import com.mandi.intelimeditor.ptu.common.TransferController;
@@ -88,14 +90,8 @@ import com.mandi.intelimeditor.ptu.view.PtuToolbar;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userVip.VipUtil;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
-
-import USeruse.tutorial.GuideDialog;
-
-import com.mandi.intelimeditor.ptu.common.MainFunctionFragment;
-
 import com.mandi.intelimeditor.user.useruse.tutorial.GuideData;
 import com.mandi.intelimeditor.user.useruse.tutorial.Tutorial;
-import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
@@ -109,6 +105,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import USeruse.tutorial.GuideDialog;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -243,7 +240,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * 加载进度相关
      */
     private LoadingDialog dialog;
-    private ProgressDialog mProgressDialog;
+//    private ProgressDialog mProgressDialog;
 
     private RepealRedoListener repealRedoListener;
     private SaveSetInstance saveSetInstance;
@@ -1794,28 +1791,20 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @UiThread
     private void initProgress(String title, int max) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setCanceledOnTouchOutside(false); // 加载过程中不能取消
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setTitle(title);
-            if (max > 0) {
-                mProgressDialog.setMax(max);
-            } else {
-                mProgressDialog.setMax(100);
-            }
+        if (dialog == null) {
+            dialog = LoadingDialog.newInstance(title);
+            dialog.showIt(this);
             dismissLoading();
-            mProgressDialog.show();
+            dialog.showIt(this);
         }
     }
 
     public void showProgress(int progress) {
-        if (mProgressDialog == null) {
+        if (dialog == null) {
             initProgress(null, -1);
         }
-        if (!isDestroyed() && mProgressDialog.isShowing()) { // 可能已被其它地方取消显示，就不显示了
-            mProgressDialog.setProgress(progress);
+        if (!isDestroyed() && dialog.isShowing()) { // 可能已被其它地方取消显示，就不显示了
+            dialog.setProgress(progress + "");
         }
     }
 
@@ -1826,9 +1815,9 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @Override
     public void setMax(int max) {
-        if (mProgressDialog != null) {
-            mProgressDialog.setMax(max);
-        }
+//        if (dialog != null) {
+//            dialog.setProgress(max + "");
+//        }
     }
 
     @Override
@@ -1837,8 +1826,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     public void dismissProgress() {
-        if (mProgressDialog != null && !isDestroyed()) {
-            mProgressDialog.dismiss();
+        if (dialog != null && !isDestroyed()) {
+            dialog.dismiss();
         }
     }
 
