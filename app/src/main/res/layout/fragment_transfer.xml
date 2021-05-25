@@ -7,14 +7,25 @@
     android:orientation="vertical">
 
     <com.mandi.intelimeditor.home.view.BottomFunctionView
-        android:id="@+id/choose_pic"
+        android:id="@+id/choose_model"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:bfv_icon="@drawable/round_photo_library"
+        app:bfv_title="@string/choose_model"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/choose_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.mandi.intelimeditor.home.view.BottomFunctionView
+        android:id="@+id/choose_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:bfv_icon="@drawable/round_photo_library"
         app:bfv_title="@string/choose_pic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/choose_style"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/choose_model"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.mandi.intelimeditor.home.view.BottomFunctionView
@@ -25,7 +36,7 @@
         app:bfv_title="@string/choose_style"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/go_ptu"
-        app:layout_constraintStart_toEndOf="@+id/choose_pic"
+        app:layout_constraintStart_toEndOf="@+id/choose_content"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.mandi.intelimeditor.home.view.BottomFunctionView

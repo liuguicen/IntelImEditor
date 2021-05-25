@@ -134,6 +134,7 @@ public class StyleTransfer {
     }
 
     public Bitmap transfer(Tensor contentFeature, Tensor styleFeature, float alpha) {
+        Log.d(TAG, "start transfer adain models");
         // 执行adain
         // Tensor res = adain.forward(IValue.from(cFeature), IValue.from(sFeature)).toTensor();
         long time = System.currentTimeMillis();

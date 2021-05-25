@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.mandi.intelimeditor.ptu.common.SecondFuncController;
 import com.mandi.intelimeditor.ptu.gif.GifManager;
+import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,8 +52,6 @@ public interface PTuActivityInterface {
 
     void showGuideDialog(List<String> keyWord);
 
-    void transfer(Object obj, boolean isStyle);
-
     /**
      * 收集用户使用过的tag，用于推荐P图素材
      *
@@ -61,4 +60,12 @@ public interface PTuActivityInterface {
     void addUsedTags(boolean isTemplate, String resTags);
 
     String getBasePicPath();
+
+    void hidePtuNotice();
+
+    void showProgress(int progress);
+
+    RepealRedoManager getRepealRedoRManager();
+
+    void dismissProgress();
 }

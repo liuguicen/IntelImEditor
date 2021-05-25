@@ -87,7 +87,7 @@ public class StyleTransferTf {
 
     public Bitmap transfer(Bitmap cBm, Bitmap sBm, Context context) {
         try {
-            Log.i(TAG, "running models");
+            Log.d(TAG, "start transfer google models");
 
             LogUtil.recordTime();
             // 风格和内容图像变成ByteBuffer
