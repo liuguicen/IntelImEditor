@@ -77,7 +77,7 @@ class ImageMaterialAdapter :
         }
         //刷新列表数据，修复友盟bug
 //        notifyDataSetChanged()
-        setNewInstance(groupedList)
+        setList(groupedList)
     }
 
     fun setList(list: List<PicResource>) {
@@ -96,7 +96,8 @@ class ImageMaterialAdapter :
                 )
             }
         }
-        setNewInstance(groupedList)
+        setList(groupedList)
+//        setNewInstance(groupedList)
         //刷新列表数据，修复友盟bug
 //        notifyDataSetChanged()
     }

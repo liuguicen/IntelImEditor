@@ -84,8 +84,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class StyleTransferFragment extends BasePtuFragment {
-    public static final String ALL_STYLE = "all_style";
-    public static final String ALL_PIC = "all_pic";
+    public static final String ALL = "all";
     private String TAG = "DrawFragment";
     public static final int EDIT_MODE = PtuUtil.EDIT_DRAW;
     private Context mContext;
@@ -112,6 +111,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     private Bitmap styleBm;
     private Tensor styleFeature;
     private boolean isStyle;
+    private boolean isFirstTransfer = true;
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
@@ -168,7 +168,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         choosePicBtn = rootView.findViewById(R.id.choose_content);
         choosePicBtn.setOnClickListener(v -> {
             if (!isChooseStyleMode && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
-                chooseFromAllPic();
+                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
             } else {
                 US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
                 isChooseStyleMode = false;
@@ -176,13 +176,11 @@ public class StyleTransferFragment extends BasePtuFragment {
             }
         });
         BottomFunctionView chooseModel = rootView.findViewById(R.id.choose_model);
-        chooseModel.setOnClickListener(v -> {
-            showChooseModel(v);
-        });
+        chooseModel.setOnClickListener(this::showChooseModel);
 
         chooseStyleBtn.setOnClickListener(v -> {
             if (isChooseStyleMode && chooseRcv.getParent() != null) {
-                chooseFromAllPic();
+                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
             } else {
                 US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
                 isChooseStyleMode = true;
@@ -346,13 +344,20 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     }
 
-    private Bitmap realTransferTf(@NotNull Bitmap bm, boolean isStyle) {
-        if (isStyle) {
+    private Bitmap realTransferTf(@NotNull Bitmap bm, boolean isChangeStyle) {
+        if (isChangeStyle) {
             styleBm = bm;
         } else {
             pTuActivityInterface.getRepealRedoRManager().setBaseBm(bm);
         }
         Bitmap contentBm = pTuActivityInterface.getRepealRedoRManager().getBaseBitmap();
+        if (!isFirstTransfer) { // 不是第一次，转换器中已经保存了上一次的数据
+            if (isChangeStyle) {
+                contentBm = null;
+            } else {
+                styleBm = null;
+            }
+        }
         return StyleTransferTf.getInstance().transfer(contentBm, styleBm, getActivity());
     }
 
@@ -532,7 +537,6 @@ public class StyleTransferFragment extends BasePtuFragment {
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
             layoutParams.bottomToTop = R.id.fragment_main_function;
             layoutParams.setMargins(0, 0, 0, Util.dp2Px(4f));
-            chooseRcv.setTag(PtuConstraintLayout.TAG_TIETU_RCV);
             ptuFrameLayout.addView(chooseRcv, layoutParams);
             if (chooseRcv.getItemDecorationCount() == 0) {
                 chooseRcv.addItemDecoration(new ImageDecoration(getActivity()));
@@ -612,7 +616,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     private void showStyleOrContenList(List<PicResource> list) {
         if (list == null) list = new ArrayList<>();
         chooseListAdapter.setList(list);
-        chooseListAdapter.add(0, PicResource.path2PicResource(ALL_STYLE));
+        chooseListAdapter.add(0, PicResource.path2PicResource(ALL));
     }
 
     private void onNoStylePic() {

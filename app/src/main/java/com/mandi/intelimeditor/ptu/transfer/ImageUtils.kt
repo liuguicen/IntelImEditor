@@ -17,117 +17,112 @@
 package com.mandi.intelimeditor.ptu.transfer
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.RectF
-import androidx.exifinterface.media.ExifInterface
-import java.io.File
+import android.graphics.*
+import com.mandi.intelimeditor.common.util.BitmapUtil
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.math.roundToInt
 
 /**
  * Collection of image reading and manipulation utilities in the form of static functions.
  * TODO: this class should be moved to the common code in the future
  */
 abstract class ImageUtils {
-  companion object {
-    fun scaleBitmapAndKeepRatio(
-      targetBmp: Bitmap,
-      reqHeightInPixels: Int,
-      reqWidthInPixels: Int
-    ): Bitmap {
-      if (targetBmp.height == reqHeightInPixels && targetBmp.width == reqWidthInPixels) {
-        return targetBmp
-      }
-      val matrix = Matrix()
-      matrix.setRectToRect(
-        RectF(
-          0f, 0f,
-          targetBmp.width.toFloat(),
-          targetBmp.height.toFloat()
-        ),
-        RectF(
-          0f, 0f,
-          reqWidthInPixels.toFloat(),
-          reqHeightInPixels.toFloat()
-        ),
-        Matrix.ScaleToFit.FILL
-      )
-      return Bitmap.createBitmap(
-        targetBmp, 0, 0,
-        targetBmp.width,
-        targetBmp.height, matrix, true
-      )
-    }
+    companion object {
+        fun drawInBm(
+            src: Bitmap,
+            canvas: Canvas
+        ): Rect {
+            canvas.drawColor(Color.BLACK)
+            var dstWidth = canvas.width;
+            var dstHeight = canvas.height;
+            if (src.width < src.height) { // 高度较长，以高度为准缩放
+                dstWidth = (src.width * (1f * dstHeight / src.height)).roundToInt()
+            } else {
+                dstHeight = (src.height * (1f * dstWidth / src.width)).roundToInt()
+            }
+            var startW = (canvas.width - dstWidth) / 2
+            var startH = (canvas.height - dstHeight) / 2
 
-    fun bitmapToByteBuffer(
-      bitmapIn: Bitmap,
-      width: Int,
-      height: Int,
-      mean: Float = 0.0f,
-      std: Float = 255.0f
-    ): ByteBuffer {
-      val bitmap = scaleBitmapAndKeepRatio(bitmapIn, width, height)
-      val inputImage = ByteBuffer.allocateDirect(1 * width * height * 3 * 4)
-      inputImage.order(ByteOrder.nativeOrder())
-      inputImage.rewind()
-
-      val intValues = IntArray(width * height)
-      bitmap.getPixels(intValues, 0, width, 0, 0, width, height)
-      var pixel = 0
-      for (y in 0 until height) {
-        for (x in 0 until width) {
-          val value = intValues[pixel++]
-
-          // Normalize channel values to [-1.0, 1.0]. This requirement varies by
-          // model. For example, some models might require values to be normalized
-          // to the range [0.0, 1.0] instead.
-          inputImage.putFloat(((value shr 16 and 0xFF) - mean) / std)
-          inputImage.putFloat(((value shr 8 and 0xFF) - mean) / std)
-          inputImage.putFloat(((value and 0xFF) - mean) / std)
+            var dstRect = Rect(startW, startH, startW + dstWidth, startH + dstHeight)
+            canvas.drawBitmap(
+                src,
+                null,
+                dstRect,
+                BitmapUtil.getBitmapPaint()
+            )
+            return dstRect
         }
-      }
 
-      inputImage.rewind()
-      return inputImage
-    }
+        fun bitmapToByteBuffer(
+            bitmapIn: Bitmap,
+            mean: Float = 0.0f,
+            std: Float = 255.0f
+        ): ByteBuffer {
 
-    fun createEmptyBitmap(imageWidth: Int, imageHeigth: Int, color: Int = 0): Bitmap {
-      val ret = Bitmap.createBitmap(imageWidth, imageHeigth, Bitmap.Config.RGB_565)
-      if (color != 0) {
-        ret.eraseColor(color)
-      }
-      return ret
-    }
+            var width = bitmapIn.width
+            var height = bitmapIn.height
+            val inputImage = ByteBuffer.allocateDirect(1 * width * height * 3 * 4)
+            inputImage.order(ByteOrder.nativeOrder())
+            inputImage.rewind()
 
-    fun loadBitmapFromResources(context: Context, path: String): Bitmap {
-      val inputStream = context.assets.open(path)
-      return BitmapFactory.decodeStream(inputStream)
-    }
+            val intValues = IntArray(width * height)
+            bitmapIn.getPixels(intValues, 0, width, 0, 0, width, height)
+            var pixel = 0
+            for (y in 0 until height) {
+                for (x in 0 until width) {
+                    val value = intValues[pixel++]
 
-    fun convertArrayToBitmap(
-      imageArray: Array<Array<Array<FloatArray>>>,
-      imageWidth: Int,
-      imageHeight: Int
-    ): Bitmap {
-      val conf = Bitmap.Config.ARGB_8888 // see other conf types
-      val styledImage = Bitmap.createBitmap(imageWidth, imageHeight, conf)
+                    // Normalize channel values to [-1.0, 1.0]. This requirement varies by
+                    // model. For example, some models might require values to be normalized
+                    // to the range [0.0, 1.0] instead.
+                    inputImage.putFloat(((value shr 16 and 0xFF) - mean) / std)
+                    inputImage.putFloat(((value shr 8 and 0xFF) - mean) / std)
+                    inputImage.putFloat(((value and 0xFF) - mean) / std)
+                }
+            }
 
-      for (x in imageArray[0].indices) {
-        for (y in imageArray[0][0].indices) {
-          val color = Color.rgb(
-            ((imageArray[0][x][y][0] * 255).toInt()),
-            ((imageArray[0][x][y][1] * 255).toInt()),
-            (imageArray[0][x][y][2] * 255).toInt()
-          )
-
-          // this y, x is in the correct order!!!
-          styledImage.setPixel(y, x, color)
+            inputImage.rewind()
+            return inputImage
         }
-      }
-      return styledImage
+
+        fun createEmptyBitmap(imageWidth: Int, imageHeigth: Int, color: Int = 0): Bitmap {
+            val ret = Bitmap.createBitmap(imageWidth, imageHeigth, Bitmap.Config.RGB_565)
+            if (color != 0) {
+                ret.eraseColor(color)
+            }
+            return ret
+        }
+
+        fun loadBitmapFromResources(context: Context, path: String): Bitmap {
+            val inputStream = context.assets.open(path)
+            return BitmapFactory.decodeStream(inputStream)
+        }
+
+        fun convertArrayToBitmap(
+            imageArray: Array<Array<Array<FloatArray>>>,
+            bmRange: Rect
+        ): Bitmap {
+            val conf = Bitmap.Config.ARGB_8888 // see other conf types
+            val styledImage = Bitmap.createBitmap(bmRange.width(), bmRange.height(), conf)
+
+            for (x in imageArray[0].indices) { // x 表示高
+                for (y in imageArray[0][0].indices) { // y 表示宽
+                    if (y < bmRange.left || y >= bmRange.right || x <= bmRange.top || x >= bmRange.bottom)
+                    // 不在bm范围内的点
+                        continue;
+
+                    val color = Color.rgb(
+                        ((imageArray[0][x][y][0] * 255).toInt()),
+                        ((imageArray[0][x][y][1] * 255).toInt()),
+                        (imageArray[0][x][y][2] * 255).toInt()
+                    )
+
+                    // this y, x is in the correct order!!!
+                    styledImage.setPixel(y - bmRange.left, x - bmRange.top, color)
+                }
+            }
+            return styledImage
+        }
     }
-  }
 }

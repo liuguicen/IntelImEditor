@@ -3,6 +3,8 @@ package com.mandi.intelimeditor.ptu.transfer;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
@@ -20,6 +22,12 @@ import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 关于参数，
+ * 测试结果
+ * 线程数量 numberTreads, 对cpu模式有较大影响，测试小米11 8核心 耗时 2 < 1 < 4 < 8
+ * 对GPU模式没有影响，
+ */
 public class StyleTransferTf {
     static final String TAG = "StyleTransferTf";
     private static final int CONTENT_IMAGE_SIZE = 384;
@@ -28,6 +36,7 @@ public class StyleTransferTf {
     private final String STYLE_TRANSFER_INT8_MODEL = "style_transfer_quantized_384.tflite";
     private final String STYLE_PREDICT_FLOAT16_MODEL = "style_predict_f16_256.tflite";
     private final String STYLE_TRANSFER_FLOAT16_MODEL = "style_transfer_f16_384.tflite";
+    private Bitmap sConvertBm;
 
 
     private Context context;
@@ -35,7 +44,17 @@ public class StyleTransferTf {
     Interpreter interpreterPredict;
     Interpreter interpreterTransform;
     private boolean useGPU = true;
-    private int numberThreads;
+    private int numberThreads = 2;
+
+    /**
+     * 因为这个模型智能处理固定尺寸的图片，这里用来将需要处理的图片画到固定尺寸的bm中，节省资源
+     */
+    private Canvas cConvertCanvas;
+    private Canvas sConvertCanvas;
+    private Bitmap cConvertBm;
+    private Rect cRange;
+    private ByteBuffer contentArray;
+    private ByteBuffer sInput;
 
     private static class InnerClass {
         private static StyleTransferTf staticInnerClass = new StyleTransferTf(IntelImEditApplication.appContext);
@@ -56,6 +75,10 @@ public class StyleTransferTf {
                 interpreterPredict = getInterpreter(context, STYLE_PREDICT_INT8_MODEL, false);
                 interpreterTransform = getInterpreter(context, STYLE_TRANSFER_INT8_MODEL, false);
             }
+            cConvertBm = Bitmap.createBitmap(CONTENT_IMAGE_SIZE, CONTENT_IMAGE_SIZE, Bitmap.Config.ARGB_8888);
+            cConvertCanvas = new Canvas(cConvertBm);
+            sConvertBm = Bitmap.createBitmap(STYLE_IMAGE_SIZE, STYLE_IMAGE_SIZE, Bitmap.Config.ARGB_8888);
+            sConvertCanvas = new Canvas(sConvertBm);
             Log.d(TAG, "StyleTransfer: 模型加载完成");
         } catch (IOException e) {
             Log.e("PytorchHelloWorld", "Error reading assets", e);
@@ -85,21 +108,30 @@ public class StyleTransferTf {
         return retFile;
     }
 
+    /**
+     * 注意传入空表示使用上一次的
+     */
     public Bitmap transfer(Bitmap cBm, Bitmap sBm, Context context) {
         try {
             Log.d(TAG, "start transfer google models");
+            Log.d(TAG, "execute: use gpu = " + useGPU + "  thread number = " + numberThreads);
 
             LogUtil.recordTime();
             // 风格和内容图像变成ByteBuffer
-            ByteBuffer contentArray =
-                    ImageUtils.Companion.bitmapToByteBuffer(cBm, CONTENT_IMAGE_SIZE, CONTENT_IMAGE_SIZE, 0, 255);
+            if (cBm != null) {
+                cRange = ImageUtils.Companion.drawInBm(cBm, cConvertCanvas);
+                contentArray = ImageUtils.Companion.bitmapToByteBuffer(cConvertBm, 0, 255);
+            }
+            if (sBm != null) {
+                sConvertCanvas.drawBitmap(sBm, null,
+                        new Rect(0, 0, sConvertCanvas.getWidth(), sConvertCanvas.getHeight()),
+                        BitmapUtil.getBitmapPaint());
+                sInput = ImageUtils.Companion.bitmapToByteBuffer(sConvertBm, 0, 255);
+            }
 
-            ByteBuffer input =
-                    ImageUtils.Companion.bitmapToByteBuffer(sBm, STYLE_IMAGE_SIZE, STYLE_IMAGE_SIZE, 0, 255);
+            LogUtil.logTimeConsumeAndRecord("转换bm完成");
 
-
-            Log.d(TAG, "execute: use gpu = " + useGPU);
-            Object[] inputsForPredict = new Object[]{input};
+            Object[] inputsForPredict = new Object[]{sInput};
             Map<Integer, Object> outputsForPredict = new HashMap<>();
             float[][][][] styleBottleneck = new float[1][1][1][100];
 
@@ -109,7 +141,7 @@ public class StyleTransferTf {
             // The results of this inference could be reused given the style does not change
             // That would be a good practice in case this was applied to a video stream.
             interpreterPredict.runForMultipleInputsOutputs(inputsForPredict, outputsForPredict);
-            LogUtil.logTimeConsumeAndRecord("第一步 预测完成");
+            LogUtil.logTimeConsumeAndRecord("第一步 风格预测完成 ");
 
             Object[] inputsForStyleTransfer = new Object[]{contentArray, styleBottleneck};
             Map<Integer, Object> outputsForStyleTransfer = new HashMap<>();
@@ -120,10 +152,11 @@ public class StyleTransferTf {
                     inputsForStyleTransfer,
                     outputsForStyleTransfer
             );
-
+            LogUtil.logTimeConsumeAndRecord("第二步 风格迁移完成 ");
             Bitmap styledImage =
-                    ImageUtils.Companion.convertArrayToBitmap(outputImage, CONTENT_IMAGE_SIZE, CONTENT_IMAGE_SIZE);
-
+                    ImageUtils.Companion.convertArrayToBitmap(outputImage, cRange);
+            Bitmap.createScaledBitmap(styledImage, styledImage.getWidth() * 2, styledImage.getHeight() * 2, true);
+            LogUtil.logTimeConsumeAndRecord("第三步 转换结果图片完成");
             return styledImage;
         } catch (Exception e) {
             e.printStackTrace();

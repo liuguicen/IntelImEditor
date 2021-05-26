@@ -20,7 +20,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'com.library.tangxiaolv:dexknife-plus:1.0.4' // 解决4.x以下多dex问题的
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
