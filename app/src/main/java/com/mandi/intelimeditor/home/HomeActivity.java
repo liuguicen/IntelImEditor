@@ -167,7 +167,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         mIsFromCreate = true;
         LogUtil.printMemoryInfo(TAG + "AC 启动", this);
 //测试代码不要提交
-      test();
+//       test();
     }
 
     /**

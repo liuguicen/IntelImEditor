@@ -200,7 +200,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
         // 广告控制策略，
         // 全局关闭广告
         // 特殊情况避免检查不显示
-        AllData.isVip = true;
+        // AllData.isVip = true;
         if (!LogUtil.testSplashAd
                 && (AllData.isVip || AdData.judgeAdClose() ||
                 System.currentTimeMillis() - lastADShowTime < AdData.LAUNCH_AD_TIME_INTERVAL)) {

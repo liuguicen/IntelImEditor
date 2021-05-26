@@ -191,6 +191,8 @@ public static final int *;
 -keep class com.bytedance.sdk.openadsdk.** { *; }
 -keep public interface com.bytedance.sdk.openadsdk.downloadnew.** {*;}
 -keep class com.ss.sys.ces.* {*;}
+-keep class com.bytedance.embed_dr.** {*;}
+-keep class com.bytedance.embedapplog.** {*;}
 
 #eventBus的，使用了注解形式，必须声明，不然方法混了之后找不到
 -keepattributes *Annotation*

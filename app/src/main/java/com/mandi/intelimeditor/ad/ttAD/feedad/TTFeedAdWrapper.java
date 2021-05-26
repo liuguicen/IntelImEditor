@@ -251,7 +251,7 @@ public class TTFeedAdWrapper implements IFeedAd {
             }
 
             @Override
-            public void onSelected(int position, String value) {
+            public void onSelected(int position, String value, boolean isForce) {
                 // TToast.show(mContext, "点击 " + value);
                 // 用户选择不喜欢原因后，移除广告展示
                 // mData.remove(ad);
@@ -271,11 +271,6 @@ public class TTFeedAdWrapper implements IFeedAd {
                 if (mActivity instanceof FragmentActivity) {
                     VipUtil.judgeShowToOpenVip((FragmentActivity) mActivity, 1.0 / 6);
                 }
-            }
-
-            @Override
-            public void onRefuse() {
-
             }
         });
     }

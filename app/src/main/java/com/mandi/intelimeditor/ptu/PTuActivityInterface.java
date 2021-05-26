@@ -9,8 +9,6 @@ import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 
 import org.jetbrains.annotations.NotNull;
-import org.pytorch.Tensor;
-import org.pytorch.torchvision.TensorImageUtils;
 
 import java.util.List;
 
