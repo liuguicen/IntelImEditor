@@ -33,7 +33,8 @@ public class AppConfig {
     public static final String ID_IN_WEIXIN = "wxcc5a4597cfb83496";
     public static final String ALIPAY_ID = "2019081866286486";
 
-    public static final String QQ_GROUP_COMMUNICATE_KEY = "VkczNgFq-7NcehkIFWXr9OlXrg0N9DYh";
+    public static final String QQ_GROUP_COMMUNICATE_KEY = "JFJ4O1BEnyk6gcDdtBv05vAsgu3gA04r";
+
     public static final String QQ_GROUP_FEEDBACK_KEY = "jiXCpPWsr-A7RA5d5rYDeZlrYCSUtuP_";
 
     // 资源解锁数据相关的版本

@@ -870,7 +870,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         // 通知渠道的id
         String id = "baozoutptu";
         // 用户可以看到的通知渠道的名字.
-        CharSequence name = "暴走P图";
+        CharSequence name = "艺术美图";
         // 用户可以看到的通知渠道的描述
         String description = "通知栏快捷按钮";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

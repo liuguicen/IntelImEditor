@@ -304,12 +304,12 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         }
     }
 
-    public void toCommunicateGroup(View view) {
-        toQQGroup(this, AppConfig.QQ_GROUP_COMMUNICATE_KEY);
-    }
-
     public void toFeedBackGroup(View view) {
         toQQGroup(this, AppConfig.QQ_GROUP_FEEDBACK_KEY);
+    }
+
+    public void toCommunicateGroup(View view) {
+        toQQGroup(this, AppConfig.QQ_GROUP_COMMUNICATE_KEY);
     }
 
     public static void toQQGroup(Context context, String key) {

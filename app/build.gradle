@@ -51,7 +51,8 @@ android {
             // - armeabi-v7a: ARM v7
             // - arm64-v8a: 64位支持
 //            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
-            abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
+//            abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
+            abiFilters 'armeabi-v7a' // 32位的
         }
 
         //默认渠道包
@@ -305,15 +306,9 @@ dependencies {
     // OAID目前为目前国内市场主流的Android Q设备标识，可根据需要选择。
     //基础组件库依赖(必须) Push 6.1.0版本必须升级新版本Common SDK
     // 友盟统计SDK
-    implementation 'com.umeng.umsdk:common:9.1.6' // (必选)版本号
-    implementation 'com.umeng.umsdk:asms:1.1.3' // asms包依赖(必选)
-    implementation 'com.umeng.umsdk:crash:0.0.5' // native crash包依赖(必选)
-//    implementation 'com.umeng.umsdk:utdid:1.5.2'
-
-    implementation 'com.umeng.umsdk:oaid_lenovo:1.0.0' // (可选)
-    implementation 'com.umeng.umsdk:oaid_mi:1.0.0' // (可选)
-    implementation 'com.umeng.umsdk:oaid_oppo:1.0.4' // (可选)
-    implementation 'com.umeng.umsdk:oaid_vivo:1.0.0.1' // (可选)
+    implementation 'com.umeng.umsdk:common:9.3.8'//必选
+    implementation 'com.umeng.umsdk:asms:1.2.2'//必选
+    implementation 'com.umeng.umsdk:apm:1.2.0'//可选 错误分析的
 
     //友盟push相关依赖(必须)
 //    implementation 'com.umeng.umsdk:push:6.1.0'

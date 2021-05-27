@@ -112,9 +112,10 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
         readLocalAdData();
         initStatusBar();
 
-        if (!AllData.hasReadConfig.hasReadAppGuide()) {
-            startAppGuideAc();
-        } else if (!AllData.hasReadConfig.hasAgreeAppPrivacy()) {
+        // if (!AllData.hasReadConfig.hasReadAppGuide()) {
+        //     startAppGuideAc();
+        // } else
+        if (!AllData.hasReadConfig.hasAgreeAppPrivacy()) {
             showPrivacyDialog();
         } else {
             checkPermissionAndStart();
@@ -311,7 +312,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
                 permissionExceptionHandler = new Handler();
                 toPermissionSettingTask = () ->
                         toPermissionSettingDialog = DialogFactory.noTitle(this,
-                                "若您无法打开应用，请在设置-应用管理-暴走P图-权限 中打开所有权限",
+                                "若您无法打开应用，请在设置-应用管理-艺术美图-权限 中打开所有权限",
                                 "知道了", "", (dialog, which) -> dialog.dismiss());
 
                 permissionExceptionHandler.postDelayed(toPermissionSettingTask, 15 * 1000);

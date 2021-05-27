@@ -192,13 +192,14 @@ public class TietuFrameLayout extends FrameLayout implements TSRView {
      * @param child 注意只能添加贴图的View，不然不好处理，要加其它的加到更底层的View上去
      */
     public void addView(FloatImageView child, LayoutParams params) {
-        if (curChosenView != null && !curChosenView.isLocked())
-            curChosenView.toPreview();
-        if (tietuChangeListener != null) {
-            tietuChangeListener.onTietuAdd(child);
-        }
-        curChosenView = child;
-        super.addView(child, params);
+        addView(child, -1, params);
+    }
+
+    /**
+     * @param child 注意只能添加贴图的View，不然不好处理，要加其它的加到更底层的View上去
+     */
+    public void addView(FloatImageView child, int index) {
+        super.addView(child, index);
     }
 
     @Override
@@ -207,6 +208,12 @@ public class TietuFrameLayout extends FrameLayout implements TSRView {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     " only add " + FloatImageView.class.getSimpleName());
         }
+        if (curChosenView != null && !curChosenView.isLocked())
+            curChosenView.toPreview();
+        if (tietuChangeListener != null) {
+            tietuChangeListener.onTietuAdd((FloatImageView) child);
+        }
+        curChosenView = (FloatImageView) child;
         super.addView(child, index, params);
     }
 

@@ -47,7 +47,7 @@ class PrivacyDialog : IBaseDialog() {
 
     private fun initAppAgreement() {
         var permissionUseStatement = mContext?.getString(R.string.permission_use_statement);
-        val text = "欢迎使用暴走P图应用！为了更好保障您个人权益，在使用本产品前请认真阅读我们的《用户协议》和《隐私政策》\n" +
+        val text = "欢迎使用艺术美图应用！为了更好保障您个人权益，在使用本产品前请认真阅读我们的《用户协议》和《隐私政策》\n" +
                 permissionUseStatement +
                 "如您同意，请您点击“同意”开始接受我们的服务\n"
         val spannableString = SpannableString(text)

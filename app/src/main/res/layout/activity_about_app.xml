@@ -30,7 +30,7 @@
         app:layout_constraintEnd_toStartOf="@+id/about_version"
         app:layout_constraintStart_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/imageView4"
-        tools:text="暴走P图" />
+        tools:text="艺术美图" />
 
     <TextView
         android:id="@+id/about_version"

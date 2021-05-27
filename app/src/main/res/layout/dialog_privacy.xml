@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_8"
             android:gravity="center"
-            android:text="暴走P图使用申明"
+            android:text="艺术美图使用申明"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
             app:layout_constraintEnd_toEndOf="parent"

@@ -90,6 +90,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.mandi.intelimeditor.common.view.MenuItemView
+        android:visibility="gone"
         android:id="@+id/helpView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -48,7 +48,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class AllData {
 
-    public static final String TAG = "暴走P图";
+    public static final String TAG = "艺术美图";
     public static String PACKAGE_NAME = "com.mandi.intelimeditor";
     /**
      * 获取服务器数据更新时间，-1表示网络出错，需要重新获取，0表示没有数据，

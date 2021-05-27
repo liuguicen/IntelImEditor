@@ -58,7 +58,7 @@ public class PayVipPresenterImp implements PayVipContract.Presenter {
                 .add("tradeCode", tradeCode)
                 .add("topicId", topicId)
                 .add("subject", "VIP套餐")
-                .add("body", "暴走P图订单")
+                .add("body", "艺术美图订单")
                 .add("sanbox", String.valueOf(BuildConfig.SANBOX))
                 .build();
         //第三步创建Rquest

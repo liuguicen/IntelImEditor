@@ -146,6 +146,7 @@
                 android:background="@drawable/divider_setting_item" />
 
             <com.mandi.intelimeditor.common.view.SettingsItemView
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -172,6 +173,7 @@
                 android:text="@string/settings_other" />
 
             <com.mandi.intelimeditor.common.view.SettingsItemView
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"

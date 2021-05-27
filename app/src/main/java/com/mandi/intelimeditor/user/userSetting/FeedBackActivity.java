@@ -2,10 +2,12 @@ package com.mandi.intelimeditor.user.userSetting;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.mandi.intelimeditor.common.BaseActivity;
+import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.R;
@@ -40,6 +42,10 @@ public class FeedBackActivity extends BaseActivity {
                     commitComment(commentEdit.getText().toString());
                 }
         );
+    }
+
+    public void toCommunicateGroup(View view) {
+        SettingActivity.toQQGroup(this, AppConfig.QQ_GROUP_COMMUNICATE_KEY);
     }
 
     private void commitComment(String comment) {

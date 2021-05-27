@@ -36,9 +36,9 @@ public class MySQLiteOpenHandler extends SQLiteOpenHelper {
         //删除
         if (oldVersion == 2) {
             db.execSQL("DROP TABLE prefer_share");
-            Log.e("暴走P图第一版的数据库", "删除表格" + "prefer_share" + "成功");
+            Log.e("艺术美图第一版的数据库", "删除表格" + "prefer_share" + "成功");
             db.execSQL("create table  IF NOT EXISTS prefer_share(packageName text primary key,title text,time varchar(50))");
-            Log.e("暴走P图第二版的数据库", "创建新的表格" + "prefer_share" + "成功");
+            Log.e("艺术美图第二版的数据库", "创建新的表格" + "prefer_share" + "成功");
         }
 
         if (newVersion == 4) {
