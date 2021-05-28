@@ -63,7 +63,7 @@ public interface PTuActivityInterface {
 
     void showProgress(int progress);
 
-    RepealRedoManager getRepealRedoRManager();
+    RepealRedoManager getRepealRedoManager();
 
     void dismissProgress();
 }

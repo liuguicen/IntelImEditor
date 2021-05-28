@@ -463,6 +463,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                 case R.id.iv_save:
                     if (!Util.DoubleClick.isDoubleClick()) {
                         if (currentFrag == mainFrag) {
+                            repealRedoManager.setBaseBm(ptuSeeView.getSourceBm());
                             switchFragment(EDIT_TRANSFER, null);
                             break;
                         }
@@ -1618,10 +1619,9 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private void certainCancelEdit() {
         if (repealRedoManager.hasChange()) {
             CertainLeaveDialog certainLeaveDialog = new CertainLeaveDialog(PtuActivity.this);
-            certainLeaveDialog.createDialog("已经修改了图片,确定取消吗？", null,
+            certainLeaveDialog.createDialog("已经修改了图片, 确定离开吗？", " ",
                     () -> {
-                        while (repealRedoManager.canRepeal())
-                            bigRepeal();
+                        ptuSeeView.replaceSourceBm(repealRedoManager.getBaseBitmap());
                         switchFragment(EDIT_TRANSFER, null);
                     });
         } else
@@ -1802,7 +1802,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     @Override
-    public RepealRedoManager getRepealRedoRManager() {
+    public RepealRedoManager getRepealRedoManager() {
         return repealRedoManager;
     }
 

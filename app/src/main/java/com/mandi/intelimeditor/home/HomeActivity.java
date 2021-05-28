@@ -913,8 +913,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         }
 
         //隐藏登录按钮
-        mSignInView.setVisibility(View.VISIBLE);
-        mUserInfoView.setVisibility(View.GONE);
+        // mSignInView.setVisibility(View.VISIBLE);
+        mUserInfoView.setVisibility(View.VISIBLE);
 
         ((TextView) mHeaderView.findViewById(R.id.userNameTv)).setText(R.string.app_name);
 

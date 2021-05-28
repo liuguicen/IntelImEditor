@@ -607,7 +607,7 @@ public class GifManager implements GifFramesLvAdapter.OnRecyclerViewItemClickLis
     }
 
     public void addFrameByUrl(String url) {
-        if (FileTool.urlType(url).equals(FileTool.UrlType.OTHERS)) { // 判断是否是本地图片路径
+        if (FileTool.urlType(url).equals(FileTool.UrlType.PATH)) { // 判断是否是本地图片路径
             addFameByPath(url);
             return;
         }

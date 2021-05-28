@@ -56,6 +56,7 @@ public class FileTool {
 
     public enum UrlType {
         OTHERS,
+        PATH,
         URL
     }
 
@@ -468,13 +469,13 @@ public class FileTool {
 
     /**
      * 判断Url的类型，目前只支持文件路径和一般url
-     *
-     * @param url
-     * @return
+
      */
     public static UrlType urlType(@NotNull String url) {
         if (url.contains("://")) {
             return UrlType.URL;
+        } else if (url.startsWith("/")) {
+            return UrlType.PATH;
         } else {
             return UrlType.OTHERS;
         }

@@ -9,6 +9,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.FileTool;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
+import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.home.ChoosePicContract;
 import com.mandi.intelimeditor.home.data.MediaInfoScanner;
 import com.mandi.intelimeditor.user.US;
@@ -79,6 +80,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
 
             @Override
             public void onError(@NonNull Throwable error) {
+               ToastUtils.show("扫描图片出错了");
             }
 
             @Override
@@ -89,7 +91,6 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     }
 
     private void initSetAndShowPicList() {
-
         sMediaInfoScanner.updateRecentPicList(usuManager);
         currentPicPathList = usuManager.getUsuPaths();
         Log.d(TAG, "currentPicPathList:" + currentPicPathList.size());

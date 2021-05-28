@@ -843,7 +843,7 @@ public class TietuFragment extends BasePtuFragment {
         }
 
         if (obj instanceof String) {
-            if (FileTool.urlType((String) obj).equals(FileTool.UrlType.OTHERS)) { // 判断是否是本地图片路径
+            if (FileTool.urlType((String) obj).equals(FileTool.UrlType.PATH)) { // 判断是否是本地图片路径
                 addTietuByPath((String) obj, tietuTags);
                 return;
             }

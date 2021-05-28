@@ -68,6 +68,7 @@ public class StyleTransferTf {
     private StyleTransferTf(Context context) {
         try {
             this.context = context;
+            Log.d(TAG, "StyleTransfer: 开始加载模型");
             if (useGPU) {
                 interpreterPredict = getInterpreter(context, STYLE_PREDICT_FLOAT16_MODEL, true);
                 interpreterTransform = getInterpreter(context, STYLE_TRANSFER_FLOAT16_MODEL, true);
@@ -75,11 +76,12 @@ public class StyleTransferTf {
                 interpreterPredict = getInterpreter(context, STYLE_PREDICT_INT8_MODEL, false);
                 interpreterTransform = getInterpreter(context, STYLE_TRANSFER_INT8_MODEL, false);
             }
+            Log.d(TAG, "StyleTransfer: 模型加载完成");
             cConvertBm = Bitmap.createBitmap(CONTENT_IMAGE_SIZE, CONTENT_IMAGE_SIZE, Bitmap.Config.ARGB_8888);
             cConvertCanvas = new Canvas(cConvertBm);
             sConvertBm = Bitmap.createBitmap(STYLE_IMAGE_SIZE, STYLE_IMAGE_SIZE, Bitmap.Config.ARGB_8888);
             sConvertCanvas = new Canvas(sConvertBm);
-            Log.d(TAG, "StyleTransfer: 模型加载完成");
+            Log.d(TAG, "StyleTransfer: 底图准备完成");
         } catch (IOException e) {
             Log.e("PytorchHelloWorld", "Error reading assets", e);
         }

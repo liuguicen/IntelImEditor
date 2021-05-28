@@ -93,7 +93,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
     }
 
     /**
-     * @see a.baozouptu.common.BaseLazyLoadFragment#loadData(boolean)
+     * @see com.mandi.intelimeditor.common.BaseLazyLoadFragment#loadData(boolean) 
      */
     @Override
     public void loadData(boolean isFirstLoad) {

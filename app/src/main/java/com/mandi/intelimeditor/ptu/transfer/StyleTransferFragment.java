@@ -67,8 +67,6 @@ import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +81,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class StyleTransferFragment extends BasePtuFragment {
     public static final String ALL = "all";
-    private String TAG = "DrawFragment";
+    private String TAG = "StyleTransferFragment";
     public static final int EDIT_MODE = PtuUtil.EDIT_DRAW;
     private Context mContext;
 
@@ -188,6 +186,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             if (chooseRcv.getParent() != null) {
                 ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
             }
+            pTuActivityInterface.getRepealRedoManager().setBaseBm(pTuActivityInterface.getPtuSeeView().getSourceBm());
             pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
         });
     }
@@ -342,9 +341,9 @@ public class StyleTransferFragment extends BasePtuFragment {
         if (isChangeStyle) {
             styleBm = bm;
         } else {
-            pTuActivityInterface.getRepealRedoRManager().setBaseBm(bm);
+            pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
         }
-        Bitmap contentBm = pTuActivityInterface.getRepealRedoRManager().getBaseBitmap();
+        Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
         if (!isFirstTransfer) { // 不是第一次，转换器中已经保存了上一次的数据
             if (isChangeStyle) {
                 contentBm = null;
@@ -377,11 +376,11 @@ public class StyleTransferFragment extends BasePtuFragment {
                         Log.d(TAG, String.format("尝试尺寸 %d 失败，剩余 %d 次", AllData.globalSettings.maxSupportContentSize, testSize - 1));
                     }
                     AllData.globalSettings.maxSupportContentSize *= 0.80f;
-                    Bitmap contentBm = pTuActivityInterface.getRepealRedoRManager().getBaseBitmap();
+                    Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
                     double ratio = Math.sqrt(AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight()));
                     contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
                             (int) (ratio * contentBm.getHeight()), true);
-                    pTuActivityInterface.getRepealRedoRManager().setBaseBm(contentBm);
+                    pTuActivityInterface.getRepealRedoManager().setBaseBm(contentBm);
                     // contentFeature = null;
                     // styleFeature = null;
                     testSize--;
@@ -556,13 +555,19 @@ public class StyleTransferFragment extends BasePtuFragment {
             AllData.queryLocalPicList(new Emitter<String>() {
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull String value) {
+                    if (isDetached()) {
+                        return;
+                    }
                     AllData.contentList = AllData.sMediaInfoScanner.convertRecentPath2PicResList();
                     showStyleOrContenList(AllData.contentList);
                 }
 
                 @Override
                 public void onError(@io.reactivex.annotations.NonNull Throwable error) {
-
+                    if (isDetached()) {
+                        return;
+                    }
+                    ToastUtils.show("扫描获取本地图片出错");
                 }
 
                 @Override

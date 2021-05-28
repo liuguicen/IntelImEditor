@@ -28,6 +28,10 @@ public class RepealRedoManager<T> {
      * 没有元素的时候，它在0的左边
      */
     private ListIterator<T> iter;
+
+    /**
+     * basebm 作为风格迁移和P图的起点
+     */
     private Bitmap baseBitmap;
 
 

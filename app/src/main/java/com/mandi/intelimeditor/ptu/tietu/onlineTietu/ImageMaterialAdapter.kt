@@ -10,7 +10,10 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.mandi.intelimeditor.R
 import com.mandi.intelimeditor.ad.LockUtil
 import com.mandi.intelimeditor.ad.tencentAD.ListAdStrategyController
+import com.mandi.intelimeditor.common.util.FileTool
+import com.mandi.intelimeditor.home.data.UsuPathManger
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
+import com.qq.e.comm.util.FileUtil
 import util.CoverLoader
 
 /**
@@ -31,9 +34,14 @@ class ImageMaterialAdapter :
     override fun convert(holder: BaseViewHolder, item: PicResourceItemData) {
         if (holder.itemViewType == PicResourceItemData.PicListItemType.TX_PIC_AD) {
             val frameLayout = createADContainer(holder)
-            holder.getView<ConstraintLayout>(R.id.container).addView(frameLayout, frameLayout.layoutParams)
+            holder.getView<ConstraintLayout>(R.id.container)
+                .addView(frameLayout, frameLayout.layoutParams)
         } else {
-            CoverLoader.loadImageView(context, item.data.url?.url, holder.getView<ImageView>(R.id.iv_pic))
+            CoverLoader.loadImageView(
+                context,
+                item.data.url?.url,
+                holder.getView<ImageView>(R.id.iv_pic)
+            )
             // 注意不能用转换后的url
             val isUnlocked = LockUtil.sUnlockData[item.data.url?.url.hashCode().toString()]
             if (isUnlocked != null && !isUnlocked) {
@@ -85,6 +93,9 @@ class ImageMaterialAdapter :
         mAdController?.reSet()
         for (i in list.indices) {
             val data = list[i]
+            if (data.urlString?.let { FileTool.urlType(it) } == FileTool.UrlType.OTHERS) {
+                continue
+            }
             groupedList.add(PicResourceItemData(data, PicResourceItemData.PicListItemType.ITEM))
             if (mAdController != null && mAdController.isAddAd(i)) {
                 // Logcat.d("插入广告位， 位置 = " + i);
@@ -103,7 +114,7 @@ class ImageMaterialAdapter :
     }
 
     fun add(id: Int, picRes: PicResource?) {
-        groupedList.add(id, PicResourceItemData(picRes, PicResourceItemData.PicListItemType.ITEM))
+        super.addData(id, PicResourceItemData(picRes, PicResourceItemData.PicListItemType.ITEM))
     }
 
 

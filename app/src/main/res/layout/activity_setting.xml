@@ -30,6 +30,7 @@
                 android:text="@string/settings_user" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/setting_user_layout"
                 style="@style/setting_set_group_layout">
 
@@ -62,7 +63,9 @@
                     android:layout_marginEnd="@dimen/dp_8"
                     android:background="@drawable/divider_setting_item" />
 
-                <include layout="@layout/layout_vip_privileges" />
+                <include
+                    android:visibility="gone"
+                    layout="@layout/layout_vip_privileges" />
 
             </LinearLayout>
 
@@ -71,6 +74,7 @@
                 android:text="@string/settings_quick_tools" />
 
             <com.mandi.intelimeditor.common.view.SettingsItemView
+                android:visibility="gone"
                 android:id="@+id/showNotifyToolsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,6 +92,7 @@
 
             <com.mandi.intelimeditor.common.view.SettingsItemView
                 android:id="@+id/exitDisplayNotify"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"

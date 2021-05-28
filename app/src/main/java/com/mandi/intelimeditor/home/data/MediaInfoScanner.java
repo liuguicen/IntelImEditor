@@ -137,7 +137,6 @@ public class MediaInfoScanner {
     public PicUpdateType updateRecentPicList(UsuPathManger usuPathManger) {
         totalPicNumber = sortedPicPathsByTime.size();
         usuPathManger.updateRecentInfoInUsu(sortedPicPathsByTime);
-        sortedPicPathsByTime.clear();
         return PicUpdateType.CHANGE_ALL_PIC;
     }
 
