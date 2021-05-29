@@ -236,5 +236,11 @@ public class SPUtil {
     }
 
 
+    public static void putTransferFinish(boolean success) {
+        userSp.edit().putBoolean(SPConstants.AppSettings.transfer_success, success).apply();
+    }
 
+    public static boolean getTransferSuccess() {
+        return userSp.getBoolean(SPConstants.AppSettings.transfer_success, true);
+    }
 }

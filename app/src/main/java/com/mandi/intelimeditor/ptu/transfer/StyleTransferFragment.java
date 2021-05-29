@@ -67,7 +67,6 @@ import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,10 +99,8 @@ public class StyleTransferFragment extends BasePtuFragment {
     public static final String MODEL_GOOGLE = "google";
     private String model = MODEL_GOOGLE;
 
-    private FloatBuffer contentBuffer;
-    private FloatBuffer styleBuffer;
     private Bitmap styleBm;
-    private boolean isFirstTransfer = true;
+    private boolean isProcessing = false;
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
@@ -115,7 +112,14 @@ public class StyleTransferFragment extends BasePtuFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean lastTransferSuccess = SPUtil.getTransferSuccess();
+        if (!lastTransferSuccess) {
+            AllData.globalSettings.setMaxSupportContentSize((int) (AllData.globalSettings.maxSupportContentSize * 0.8));
+        } else {
+            AllData.globalSettings.setMaxSupportContentSize((int) (AllData.globalSettings.maxSupportContentSize * 1.01));
+        }
         mContext = getActivity();
+        isProcessing = false;
     }
 
     /**
@@ -141,7 +145,6 @@ public class StyleTransferFragment extends BasePtuFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mContext = getActivity();
-        FirstUseUtil.deformationGuide(getActivity());
         //底部的贴图列表
         chooseRcv = new RecyclerView(mContext);
 
@@ -205,7 +208,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             model = MODEL_ADAIN;
             clearModelChoose(modelTxtList);
             custom.setTextColor(Util.getColor(R.color.text_checked_color));
-            transfer(styleBm, true);
+            transfer(styleBm, true, false);
         });
         final TextView free = createItem(pad, MODEL_GOOGLE.equals(model), modelTxtList);
         free.setText("google");
@@ -213,7 +216,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             model = MODEL_GOOGLE;
             clearModelChoose(modelTxtList);
             free.setTextColor(Util.getColor(R.color.text_checked_color));
-            transfer(styleBm, true);
+            transfer(styleBm, true, false);
         });
 
         TextView d1 = new TextView(mContext);
@@ -254,7 +257,10 @@ public class StyleTransferFragment extends BasePtuFragment {
         return tv;
     }
 
+    private boolean isFirstUse = true;
+
     private OnItemClickListener chooseRcvListener = new OnItemClickListener() {
+
         @Override
         public void onItemClick(@NonNull @NotNull BaseQuickAdapter<?, ?> adapter, @NonNull @NotNull View view, int position) {
             if (position < 0) return;
@@ -268,7 +274,8 @@ public class StyleTransferFragment extends BasePtuFragment {
                     String url = oneTietu.getUrl().getUrl();
                     ViewGroup parent = (ViewGroup) chooseRcv.getParent();
                     FirstUseUtil.tietuGuide(mContext);
-                    transfer(url, isChooseStyleMode);
+                    transfer(url, isChooseStyleMode, !isFirstUse);
+                    isFirstUse = false;
                     MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
                 } else {
                     Log.e(this.getClass().getSimpleName(), "点击贴图后获取失败");
@@ -277,8 +284,15 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     };
 
-    public void transfer(Object obj, boolean isStyle) {
-
+    /**
+     * @param isReuse 模型是否重用上次的content或者style
+     */
+    public void transfer(Object obj, boolean isStyle, boolean isReuse) {
+        if (isProcessing) {
+            ToastUtils.show("处理中，请稍后");
+            return;
+        }
+        isProcessing = true;
         pTuActivityInterface.hidePtuNotice();
         pTuActivityInterface.showProgress(0);
 
@@ -292,6 +306,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
                     AllData.globalSettings.styleContentRatio)
                     : AllData.globalSettings.maxSupportContentSize;
+            decodeSize *= decodeSize;
             BitmapUtil.decodeFromObj(obj, emitter, decodeSize);
             if (LogUtil.debugStyleTransfer) {
                 LogUtil.d(TAG + "风格迁移，解析bitmap完成");
@@ -308,9 +323,9 @@ public class StyleTransferFragment extends BasePtuFragment {
 
                     // 第二步，使用合适的尺寸迁移图片
                     if (MODEL_GOOGLE.equals(model)) {
-                        return realTransferTf(bm, isStyle);
+                        return realTransferTensorflow(bm, isStyle, isReuse);
                     } else {
-                        return transferWithSuitSize(bm, isStyle);
+                        return transferPytorch(bm, isStyle, false);
                     }
                 }).subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -319,6 +334,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     public void onNext(@io.reactivex.annotations.NonNull Bitmap bitmap) {
                         ptuSeeView.replaceSourceBm(bitmap);
                         pTuActivityInterface.dismissProgress();
+                        isProcessing = false;
                     }
 
                     @Override
@@ -326,94 +342,94 @@ public class StyleTransferFragment extends BasePtuFragment {
                         super.onError(e);
                         ToastUtils.show(e.getMessage());
                         pTuActivityInterface.dismissProgress();
+                        isProcessing = false;
                     }
 
                     @Override
                     public void onComplete() {
                         super.onComplete();
                         pTuActivityInterface.dismissProgress();
+                        isProcessing = false;
                     }
                 });
 
     }
 
-    private Bitmap realTransferTf(@NotNull Bitmap bm, boolean isChangeStyle) {
+    private Bitmap realTransferTensorflow(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
         if (isChangeStyle) {
             styleBm = bm;
         } else {
             pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
         }
         Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
-        if (!isFirstTransfer) { // 不是第一次，转换器中已经保存了上一次的数据
+        StyleTransferTensorflow transfer = StyleTransferTensorflow.getInstance();
+        if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
             if (isChangeStyle) {
                 contentBm = null;
             } else {
                 styleBm = null;
             }
         }
-        return StyleTransferTf.getInstance().transfer(contentBm, styleBm, getActivity());
+        return transfer.transfer(contentBm, styleBm, getActivity());
     }
 
     @org.jetbrains.annotations.Nullable
-    private Bitmap transferWithSuitSize(@NotNull Bitmap bm, boolean isStyle) {
+    private Bitmap transferPytorch(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
+        SPUtil.putTransferFinish(false);
+        Bitmap sBm = styleBm, cBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
         Bitmap rstBm = null;
-        int testSize = 5;
-        while (testSize > 0) { // 尝试找到合适的尺寸
-            try {
-                // 第二步，使用合适的尺寸迁移图片
-                if (MODEL_GOOGLE.equals(model)) {
-                    Log.d(TAG, "transferWithSuitSize: use google");
-                    rstBm = realTransferTf(bm, isStyle);
+        try {
+            // 第二步，使用合适的尺寸迁移图片
+            if (isChangeStyle) {
+                sBm = bm;
+            } else {
+                cBm = bm;
+                pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
+            }
+
+            StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
+            if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
+                if (isChangeStyle) {
+                    cBm = null;
                 } else {
-                    Log.d(TAG, "transferWithSuitSize: use adain");
-                    // rstBm = realTransferPt(bm, isStyle);
+                    sBm = null;
                 }
-                getActivity().runOnUiThread(() -> pTuActivityInterface.showProgress(90));
-                testSize = -1;
-            } catch (Throwable e) {
-                if (e instanceof OutOfMemoryError || e instanceof StackOverflowError) { // 尺寸太大，爆内存，主动调小
-                    if (LogUtil.debugStyleTransfer) {
-                        Log.d(TAG, String.format("尝试尺寸 %d 失败，剩余 %d 次", AllData.globalSettings.maxSupportContentSize, testSize - 1));
-                    }
-                    AllData.globalSettings.maxSupportContentSize *= 0.80f;
-                    Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
-                    double ratio = Math.sqrt(AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight()));
-                    contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
-                            (int) (ratio * contentBm.getHeight()), true);
-                    pTuActivityInterface.getRepealRedoManager().setBaseBm(contentBm);
-                    // contentFeature = null;
-                    // styleFeature = null;
-                    testSize--;
-                } else {
-                    testSize = -1;
+            }
+            return transfer.transfer(cBm, sBm, 1);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            if (e instanceof OutOfMemoryError || e instanceof StackOverflowError || e.getMessage().contains("not enough memory")) { // 尺寸太大，爆内存，主动调小
+                if (LogUtil.debugStyleTransfer) {
+                    Log.d(TAG, String.format("尝试尺寸 %d 失败", AllData.globalSettings.maxSupportContentSize));
                 }
-                e.printStackTrace();
+                AllData.globalSettings.maxSupportContentSize *= 0.8f;
+                Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+                double ratio = AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight());
+                contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
+                        (int) (ratio * contentBm.getHeight()), true);
+                pTuActivityInterface.getRepealRedoManager().setBaseBm(contentBm);
+                SPUtil.putTransferFinish(true);
+            } else {
+                Log.e(TAG, "transferPt: 风格迁移出现未知错误 使用Google模型");
+                SPUtil.putTransferFinish(true);
+                return realTransferTensorflow(bm, isChangeStyle, isReuse);
             }
         }
         // 第一次成功，放入合适的尺寸
-        if (SPUtil.getContentMaxSupportBmSize() <= 0) {
-            SPUtil.putContentMaxSupportBmSize(AllData.globalSettings.maxSupportContentSize);
-            if (LogUtil.debugStyleTransfer) {
-                Log.e(TAG, "放入风格尺寸，最大尺寸 = " + AllData.globalSettings.maxSupportContentSize);
-            }
-        }
-        Log.e(TAG, "通过Adain和解码器");
+        SPUtil.putTransferFinish(true);
         return rstBm;
     }
 
 
     // private Bitmap realTransferPt(@NotNull Bitmap bm, boolean isStyle) {
-    //     Bitmap contentBm = pTuActivityInterface.getRepealRedoRManager().getBaseBitmap();
-    //     StyleTransferPt transfer = StyleTransferPt.getInstance();
+    //     Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+    //     StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
     //     Log.d(TAG, "realTransfer: 开始运行风格迁移算法");
+    //     getActivity().runOnUiThread(() -> pTuActivityInterface.showProgress(33));
     //     if (!isStyle) {
     //         // contentFeature = transfer.getVggFeature(bm);
-    //         getActivity().runOnUiThread(() -> pTuActivityInterface.showProgress(33));
-    //         if (LogUtil.debugStyleTransfer) {
+    //         if (LogUtil.debugStyleTransfer)
     //             Log.e(TAG, "内容图片通过VGG完成, size = " + bm.getWidth() + " * " + bm.getHeight());
-    //             // LogUtil.printMemoryInfo(TAG + "内容图片通过VGG完成", PtuActivity.this);
-    //         }
-    //         pTuActivityInterface.getRepealRedoRManager().setBaseBm(bm);
     //         // 风格特征不存在，或者风格特征大小不够
     //         if (styleBm != null && (styleFeature == null || styleBm.getByteCount() <
     //                 contentBm.getByteCount() * AllData.globalSettings.styleContentRatio)) {
@@ -435,7 +451,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     //             Log.e(TAG, "realTransfer: 创建内容buffer完成");
     //         }
     //         Log.e(TAG, "内容bm放入floabuffer");
-    //         StyleTransferPt.bitmapToFloatBuffer(contentBm, 0, 0, cw, ch, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
+    //         StyleTransferPytorch.bitmapToFloatBuffer(contentBm, 0, 0, cw, ch, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
     //                 TensorImageUtils.TORCHVISION_NORM_STD_RGB, contentBuffer, 0);
     //         Log.e(TAG, "内容buffer创建tensor");
     //         Tensor contentTensor = Tensor.fromBlob(contentBuffer, new long[]{1, 3, ch, cw});
@@ -463,7 +479,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     //             Log.e(TAG, "realTransfer: 创建风格buffer");
     //         }
     //         Log.e(TAG, "风格bm放入floabuffer");
-    //         StyleTransferPt.bitmapToFloatBuffer(styleBm, 0, 0, sw, sh, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
+    //         StyleTransferPytorch.bitmapToFloatBuffer(styleBm, 0, 0, sw, sh, TensorImageUtils.TORCHVISION_NORM_MEAN_RGB,
     //                 TensorImageUtils.TORCHVISION_NORM_STD_RGB, styleBuffer, 0);
     //         Log.e(TAG, "风格buffer创建tensor");
     //         Tensor styleTensor = Tensor.fromBlob(styleBuffer, new long[]{1, 3, sh, sw});
@@ -514,7 +530,6 @@ public class StyleTransferFragment extends BasePtuFragment {
     }
 
     private void prepareShowChooseRcv(View view, boolean isChooseStyle) {
-        FirstUseUtil.myTietuGuide(mContext);
         ViewParent parent = view.getParent();
         while (parent != null && !(parent instanceof PtuConstraintLayout)) {
             parent = parent.getParent();
@@ -632,13 +647,13 @@ public class StyleTransferFragment extends BasePtuFragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
-            transfer(picRes.getUrlString(), true);
+            transfer(picRes.getUrlString(), true, true);
             showStyleOrContenList(AllData.curStyleList);
         }
 
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_CONTENT && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
-            transfer(picRes.getUrlString(), false);
+            transfer(picRes.getUrlString(), false, true);
             showStyleOrContenList(AllData.contentList);
         }
 

@@ -358,9 +358,9 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-gpu:${tfl_version}") { changing = true }
 
     // 机器学习相关
-    // pytorch 还是不行 它运行了之后不释放内存，不管是创建tensor还是forward之后
-//    implementation 'org.pytorch:pytorch_android:1.8.0'
-//    implementation 'org.pytorch:pytorch_android_torchvision:1.8.0'
+//     pytorch 还是不行 它运行了之后不释放内存，不管是创建tensor还是forward之后
+    implementation 'org.pytorch:pytorch_android:1.8.0'
+    implementation 'org.pytorch:pytorch_android_torchvision:1.8.0'
 
     implementation 'com.tencent.bugly:crashreport_upgrade:1.5.0'
 //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0

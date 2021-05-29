@@ -28,7 +28,7 @@ public class GlobalSettings {
      * 通过实际使用不爆内存来设置
      */
     public int maxSupportContentSize;
-    public float styleContentRatio = 1.5f;
+    public float styleContentRatio = 1.3f;
     public int maxSupportGifBmSize;
 
     public GlobalSettings() {
@@ -38,21 +38,21 @@ public class GlobalSettings {
     }
 
     private void updateOther(int performanceYear) {
-        maxSupportContentSize = 2800 * 3800;
+        maxSupportContentSize = 1024;
         if (performanceYear >= YearClass.PERFORMANCE_8G_UP) {
             maxSupportBmSize = 6000 * 4000;
         } else if (performanceYear >= YearClass.PERFORMANCE_6G_8G) {
             maxSupportBmSize = 5000 * 4000;
-            maxSupportContentSize *= 16f / 25;
+            maxSupportContentSize *= 4f / 5;
         } else if (performanceYear >= YearClass.PERFORMANCE_4G_6G) {
             maxSupportBmSize = 4000 * 3000;
-            maxSupportContentSize *= 9f / 25;
+            maxSupportContentSize *= 3f / 5;
         } else if (performanceYear >= YearClass.PERFORMANCE_2G_4G) {
             maxSupportBmSize = 3000 * 2000;
-            maxSupportContentSize *= 4f / 25;
+            maxSupportContentSize *= 2f / 55;
         } else {
             maxSupportBmSize = 2000 * 1000;
-            maxSupportContentSize *= 4f / 25;
+            maxSupportContentSize *= 1.5f / 5;
         }
         maxSupportGifBmSize = maxSupportBmSize / 16;
         SPUtil.putContentMaxSupportBmSize(-1);
@@ -115,5 +115,10 @@ public class GlobalSettings {
     public boolean isShowShortVideo() {
 //        return performanceYear >= YearClass.PERFORMANCE_2G_4G;
         return false;
+    }
+
+    public void setMaxSupportContentSize(int size) {
+        this.maxSupportContentSize = size;
+        SPUtil.putContentMaxSupportBmSize(size);
     }
 }

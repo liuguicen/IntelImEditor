@@ -712,6 +712,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     int maxSupportSize = isStyle ?
                             (int) (AllData.globalSettings.maxSupportContentSize * AllData.globalSettings.styleContentRatio)
                             : AllData.globalSettings.maxSupportContentSize;
+                    maxSupportSize *= maxSupportSize;
                     Bitmap bm = BitmapUtil.decodeLossslessInSize(picPath, maxSupportSize);
                     if (bm == null) emitter.onError(new Exception("加载图片出错"));
                     emitter.onNext(bm);
