@@ -14,8 +14,6 @@ buildscript {
         }
         // 友盟统计
         maven { url 'https://dl.bintray.com/umsdk/release' }
-
-        jcenter()
         google()
         mavenCentral()
     }
@@ -39,7 +37,6 @@ allprojects {
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
 
         google()
-        jcenter()
         // 友盟统计
         maven { url 'https://dl.bintray.com/umsdk/release' }
         //Bmob的maven仓库地址--必填
