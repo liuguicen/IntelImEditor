@@ -243,4 +243,12 @@ public class SPUtil {
     public static boolean getTransferSuccess() {
         return userSp.getBoolean(SPConstants.AppSettings.transfer_success, true);
     }
+
+    public static void putHighResolutionMode(boolean checked) {
+        userSp.edit().putBoolean(SPConstants.AppSettings.open_high_resolution_mode, checked).apply();
+    }
+
+    public static boolean getHighResolutionMode() {
+        return userSp.getBoolean(SPConstants.AppSettings.open_high_resolution_mode, false);
+    }
 }

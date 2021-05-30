@@ -19,7 +19,6 @@ import android.graphics.Xfermode;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -29,11 +28,9 @@ import androidx.exifinterface.media.ExifInterface;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.mandi.intelimeditor.R;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.util.geoutil.MRect;
-import com.mandi.intelimeditor.ptu.PtuActivity;
 import com.mandi.intelimeditor.ptu.draw.MPaint;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +41,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -94,8 +90,10 @@ public class BitmapUtil {
     }
 
     // TODO: 2021/5/23 这个方法可以和其它地方类似方法的合并优化
+
     /**
      * 注意，不能在主线程调用
+     *
      * @param decodeSize {@link #decodeLossslessInSize(String, int)}
      * @param emitter    不会调用onComplete();
      */
@@ -737,5 +735,61 @@ public class BitmapUtil {
         }
         return bitmap;
 
+    }
+
+    /**
+     * 用bitmap将颜色显示出来，用于调试
+     */
+    public static Bitmap showColor(int color) {
+        Bitmap bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
+        bitmap.eraseColor(color);
+        return bitmap;
+    }
+    /**
+     * 快速访问bm的像素，但是需要消耗2倍内存
+     */
+    public static class BitmapPixelsConverter {
+        private Bitmap image;
+        private int width, height;
+        private int[] pixels;
+
+        public BitmapPixelsConverter(Bitmap _source) {
+            image = _source;
+            width = image.getWidth();
+            height = image.getHeight();
+            pixels = new int[width * height];
+            image.getPixels(pixels, 0, width, 0, 0, width, height);
+        }
+
+        public BitmapPixelsConverter(int width, int height) {
+            this.width = width;
+            this.height = height;
+            image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            pixels = new int[width * height];
+        }
+
+        public int getPixel(int x, int y) {
+            return pixels[x + y * width];
+        }
+
+        public void setPixel(int x, int y, int color) {
+            pixels[x + y * width] = color;
+            // if ((x + y * width) % 50000 == 0) {
+            //     LogUtil.d("位置: " + (x + y * width) + " 设置像素 = " + color);
+            // }
+        }
+
+        public Bitmap getBimap() {
+            image.setPixels(pixels, 0, width, 0, 0, width, height);
+            return image;
+        }
+
+        public int getWidth() {
+            return image.getWidth();
+        }
+
+        public int getHeight() {
+            return image.getHeight();
+        }
     }
 }

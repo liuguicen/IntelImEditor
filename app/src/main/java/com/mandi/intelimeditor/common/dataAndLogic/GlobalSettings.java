@@ -38,7 +38,10 @@ public class GlobalSettings {
     }
 
     private void updateOther(int performanceYear) {
-        maxSupportContentSize = 1024;
+        maxSupportContentSize = 2048;
+        if (SPUtil.getHighResolutionMode()) {
+            maxSupportContentSize = 3072;
+        }
         if (performanceYear >= YearClass.PERFORMANCE_8G_UP) {
             maxSupportBmSize = 6000 * 4000;
         } else if (performanceYear >= YearClass.PERFORMANCE_6G_8G) {

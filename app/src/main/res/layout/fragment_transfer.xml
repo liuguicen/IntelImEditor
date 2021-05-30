@@ -9,6 +9,7 @@
     <com.mandi.intelimeditor.home.view.BottomFunctionView
         android:id="@+id/choose_model"
         android:layout_width="0dp"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         app:bfv_icon="@drawable/round_photo_library"
         app:bfv_title="@string/choose_model"

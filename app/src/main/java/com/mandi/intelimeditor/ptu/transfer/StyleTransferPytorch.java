@@ -190,7 +190,7 @@ public class StyleTransferPytorch {
 
     public Bitmap transfer(Bitmap cBm, Bitmap sBm, float alpha) {
         if (cBm != null) {
-            cRange = ImageUtils.Companion.drawInBm(cBm, cCanvas);
+            cRange = ImageUtils.Companion.drawInBm(cBm, null, cCanvas);
             bitmapToFloatBuffer(
                     cConvertBm, 0, 0,
                     cCanvas.getWidth(), cCanvas.getHeight(),

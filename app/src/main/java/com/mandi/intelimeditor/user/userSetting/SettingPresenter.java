@@ -134,14 +134,14 @@ public class SettingPresenter implements SettingContract.Presenter, ThirdLoginCa
 
     @Override
     public void start() {
-        boolean sendShortcut = dataSource.getSendShortcutNotify();
+        boolean highSolution = dataSource.getHighSolution();
 
-        if (sendShortcut) {
-            mView.switchSendShortCutNotify(sendShortcut);
-            mView.switchSendShortCutNotifyExit(dataSource.getSendShortcutNotifyExit());
+        if (highSolution) {
+            mView.switchHightResolution(highSolution);
+            // mView.switchSendShortCutNotifyExit(dataSource.getSendShortcutNotifyExit());
         } else {
-            mView.switchSendShortCutNotify(false);
-            mView.switchSendShortCutNotifyExit(false);
+            mView.switchHightResolution(false);
+            // mView.switchSendShortCutNotifyExit(false);
         }
         boolean sharedWithout = dataSource.getSharedWithout();
         mView.switchSharedWithout(sharedWithout);

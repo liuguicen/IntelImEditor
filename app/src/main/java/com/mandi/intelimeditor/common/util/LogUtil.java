@@ -17,6 +17,9 @@ package com.mandi.intelimeditor.common.util;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import com.mandi.intelimeditor.BuildConfig;
@@ -249,5 +252,16 @@ public final class LogUtil {
         d(tag, "方法二： \n 最大内存: " + Runtime.getRuntime().maxMemory()
                 + " \n总内存  : " + Runtime.getRuntime().totalMemory()
                 + " \n可用内存 : " + Runtime.getRuntime().freeMemory() + "\n\n\n");
+    }
+
+    public static Paint getLogPaint() {
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        return paint;
+    }
+
+    public static Bitmap showColor(int color) {
+        return BitmapUtil.showColor(color);
     }
 }

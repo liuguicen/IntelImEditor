@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.GlobalSettings;
+import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
 
 import java.io.File;
@@ -96,8 +97,8 @@ public class SettingDataSourceImpl implements SettingDataSource {
     }
 
     @Override
-    public boolean getSendShortcutNotify() {
-        return globalSettings.getSendShortcutNotify();
+    public boolean getHighSolution() {
+        return SPUtil.getHighResolutionMode();
     }
 
     @Override

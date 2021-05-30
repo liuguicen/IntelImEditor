@@ -18,6 +18,7 @@ import com.mandi.intelimeditor.common.BaseActivity;
 import com.mandi.intelimeditor.common.CommonConstant;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
+import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.dialog.FirstUseDialog;
@@ -42,7 +43,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     public static final String ACTION_LOOK_GUIDE = "look_guide";
     SettingContract.Presenter mPresenter;
     private SettingsItemView clearCacheView;
-    private SettingsItemView showNotifyToolsView;
+    private SettingsItemView highResolutionView;
     private SettingsItemView exitDisplayNotify;
     private SettingsItemView shareWithNoLabelView;
     private Button mBtnLogin;
@@ -56,7 +57,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
         clearCacheView = findViewById(R.id.cacheView);
 
-        showNotifyToolsView = findViewById(R.id.showNotifyToolsView);
+        highResolutionView = findViewById(R.id.highResolutionView);
         exitDisplayNotify = findViewById(R.id.exitDisplayNotify);
         shareWithNoLabelView = findViewById(R.id.shareWithNoLabelView);
 
@@ -100,13 +101,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void setClick() {
-        showNotifyToolsView.setOnItemClickListener(v -> {
-            NotificationManager nm = (NotificationManager)
-                    getSystemService(Context.NOTIFICATION_SERVICE);
-            if (nm != null) {
-                nm.cancel(0);
-            }
-            mPresenter.onShortCutNotifyChanged(showNotifyToolsView.isChecked());
+        highResolutionView.setOnItemClickListener(v -> {
+            highResolutionMode(v);
         });
         exitDisplayNotify.setOnItemClickListener(v -> {
             AllData.globalSettings.save_ifNotifyWhenExit(exitDisplayNotify.isChecked());
@@ -164,8 +160,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     @Override
-    public void switchSendShortCutNotify(boolean isSend) {
-        showNotifyToolsView.setChecked(isSend);
+    public void switchHightResolution(boolean isSend) {
+        highResolutionView.setChecked(isSend);
     }
 
     @Override
@@ -292,6 +288,17 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
      */
     public void toAppAboutPage(View view) {
         startActivity(new Intent(SettingActivity.this, AboutAppActivity.class));
+    }
+
+    /**
+     */
+    public void highResolutionMode(View view) {
+        // 注意此时的状态是切换之后的
+        boolean checked = highResolutionView.isChecked();
+        if (checked) {
+            ToastUtils.show(R.string.open_hight_resolution_waring);
+        }
+        SPUtil.putHighResolutionMode(checked);
     }
 
     /**

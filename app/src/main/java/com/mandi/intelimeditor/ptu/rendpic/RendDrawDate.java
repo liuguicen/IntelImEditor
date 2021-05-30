@@ -160,7 +160,7 @@ public class RendDrawDate {
     public void cacuFragBoundInLayout(int left, int top) {
         for (int i = 0; i < 2; i++) {
             fragBoundInLayout[i].set(fragBoundInSrcBm[i]); // 在原图中的范围
-            fragBoundInLayout[i].scale(scaleRatioBeforeRend); // 缩放
+            fragBoundInLayout[i].scale_(scaleRatioBeforeRend); // 缩放
             fragBoundInLayout[i].offset(left, top); // 加上起始位置
         }
     }

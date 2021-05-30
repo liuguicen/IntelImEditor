@@ -969,17 +969,17 @@ public class FloatImageView extends AppCompatImageView {
         bmRect.union(fragBoundInBm[1]);
 
         // 变到原图src的大小
-        fragBoundInBm[0].scale(1f / rdd.scaleRatioBeforeRend);
-        fragBoundInBm[1].scale(1f / rdd.scaleRatioBeforeRend);
-        bmRect.scale(1f / rdd.scaleRatioBeforeRend);
+        fragBoundInBm[0].scale_(1f / rdd.scaleRatioBeforeRend);
+        fragBoundInBm[1].scale_(1f / rdd.scaleRatioBeforeRend);
+        bmRect.scale_(1f / rdd.scaleRatioBeforeRend);
 
         // 不能超过最大的大小
         float ratio = bmRect.getScaleRatioOf_ANotBiggerThanB(new MRect(0, 0, TietuSizeController.getMaxWidth(), TietuSizeController.getMaxHeight()));
 
         // 最终大小
-        fragBoundInBm[0].scale(ratio);
-        fragBoundInBm[1].scale(ratio);
-        bmRect.scale(ratio);
+        fragBoundInBm[0].scale_(ratio);
+        fragBoundInBm[1].scale_(ratio);
+        bmRect.scale_(ratio);
         LogUtil.d("撕图后所画图片大小为 ： " + bmRect);
 
         Bitmap bm = Bitmap.createBitmap(bmRect.widthInt(), bmRect.heightInt(), Bitmap.Config.ARGB_8888);

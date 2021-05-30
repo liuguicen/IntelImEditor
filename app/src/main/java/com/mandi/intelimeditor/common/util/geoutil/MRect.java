@@ -4,6 +4,10 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 /**
@@ -116,16 +120,19 @@ public class MRect extends RectF {
 
     /**
      * 坐标系下缩放，即每个坐标缩放，整体大小也缩放
+     *
+     * @return
      */
-    public void scale(float scaleRatio) {
-        scale((double) scaleRatio);
+    public MRect scale_(float scaleRatio) {
+        return scale_((double) scaleRatio);
     }
 
-    public void scale(double scaleRatio) {
+    public MRect scale_(double scaleRatio) {
         left *= scaleRatio;
         top *= scaleRatio;
         right *= scaleRatio;
         bottom *= scaleRatio;
+        return this;
     }
 
     /**
@@ -193,6 +200,49 @@ public class MRect extends RectF {
         return GeoUtil.getDis(p.x, p.y, centerX(), centerY());
     }
 
+    /**
+     * 与边界的距离, 如果在内部返回负的距离，外部非边角返回正的距离，外部边角返回两个值
+     * 画个图，用if else 划分区域，然后一个个返回距离，处理过的划掉，直到9个区域处理完
+     * 返回列表，用以区分是否处于角上
+     */
+    public List<Float> disEdge(float x, float y) { // 距离边界的距离
+        ArrayList<Float> dis = new ArrayList<>();
+        if (x >= left) { // 左边界的右边
+            if (x <= right) { // 右边界的左边
+                if (y < top) { // 上边界上边
+                    dis.add(top - y);
+                } else if (y > bottom) { // 下边界下边
+                    dis.add(y - bottom);
+                } else { // 上下边界的中间, 矩形中间，比较四条边距离
+                    dis.add(-Math.min(
+                            Math.min(Math.abs(left - x), Math.abs(right - x)),
+                            Math.min(Math.abs(top - y), Math.abs(bottom - y))));
+                }
+            } else { // 右边界的右边
+                if (y < top) {
+                    dis.add(x - right);
+                    dis.add(top - y);
+                } else if (y > bottom) {
+                    dis.add(x - right);
+                    dis.add(y - bottom);
+                } else {
+                    dis.add(x - right);
+                }
+            }
+        } else { // 左边界的左边
+            if (y < top) {
+                dis.add(left - x);
+                dis.add(top - y);
+            } else if (y > bottom) {
+                dis.add(left - x);
+                dis.add(y - bottom);
+            } else {
+                dis.add(left - x);
+            }
+        }
+        return dis;
+    }
+
 
     /**
      * @param d 四条边都向外扩张d的距离
@@ -206,5 +256,13 @@ public class MRect extends RectF {
 
     public Rect toRect() {
         return new Rect(Math.round(left), Math.round(top), Math.round(right), Math.round(bottom));
+    }
+
+    public MRect offset_(int x, int y) {
+        return add_(x, y);
+    }
+
+    public MRect sub_(float x, float y) {
+        return add_(-x, -y);
     }
 }

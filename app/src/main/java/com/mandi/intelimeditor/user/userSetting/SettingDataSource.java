@@ -12,7 +12,7 @@ public interface SettingDataSource {
 
     void saveSharedWithout(boolean isWith);
 
-    boolean getSendShortcutNotify();
+    boolean getHighSolution();
 
     boolean getSendShortcutNotifyExit();
 

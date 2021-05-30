@@ -88,7 +88,7 @@
     <string name="settings_comment">评价</string>
     <string name="settings_share">分享时不带应用标签</string>
     <string name="settings_notify">退出后显示通知</string>
-    <string name="settings_notify_quick">通知栏快捷工具</string>
+    <string name="settings_notify_quick">高清模式</string>
     <string name="about_des">本软件基于个人业余爱好开发，希望分享一些有趣的功能给大家。</string>
     <string name="about_title">关于</string>
 
@@ -664,7 +664,8 @@ b) 在使用艺术美图网络服务进行网上交易时，您不可避免的�
     <string name="hotest_pic">最热图片</string>
     <string name="newest_pic">最新图片</string>
     <string name="no_search_result">暂无搜索结果</string>
-    <string name="choose_content_for_style">选择一张图片创作吧</string>
+    <string name="choose_content_for_style">选择一张照片创作吧</string>
     <string name="choose_model">选模型</string>
     <string name="you_can_add_qq_group_feedback">您也可以加入QQ群反馈</string>
+    <string name="open_hight_resolution_waring">打开高清模式能使照片更清晰，但也可能导致生成图片出错或崩溃</string>
 </resources>

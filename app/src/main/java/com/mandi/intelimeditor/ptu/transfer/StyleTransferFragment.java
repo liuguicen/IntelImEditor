@@ -244,10 +244,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     }
 
-    private void userDefinedSize() {
-
-    }
-
     private TextView createItem(final int pad, boolean isChoose, List<TextView> modelTxtList) {
         TextView tv = new TextView(mContext);
         tv.setGravity(Gravity.CENTER);
@@ -283,143 +279,6 @@ public class StyleTransferFragment extends BasePtuFragment {
             }
         }
     };
-
-    /**
-     * @param isReuse 模型是否重用上次的content或者style
-     */
-    public void transfer(Object obj, boolean isStyle, boolean isReuse) {
-        if (isProcessing) {
-            ToastUtils.show("处理中，请稍后");
-            return;
-        }
-        isProcessing = true;
-        pTuActivityInterface.hidePtuNotice();
-        pTuActivityInterface.showProgress(0);
-
-        Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
-            if (LogUtil.debugStyleTransfer) {
-                LogUtil.d(TAG + "开始风格迁移");
-            }
-            // 判断是否是url并解析成路径
-            // 第一步，主要解析Bm
-            // 将路径解析成Bm
-            int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
-                    AllData.globalSettings.styleContentRatio)
-                    : AllData.globalSettings.maxSupportContentSize;
-            decodeSize *= decodeSize;
-            BitmapUtil.decodeFromObj(obj, emitter, decodeSize);
-            if (LogUtil.debugStyleTransfer) {
-                LogUtil.d(TAG + "风格迁移，解析bitmap完成");
-            }
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .map(bm -> {
-                    // 更新UI进度和图片
-                    getActivity().runOnUiThread(() -> {
-                        pTuActivityInterface.showProgress(10);
-                        onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
-                    });
-
-                    // 第二步，使用合适的尺寸迁移图片
-                    if (MODEL_GOOGLE.equals(model)) {
-                        return realTransferTensorflow(bm, isStyle, isReuse);
-                    } else {
-                        return transferPytorch(bm, isStyle, false);
-                    }
-                }).subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<Bitmap>() {
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull Bitmap bitmap) {
-                        ptuSeeView.replaceSourceBm(bitmap);
-                        pTuActivityInterface.dismissProgress();
-                        isProcessing = false;
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        ToastUtils.show(e.getMessage());
-                        pTuActivityInterface.dismissProgress();
-                        isProcessing = false;
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        super.onComplete();
-                        pTuActivityInterface.dismissProgress();
-                        isProcessing = false;
-                    }
-                });
-
-    }
-
-    private Bitmap realTransferTensorflow(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
-        if (isChangeStyle) {
-            styleBm = bm;
-        } else {
-            pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
-        }
-        Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
-        StyleTransferTensorflow transfer = StyleTransferTensorflow.getInstance();
-        if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
-            if (isChangeStyle) {
-                contentBm = null;
-            } else {
-                styleBm = null;
-            }
-        }
-        return transfer.transfer(contentBm, styleBm, getActivity());
-    }
-
-    @org.jetbrains.annotations.Nullable
-    private Bitmap transferPytorch(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
-        SPUtil.putTransferFinish(false);
-        Bitmap sBm = styleBm, cBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
-        Bitmap rstBm = null;
-        try {
-            // 第二步，使用合适的尺寸迁移图片
-            if (isChangeStyle) {
-                sBm = bm;
-            } else {
-                cBm = bm;
-                pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
-            }
-
-            StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
-            if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
-                if (isChangeStyle) {
-                    cBm = null;
-                } else {
-                    sBm = null;
-                }
-            }
-            return transfer.transfer(cBm, sBm, 1);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            if (e instanceof OutOfMemoryError || e instanceof StackOverflowError || e.getMessage().contains("not enough memory")) { // 尺寸太大，爆内存，主动调小
-                if (LogUtil.debugStyleTransfer) {
-                    Log.d(TAG, String.format("尝试尺寸 %d 失败", AllData.globalSettings.maxSupportContentSize));
-                }
-                AllData.globalSettings.maxSupportContentSize *= 0.8f;
-                Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
-                double ratio = AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight());
-                contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
-                        (int) (ratio * contentBm.getHeight()), true);
-                pTuActivityInterface.getRepealRedoManager().setBaseBm(contentBm);
-                SPUtil.putTransferFinish(true);
-            } else {
-                Log.e(TAG, "transferPt: 风格迁移出现未知错误 使用Google模型");
-                SPUtil.putTransferFinish(true);
-                return realTransferTensorflow(bm, isChangeStyle, isReuse);
-            }
-        }
-        // 第一次成功，放入合适的尺寸
-        SPUtil.putTransferFinish(true);
-        return rstBm;
-    }
-
 
     // private Bitmap realTransferPt(@NotNull Bitmap bm, boolean isStyle) {
     //     Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
@@ -503,8 +362,6 @@ public class StyleTransferFragment extends BasePtuFragment {
     //     }
     //     return res;
     // }
-
-
     private void chooseFromAllPic() {
         US.putPTuTietuEvent(US.PTU_TIETU_MORE);
         Intent intent = new Intent(mContext, HomeActivity.class);
@@ -813,5 +670,152 @@ public class StyleTransferFragment extends BasePtuFragment {
         canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
         return output;
 
+    }
+
+    /**
+     * @param isReuse 模型是否重用上次的content或者style
+     */
+    public void transfer(Object obj, boolean isStyle, boolean isReuse) {
+        if (isProcessing) {
+            ToastUtils.show("处理中，请稍后");
+            return;
+        }
+        isProcessing = true;
+        pTuActivityInterface.hidePtuNotice();
+        pTuActivityInterface.showProgress(0);
+
+        Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
+            if (LogUtil.debugStyleTransfer) {
+                LogUtil.d(TAG + "开始风格迁移");
+            }
+            // 判断是否是url并解析成路径
+            // 第一步，主要解析Bm
+            // 将路径解析成Bm
+            int decodeSize = isStyle ? (int) (AllData.globalSettings.maxSupportContentSize *
+                    AllData.globalSettings.styleContentRatio)
+                    : AllData.globalSettings.maxSupportContentSize;
+            decodeSize *= decodeSize;
+            BitmapUtil.decodeFromObj(obj, emitter, decodeSize);
+            if (LogUtil.debugStyleTransfer) {
+                LogUtil.d(TAG + "风格迁移，解析bitmap完成");
+            }
+            emitter.onComplete();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(bm -> {
+                    // 更新UI进度和图片
+                    getActivity().runOnUiThread(() -> {
+                        pTuActivityInterface.showProgress(10);
+                        onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
+                    });
+
+                    // 第二步，使用合适的尺寸迁移图片
+                    if (MODEL_GOOGLE.equals(model)) {
+                        return realTransferTensorflow(bm, isStyle, isReuse);
+                    } else {
+                        return transferPytorch(bm, isStyle, false);
+                    }
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleObserver<Bitmap>() {
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull Bitmap bitmap) {
+                        ptuSeeView.replaceSourceBm(bitmap);
+                        pTuActivityInterface.dismissProgress();
+                        isProcessing = false;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        ToastUtils.show(e.getMessage());
+                        pTuActivityInterface.dismissProgress();
+                        isProcessing = false;
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+                        pTuActivityInterface.dismissProgress();
+                        isProcessing = false;
+                    }
+                });
+
+    }
+
+    private Bitmap realTransferTensorflow(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
+        Bitmap baseBitmap = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+        Bitmap sBm = styleBm, cBm = baseBitmap;
+        // 第二步，使用合适的尺寸迁移图片
+        if (isChangeStyle) {
+            sBm = bm;
+            styleBm = sBm;
+        } else {
+            baseBitmap = cBm = bm;
+            pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
+        }
+
+        StyleTransferTensorflow transfer = StyleTransferTensorflow.getInstance();
+        if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
+            if (isChangeStyle) {
+                cBm = null;
+            } else {
+                sBm = null;
+            }
+        }
+        if (baseBitmap.getWidth() > StyleTransferTensorflow.CONTENT_SIZE * 2.5 || baseBitmap.getHeight() > StyleTransferTensorflow.CONTENT_SIZE * 2.5) {
+            return transfer.transferBigSize(baseBitmap, sBm, getActivity());
+        } else {
+            return transfer.transfer(cBm, sBm, getActivity());
+        }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    private Bitmap transferPytorch(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
+        SPUtil.putTransferFinish(false);
+        Bitmap sBm = styleBm, cBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+        Bitmap rstBm = null;
+        try {
+            // 第二步，使用合适的尺寸迁移图片
+            if (isChangeStyle) {
+                sBm = bm;
+                styleBm = sBm;
+            } else {
+                cBm = bm;
+                pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
+            }
+
+            StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
+            if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
+                if (isChangeStyle) {
+                    cBm = null;
+                } else {
+                    sBm = null;
+                }
+            }
+            return transfer.transfer(cBm, sBm, 1);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            if (e instanceof OutOfMemoryError || e instanceof StackOverflowError || e.getMessage().contains("not enough memory")) { // 尺寸太大，爆内存，主动调小
+                if (LogUtil.debugStyleTransfer) {
+                    Log.d(TAG, String.format("尝试尺寸 %d 失败", AllData.globalSettings.maxSupportContentSize));
+                }
+                AllData.globalSettings.maxSupportContentSize *= 0.8f;
+                Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+                double ratio = AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight());
+                contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
+                        (int) (ratio * contentBm.getHeight()), true);
+                pTuActivityInterface.getRepealRedoManager().setBaseBm(contentBm);
+                SPUtil.putTransferFinish(true);
+            } else {
+                Log.e(TAG, "transferPt: 风格迁移出现未知错误 使用Google模型");
+                SPUtil.putTransferFinish(true);
+                return realTransferTensorflow(bm, isChangeStyle, isReuse);
+            }
+        }
+        // 第一次成功，放入合适的尺寸
+        SPUtil.putTransferFinish(true);
+        return rstBm;
     }
 }

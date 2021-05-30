@@ -75,5 +75,6 @@ public class SPConstants {
         public static final int PERFORMANCE_YEAR_CLASS_UNREAD = -1000;
         public static final String CONTENT_MAX_SUPPORT_BM_SIZE = "CONTENT_MAX_SUPPORT_BM_SIZE";
         public static final String transfer_success = "transfer_success";
+        public static final String open_high_resolution_mode = "open_high_resolution_mode";
     }
 }

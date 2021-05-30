@@ -15,7 +15,7 @@ import com.mandi.intelimeditor.user.userAccount.LocalUserInfo;
 
 public interface SettingContract {
     interface View extends BaseView<Presenter> {
-        void switchSendShortCutNotify(boolean isSend);
+        void switchHightResolution(boolean isSend);
 
         void switchSendShortCutNotifyExit(boolean isSend);
 

@@ -74,12 +74,11 @@
                 android:text="@string/settings_quick_tools" />
 
             <com.mandi.intelimeditor.common.view.SettingsItemView
-                android:visibility="gone"
-                android:id="@+id/showNotifyToolsView"
+                android:id="@+id/highResolutionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:onClick="toGiveStar"
+                android:onClick="highResolutionMode"
                 app:siv_showSwitch="true"
                 app:siv_title="@string/settings_notify_quick" />
 
@@ -112,7 +111,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:onClick="toGiveStar"
                 app:siv_showSwitch="true"
                 app:siv_title="@string/settings_share" />
 
