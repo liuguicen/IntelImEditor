@@ -172,17 +172,6 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         }
     }
 
-//    @Override
-//    public void onFragmentVisibleChange(boolean isVisible, boolean isFirstVisible) {
-//        LogUtil.d(TAG, " Menu show = " + mSecondClass + " Visible" + isVisible);
-//        if (isVisible && !isFirstVisible && !mPresenter.isDownloadSuccess()) {
-//            mLoadingView.setVisibility(View.VISIBLE);
-//            mPresenter.start();
-//        } else if (isVisible) {
-//            mPresenter.refresh();
-//        }
-//    }
-
     public void initLocalView() {
         initPicListView();
         mTvDownloadInfo.setVisibility(View.VISIBLE);
@@ -233,21 +222,6 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             spanCount = 3;
         }
         WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(getContext());
-//        GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(getContext(), spanCount);
-//        int finalSpanCount = spanCount;
-//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                if (position <= mPicResourceAdapter.getItemCount()
-//                        && (mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.FEED_AD
-//                        || mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.GROUP_HEADER
-//                        || mPicResourceAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.NEW_FEATURE_HEADER)
-//                ) {
-//                    return finalSpanCount;
-//                }
-//                return 1;
-//            }
-//        });
         picResRcv.setLayoutManager(linearLayoutManager);
         picResRcv.setAdapter(picResAdapter);
         picResAdapter.setClickListener((itemHolder, view) -> {
@@ -331,11 +305,6 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             mActivity.choosePic(chosenResource, resList, true);
         }
     }
-
-//    private void toChangeFace(PicResource chosenResource) {
-//        chosenResource.updateHeat();
-//        mActivity.toChangeFace(chosenResource);
-//    }
 
     /**
      * 显示分组列表

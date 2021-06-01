@@ -1822,6 +1822,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public void dismissProgress() {
         if (dialog != null && !isDestroyed()) {
             dialog.dismiss();
+            dialog = null;
         }
     }
 

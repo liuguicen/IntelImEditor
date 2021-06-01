@@ -158,13 +158,9 @@ public class PicResSearchSortUtil {
 
                 for (PicResource res : resList) {
                     if (firstClass != null && !firstClass.equals(res.getResourceClass())) continue;
-
+                    if (TextUtils.isEmpty(res.getTag())) continue;
                     String resTag = res.getTag().toUpperCase();
-                    if (resTag == null) {
-                        continue;
-                    }
                     List<String> resTags = splitTagString(resTag);
-
                     if (judgeTagListMatch(splitQuery, resTags)) {
                         searchResult.add(res);
                     }
