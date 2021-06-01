@@ -39,6 +39,9 @@ public class AppConfig {
 
     // 资源解锁数据相关的版本
     public static final int CUR_LOCK_VERSION = 2;
+    public static final String UM_ID = "60af823e6c421a3d97cf8531";
+    public static final String Bmob_ID = "0a8e8278e37dc785c7657d2a28555d12";
+    public static final String UM_PUSH_ID = "57ccf5b7c6ce95fc981b3b5fd84b53db";
 
 
     public static boolean isCloseVipFunction = true; // 不打开VIP功能

@@ -83,16 +83,6 @@ public class IntelImEditApplication extends MultiDexApplication {
     }
 
     private void initAppData() {
-        initUm();
-        init();
-        initBugly();
-    }
-
-    private void initBugly() {
-        Bugly.init(getApplicationContext(), "2d6e0ddfa6", BuildConfig.DEBUG);
-    }
-
-    private void init() {
         //初始化全局数据
         AllData.appConfig = new AppConfig(this);
         AllData.hasReadConfig = new HasReadConfig();
@@ -101,14 +91,20 @@ public class IntelImEditApplication extends MultiDexApplication {
         //重置域名，必须在初始化前重置
         Bmob.resetDomain("http://ptusdk.musiclake.cn/8/");
         //初始化bmob
-        Bmob.initialize(this, "0a8e8278e37dc785c7657d2a28555d12"); // 再是网络初始化
+        Bmob.initialize(this, AppConfig.Bmob_ID); // 再是网络初始化
         //BmobDatabaseUtil.getServiceUpdateTime("PicResource",null); // 不能放到异步线程中，不然线程中运行bmob初始化没完成而出错，
         new InstallPolicy().processPolicy();  //执行第一次安装或更新新版本所需的东西
         //Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());//设置APP运行异常捕捉器，不用了，目前使用友盟的
         initLocalUserInfo();
         AdData.checkAdClose(this);
         Log.e("------------", "init: 应用初始化成功");
-        initAd();
+        initUm();
+        // initAd();
+        initBugly();
+    }
+
+    private void initBugly() {
+        Bugly.init(getApplicationContext(), "2d6e0ddfa6", BuildConfig.DEBUG);
     }
 
     private void initAd() {
@@ -178,13 +174,24 @@ public class IntelImEditApplication extends MultiDexApplication {
      * 初始化友盟
      */
     private void initUm() {
+        if (!AllData.hasReadConfig.hasAgreeAppPrivacy()) {
+            UMConfigure.preInit(this, AppConfig.UM_ID, AnalyticsConfig.getChannel(this));
+            return;
+        }
+        delayInitUM(this);
+    }
+
+    /**
+     * app合规检查，必须在用户同意隐私政策之后初始化统计sdk
+     */
+    public static void delayInitUM(Context context) {
         /**
          * 初始化common库
          * 参数1:上下文，不能为空
          * 参数2:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
          * 参数3:Push推送业务的secret 填充Umeng Message Secret对应信息（需替换）
          */
-        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "57ccf5b7c6ce95fc981b3b5fd84b53db");
+        UMConfigure.init(context, UMConfigure.DEVICE_TYPE_PHONE,  AppConfig.UM_PUSH_ID);
         // 开启调试
         UMConfigure.setLogEnabled(false);
         // 选用AUTO页面采集模式，不用手动调用ac的resume和pause

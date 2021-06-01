@@ -31,6 +31,7 @@ import com.mandi.intelimeditor.ad.kjAD.MyKjSplashAd;
 import com.mandi.intelimeditor.ad.tencentAD.TencentSplashAd;
 import com.mandi.intelimeditor.ad.ttAD.MyTTSplashAd;
 import com.mandi.intelimeditor.common.Constants.Extras;
+import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 
 
@@ -474,6 +475,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
                 }
             } else {
                 AllData.hasReadConfig.setAgreeAppPrivacy(true);
+                IntelImEditApplication.delayInitUM(this);  // 首次启动，用户没有同意之前，这个方法是没有调用的
                 checkPermissionAndStart();
             }
             return null;
