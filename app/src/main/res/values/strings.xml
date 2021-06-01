@@ -302,7 +302,7 @@
     <string name="dialog">对话框</string>
     <string name="rate_hint">给个好评吧！</string>
     <string name="rate_hint_1">如果喜欢我们这个App，请按下评星</string>
-    <string name="search_hint">"请输入关键词，如'暴走'"</string>
+    <string name="search_hint">"请输入关键词，如'素描'"</string>
     <string name="search">搜索</string>
     <string name="search_history">搜索历史</string>
     <string name="action_sort">排序</string>
@@ -653,7 +653,7 @@ b) 在使用艺术美图网络服务进行网上交易时，您不可避免的�
     <string name="deformation_guide">在图片上滑动即可变形</string>
     <string name="gif_operation_notice">双击或长按，可选中部分帧进行编辑</string>
     <string name="choose_style">选风格</string>
-    <string name="choose_pic">选照片</string>
+    <string name="change_pic">换照片</string>
     <string name="stranfer_error_by_empty_content">生成出错了，内容为空</string>
     <string name="no_network_style_notice">暂时无法下载风格图片，网络或者服务器出错！您可以使用本机图片</string>
     <string name="fun_transfer">风格</string>
@@ -669,4 +669,6 @@ b) 在使用艺术美图网络服务进行网上交易时，您不可避免的�
     <string name="choose_model">选模型</string>
     <string name="you_can_add_qq_group_feedback">您也可以加入QQ群反馈</string>
     <string name="open_hight_resolution_waring">打开高清模式能使照片更清晰，但也可能导致生成图片出错或崩溃</string>
+    <string name="you_did_not_choose_content">没有发现内容图片，请选择一张吧</string>
+    <string name="you_did_not_choose_style">没有发现风格图片，请选择一张吧</string>
 </resources>

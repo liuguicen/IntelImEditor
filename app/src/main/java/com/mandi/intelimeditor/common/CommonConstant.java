@@ -12,4 +12,5 @@ public class CommonConstant {
     public static final String ACTION_LOGIN_FOR_OPEN_VIP = "action_login_for_open_vip";
     public static final int RESULT_CODE_HAS_USER_LOGIN_SUCCESS = 50007;
     public static final String CHANGE_BAOZOU_FACE = "CHANGE_BAOZOU_FACE";
+    public static final String SUCCESS = "success";
 }

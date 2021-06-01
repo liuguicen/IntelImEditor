@@ -18,7 +18,11 @@ class BottomFunctionView : FrameLayout {
         attrs?.let { initView(context, it) }
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         attrs?.let { initView(context, it) }
     }
 
@@ -58,6 +62,17 @@ class BottomFunctionView : FrameLayout {
     fun setTintColor(resColorId: Int) {
         mContext?.let {
             titleTv.setTextColor(ContextCompat.getColorStateList(it, resColorId))
+        };
+    }
+
+    fun setChosen(isChose: Boolean) {
+        mContext?.let {
+            titleTv.setTextColor(
+                ContextCompat.getColorStateList(
+                    it,
+                    if (isChose) R.color.text_checked_color else R.color.text_deep_black
+                )
+            )
         };
     }
 

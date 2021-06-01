@@ -216,7 +216,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
             getScreenSize();
 //            sendNotify();
             AllData.globalSettings.readDeviceInfo();// 这个方法需要存储权限
-//            TTRewardVadManager.getInstance().initAd(this); // 头条广告的
+            TTRewardVadManager.getInstance().initAd(this); // 头条广告的
             startBackgroundService(this);
         }
     }
@@ -236,7 +236,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     }
 
     private void initData() {
-//        FullScreenVadManager.getInstance().initAd(this);
+       FullScreenVadManager.getInstance().initAd(this);
         mHomePresenter = new HomePresenter(this);
     }
 

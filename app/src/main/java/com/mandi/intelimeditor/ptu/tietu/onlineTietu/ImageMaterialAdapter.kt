@@ -49,6 +49,7 @@ class ImageMaterialAdapter :
                     holder.getView<ImageView>(R.id.iv_pic)
                 )
             }
+
             // 注意不能用转换后的url
             val isUnlocked = LockUtil.sUnlockData[item.data.url?.url.hashCode().toString()]
             if (isUnlocked != null && !isUnlocked) {

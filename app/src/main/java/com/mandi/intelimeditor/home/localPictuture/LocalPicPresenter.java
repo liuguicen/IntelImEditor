@@ -80,7 +80,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
 
             @Override
             public void onError(@NonNull Throwable error) {
-               ToastUtils.show("扫描图片出错了");
+                ToastUtils.show("扫描图片出错了");
             }
 
             @Override
@@ -191,7 +191,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     public LocalPicAdapter createPicAdapter() {
         picAdapter = new LocalPicAdapter(mContext);
         if (!AdData.judgeAdClose() && mView != null) {
-//            picAdapter.initAdData(AdData.getTxPicAdPool());
+            picAdapter.initAdData(AdData.getTxPicAdPool());
         }
         return picAdapter;
     }

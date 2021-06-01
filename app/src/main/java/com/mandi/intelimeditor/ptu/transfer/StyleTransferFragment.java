@@ -12,6 +12,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,13 @@ import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -44,6 +47,7 @@ import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.common.view.ImageDecoration;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
+import com.mandi.intelimeditor.dialog.FirstUseDialog;
 import com.mandi.intelimeditor.home.HomeActivity;
 import com.mandi.intelimeditor.home.view.BottomFunctionView;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
@@ -55,6 +59,7 @@ import com.mandi.intelimeditor.ptu.common.PtuBaseChooser;
 import com.mandi.intelimeditor.ptu.common.TransferController;
 import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
+import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
 import com.mandi.intelimeditor.ptu.threeLevelFunction.ThreeLevelToolUtil;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.ImageMaterialAdapter;
@@ -80,6 +85,12 @@ import io.reactivex.schedulers.Schedulers;
 public class StyleTransferFragment extends BasePtuFragment {
     public static final String ALL = "all";
     private String TAG = "StyleTransferFragment";
+    static final String TRANS_RESULT_STATE = "TRANS_RESULT_STATE";
+    static final String TRANS_RESULT_SUCCESS = "success";
+    static final String TRANS_RESULT_NO_CONTENT = "no_content_pic";
+    static final String TRANS_RESULT_NO_STYLE = "no_style_pic";
+    static final String TRANS_RESULT_UNKNOWN_FAIL = "unknown reason";
+
     public static final int EDIT_MODE = PtuUtil.EDIT_DRAW;
     private Context mContext;
 
@@ -90,8 +101,6 @@ public class StyleTransferFragment extends BasePtuFragment {
     private RecyclerView chooseRcv;
     private boolean isChooseStyleMode = true;
     private ImageMaterialAdapter chooseListAdapter;
-    private boolean isFirstShowChooseRcv;
-    private BottomFunctionView choosePicBtn, chooseStyleBtn;
     static final int bottonWidth = Util.dp2Px(20);
     private TransferController transferController;
     public static final String MODEL_ADAIN = "adain";
@@ -100,10 +109,23 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     private Bitmap styleBm;
     private boolean isProcessing = false;
+    private int lastStylePos = -1;
+    private int lastStyleOffset = -1;
+    private int lastContentOffset = -1;
+    private String stylePath;
+    private String contentPath;
+    private int lastContentPos = -1;
+    private BottomFunctionView chooseContentBtn;
+    private BottomFunctionView chooseStyleBtn;
+    private PicResource lastStyle;
+    private RepealRedoManager<StepData> repealRedoManager;
+    private PicResource lastContent;
+
 
     @Override
     public void setPTuActivityInterface(PTuActivityInterface ptuActivity) {
         this.pTuActivityInterface = ptuActivity;
+        repealRedoManager = pTuActivityInterface.getRepealRedoManager();
         this.ptuSeeView = ptuActivity.getPtuSeeView();
     }
 
@@ -150,37 +172,63 @@ public class StyleTransferFragment extends BasePtuFragment {
         GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(mContext, TietuRecyclerAdapter.DEFAULT_ROW_NUMBER,
                 GridLayoutManager.HORIZONTAL, false);
         chooseRcv.setLayoutManager(gridLayoutManager);
-        isChooseStyleMode = true;
-        if (transferController != null && transferController.contentBm == null) {
-            isChooseStyleMode = false;
-        }
-        chooseListAdapter = new ImageMaterialAdapter();
-        chooseListAdapter.setOnItemClickListener(chooseRcvListener);
-        prepareShowChooseRcv(view, isChooseStyleMode);
 
-        chooseStyleBtn = rootView.findViewById(R.id.choose_style);
-        choosePicBtn = rootView.findViewById(R.id.choose_content);
-        choosePicBtn.setOnClickListener(v -> {
-            if (!isChooseStyleMode && chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
+        isChooseStyleMode = true;
+        if (transferController != null) {
+            if (transferController.contentBm != null) {
+                isChooseStyleMode = true;
+                lastStyle = PicResource.path2PicResource(transferController.contentUrl);
+                if (AllData.contentList != null) {
+                    lastContentPos = AllData.contentList.indexOf(lastStyle) + 1;
+                    lastContentOffset = AllData.getScreenWidth() / 2;
+                }
+            }
+            if (transferController.styleBm != null) {
+                styleBm = transferController.styleBm;
+                isChooseStyleMode = false;
+                lastContent = PicResource.path2PicResource(transferController.styleUrl);
+                if (AllData.curStyleList != null) {
+                    lastStylePos = AllData.curStyleList.indexOf(lastContent) + 1;
+                    lastStyleOffset = AllData.getScreenWidth() / 2;
+                }
+            }
+        }
+
+        // private boolean isFirstShowChooseRcv;
+        chooseContentBtn = rootView.findViewById(R.id.choose_content);
+
+        chooseContentBtn.setOnClickListener(v -> {
+            if (chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
                 ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+                getScollPos(gridLayoutManager);
+                chooseContentBtn.setChosen(false);
+                chooseStyleBtn.setChosen(false);
             } else {
                 US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
                 isChooseStyleMode = false;
-                prepareShowChooseRcv(view, isChooseStyleMode);
+                prepareListView(view);
+                showContentList();
             }
         });
-        BottomFunctionView chooseModel = rootView.findViewById(R.id.choose_model);
-        chooseModel.setOnClickListener(this::showChooseModel);
 
+        chooseStyleBtn = rootView.findViewById(R.id.choose_style);
         chooseStyleBtn.setOnClickListener(v -> {
-            if (isChooseStyleMode && chooseRcv.getParent() != null) {
+            if (chooseRcv.getParent() != null) {
                 ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+                getScollPos(gridLayoutManager);
+                chooseContentBtn.setChosen(false);
+                chooseStyleBtn.setChosen(false);
             } else {
                 US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
                 isChooseStyleMode = true;
-                prepareShowChooseRcv(view, isChooseStyleMode);
+                prepareListView(view);
+                showStyleList();
             }
         });
+
+        BottomFunctionView chooseModel = rootView.findViewById(R.id.choose_model);
+        chooseModel.setOnClickListener(this::showChooseModel);
+
         if (transferController != null) {
             onChosenBm(transferController.contentBm, transferController.styleBm);
         }
@@ -188,9 +236,30 @@ public class StyleTransferFragment extends BasePtuFragment {
             if (chooseRcv.getParent() != null) {
                 ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
             }
-            pTuActivityInterface.getRepealRedoManager().setBaseBm(pTuActivityInterface.getPtuSeeView().getSourceBm());
+            repealRedoManager.setBaseBm(pTuActivityInterface.getPtuSeeView().getSourceBm());
             pTuActivityInterface.switchFragment(PtuUtil.EDIT_MAIN, null);
         });
+
+        chooseListAdapter = new ImageMaterialAdapter();
+        chooseListAdapter.setOnItemClickListener(chooseRcvListener);
+        prepareListView(view);
+        if (isChooseStyleMode) {
+            showStyleList();
+        } else {
+            showContentList();
+        }
+    }
+
+    private void getScollPos(GridLayoutManager gridLayoutManager) {
+        if (!isChooseStyleMode) {
+            lastContentPos = gridLayoutManager.findLastVisibleItemPosition();
+            View findView = gridLayoutManager.findViewByPosition(lastContentPos);
+            lastContentOffset = findView != null ? findView.getLeft() : 0;
+        } else {
+            lastStylePos = gridLayoutManager.findLastVisibleItemPosition();
+            View findView = gridLayoutManager.findViewByPosition(lastStylePos);
+            lastStyleOffset = findView != null ? findView.getLeft() : 0;
+        }
     }
 
     private void showChooseModel(View view) {
@@ -201,23 +270,36 @@ public class StyleTransferFragment extends BasePtuFragment {
         linearLayout.setBackgroundColor(Color.WHITE);
         linearLayout.setPadding(0, pad, 0, pad);
         List<TextView> modelTxtList = new ArrayList<>();
-        final TextView custom = createItem(pad, MODEL_ADAIN.equals(model), modelTxtList);
-        custom.setText("adain");
-        custom.setOnClickListener(v -> {
-            model = MODEL_ADAIN;
-            clearModelChoose(modelTxtList);
-            custom.setTextColor(Util.getColor(R.color.text_checked_color));
-            transfer(styleBm, true, false);
-        });
-        final TextView free = createItem(pad, MODEL_GOOGLE.equals(model), modelTxtList);
-        free.setText("google");
-        free.setOnClickListener(v -> {
-            model = MODEL_GOOGLE;
-            clearModelChoose(modelTxtList);
-            free.setTextColor(Util.getColor(R.color.text_checked_color));
-            transfer(styleBm, true, false);
-        });
+        boolean HDOpen = SPUtil.getHighResolutionMode();
+        final TextView dmodel1 = createItem(pad, HDOpen, modelTxtList);
+        dmodel1.setText("高清");
+        dmodel1.setOnClickListener(v -> {
+            new FirstUseDialog(getContext()).createDialog("",
+                    "高清模式可使生成照片更清晰！\n但是可能会引起局部失真，或者应用崩溃！",
+                    new FirstUseDialog.ActionListener() {
+                        @Override
+                        public void onSure() {
 
+                        }
+                    });
+            SPUtil.putHighResolutionMode(true);
+            dmodel1.setTextColor(Util.getColor(R.color.text_checked_color));
+            // model = MODEL_ADAIN;
+            clearModelChoose(modelTxtList);
+            // dmodel1.setTextColor(Util.getColor(R.color.text_checked_color));
+            // transfer(styleBm, true, false);
+        });
+        final TextView model2 = createItem(pad, HDOpen, modelTxtList);
+        model2.setText("一般");
+        model2.setOnClickListener(v -> {
+            SPUtil.putHighResolutionMode(false);
+            // model = MODEL_GOOGLE;
+            // clearModelChoose(modelTxtList);
+            // model2.setTextColor(Util.getColor(R.color.text_checked_color));
+            // transfer(styleBm, true, false);
+            clearModelChoose(modelTxtList);
+            model2.setTextColor(Util.getColor(R.color.text_checked_color));
+        });
         TextView d1 = new TextView(mContext);
         d1.setHeight(pad);
         TextView d2 = new TextView(mContext);
@@ -228,11 +310,11 @@ public class StyleTransferFragment extends BasePtuFragment {
                 Util.getDrawable(R.drawable.divider_cut_chose));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        linearLayout.addView(custom, params);
+        linearLayout.addView(dmodel1, params);
         linearLayout.addView(d1);
         linearLayout.addView(d3);
         linearLayout.addView(d2);
-        linearLayout.addView(free, params);
+        linearLayout.addView(model2, params);
 
         PtuUtil.setPopWindow_for3LevelFunction(popWindow, view, linearLayout);
     }
@@ -265,8 +347,23 @@ public class StyleTransferFragment extends BasePtuFragment {
             }
             if (chooseListAdapter != null) {
                 PicResource oneTietu = chooseListAdapter.getData().get(position).data;
-                if (oneTietu != null && oneTietu.getUrl() != null) {
+                if (oneTietu == null) {
+                    ToastUtils.show("抱歉！未获取到图片");
+                    return;
+                }
+
+                if (isChooseStyleMode && oneTietu.equals(lastStyle)) {
+                    ptuSeeView.replaceSourceBm(repealRedoManager.getBaseBitmap());
+                    return;
+                } else if (oneTietu.equals(lastContent)) { // 点击重复的内容
+                    return;
+                }
+
+                if (oneTietu.getUrl() != null) {
+                    if (!isChooseStyleMode) lastContent = oneTietu;
+                    else lastStyle = oneTietu;
                     String url = oneTietu.getUrl().getUrl();
+                    ViewGroup parent = (ViewGroup) chooseRcv.getParent();
                     transfer(url, isChooseStyleMode, !isFirstUse);
                     isFirstUse = false;
                     MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
@@ -278,7 +375,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     };
 
     // private Bitmap realTransferPt(@NotNull Bitmap bm, boolean isStyle) {
-    //     Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+    //     Bitmap contentBm = repealRedoManager.getBaseBitmap();
     //     StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
     //     Log.d(TAG, "realTransfer: 开始运行风格迁移算法");
     //     getActivity().runOnUiThread(() -> pTuActivityInterface.showProgress(33));
@@ -383,7 +480,12 @@ public class StyleTransferFragment extends BasePtuFragment {
 //        }
     }
 
-    private void prepareShowChooseRcv(View view, boolean isChooseStyle) {
+    /**
+     * 调用时机：
+     * 初始化
+     * 点击风格或者内容按钮
+     */
+    private void prepareListView(View view) {
         ViewParent parent = view.getParent();
         while (parent != null && !(parent instanceof PtuConstraintLayout)) {
             parent = parent.getParent();
@@ -392,6 +494,7 @@ public class StyleTransferFragment extends BasePtuFragment {
             return;
         }
         PtuConstraintLayout ptuFrameLayout = (PtuConstraintLayout) parent;
+
         if (ptuFrameLayout.indexOfChild(chooseRcv) == -1) { //
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.MATCH_CONSTRAINT, Util.dp2Px(100));
@@ -405,21 +508,16 @@ public class StyleTransferFragment extends BasePtuFragment {
             }
             chooseRcv.setAdapter(chooseListAdapter);
         }
-        if (isChooseStyle) {
-            prepareShowStyleList(view);
-        } else {
-            prepareShowContentList();
-        }
-        if (isFirstShowChooseRcv) { // 本地贴图第一次加载显示不了，尝试多种办法不行，目前只能用这个
-            view.post(() -> prepareShowStyleList(view));
-            view.post(() -> prepareShowStyleList(view));
-        }
-        isFirstShowChooseRcv = false;
+        // if (isFirstShowChooseRcv) { // 本地贴图第一次加载显示不了，尝试多种办法不行，目前只能用这个
+        //     view.post(() -> prepareShowStyleList(view));
+        //     view.post(() -> prepareShowStyleList(view));
+        // }
+        // isFirstShowChooseRcv = false;
     }
 
-    private void prepareShowContentList() {
+    private void showContentList() {
         if (AllData.contentList.size() != 0) {
-            showStyleOrContenList(AllData.contentList);
+            showStyleOrContentList(AllData.contentList);
         } else { // 没有指定，显示最近图片列表
             AllData.queryLocalPicList(new Emitter<String>() {
                 @Override
@@ -428,7 +526,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                         return;
                     }
                     AllData.contentList = AllData.sMediaInfoScanner.convertRecentPath2PicResList();
-                    showStyleOrContenList(AllData.contentList);
+                    showStyleOrContentList(AllData.contentList);
                 }
 
                 @Override
@@ -447,11 +545,13 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
     }
 
-    private void prepareShowStyleList(View view) {
-        AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
+    private void showStyleList() {
+        if (AllData.curStyleList.size() != 0) {
+            showStyleOrContentList(AllData.curStyleList);
+        } else AllData.queryAllPicRes(new Emitter<List<PicResource>>() {
 
             @Override
-            public void onNext(List<PicResource> resList) {
+            public void onNext(@NotNull List<PicResource> resList) {
                 if (isDetached()) {
                     return;
                 }
@@ -461,7 +561,9 @@ public class StyleTransferFragment extends BasePtuFragment {
                     return;
                 }
                 Log.d("TAG", "onNext: 获取到的贴图数量" + size);
-                showStyleOrContenList(resList);
+                AllData.curStyleList = resList;
+
+                showStyleOrContentList(resList);
             }
 
             @Override
@@ -471,7 +573,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                 }
                 onNoStylePic();
                 LogUtil.e(throwable.getMessage());
-                showStyleOrContenList(null);
+                showStyleOrContentList(null);
             }
 
             @Override
@@ -481,10 +583,23 @@ public class StyleTransferFragment extends BasePtuFragment {
         });
     }
 
-    private void showStyleOrContenList(List<PicResource> list) {
+    private void showStyleOrContentList(List<PicResource> list) {
         if (list == null) list = new ArrayList<>();
         chooseListAdapter.setList(list);
         chooseListAdapter.add(0, PicResource.path2PicResource(ALL));
+        int pos = !isChooseStyleMode ? lastContentPos : lastStylePos;
+        int offset = !isChooseStyleMode ? lastContentOffset : lastStyleOffset;
+        if (isChooseStyleMode) {
+            chooseContentBtn.setChosen(false);
+            chooseStyleBtn.setChosen(true);
+        } else {
+            chooseStyleBtn.setChosen(false);
+            chooseContentBtn.setChosen(true);
+        }
+        // chooseListAdapter.setSelect(lastChoseID);
+        if (pos >= 0) {
+            ((LinearLayoutManager) chooseRcv.getLayoutManager()).scrollToPositionWithOffset(pos, offset);
+        }
     }
 
     private void onNoStylePic() {
@@ -499,16 +614,20 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {
-            PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
-            transfer(picRes.getUrlString(), true, true);
-            showStyleOrContenList(AllData.curStyleList);
-        }
-
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_CONTENT && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
             transfer(picRes.getUrlString(), false, true);
-            showStyleOrContenList(AllData.contentList);
+            lastContentPos = AllData.contentList.indexOf(picRes) + 1;
+            lastContentOffset = AllData.getScreenWidth() / 2;
+            showStyleOrContentList(AllData.contentList);
+        }
+
+        if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {
+            PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
+            transfer(picRes.getUrlString(), true, true);
+            lastStylePos = AllData.curStyleList.indexOf(picRes) + 1;
+            lastStyleOffset = AllData.getScreenWidth() / 2;
+            showStyleOrContentList(AllData.curStyleList);
         }
 
         // 开通会员解锁, 开通成功后隐藏列表，用户重新点击，重新将列表加入adapter，一尺排除广告数据
@@ -630,10 +749,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         this.transferController = transferController;
     }
 
-    public void setStyleBm(Bitmap styleBm) {
-        this.styleBm = styleBm;
-    }
-
     public interface DeforActionListener {
         void deforComposeGif(List<GifFrame> bmList);
     }
@@ -708,11 +823,16 @@ public class StyleTransferFragment extends BasePtuFragment {
                     });
 
                     // 第二步，使用合适的尺寸迁移图片
+                    Pair<String, Bitmap> res;
                     if (MODEL_GOOGLE.equals(model)) {
-                        return realTransferTensorflow(bm, isStyle, isReuse);
+                        res = realTransferTensorflow(bm, isStyle, isReuse);
                     } else {
-                        return transferPytorch(bm, isStyle, false);
+                        res = transferPytorch(bm, isStyle, false);
                     }
+                    if (res == null || res.second == null) {
+                        throw new Exception(getErrorMsg(res != null ? res.first : ""));
+                    }
+                    return res.second;
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SimpleObserver<Bitmap>() {
@@ -726,7 +846,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        ToastUtils.show(e.getMessage());
+                        ToastUtils.show(e.getMessage(), Toast.LENGTH_LONG);
                         pTuActivityInterface.dismissProgress();
                         isProcessing = false;
                     }
@@ -741,8 +861,20 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     }
 
-    private Bitmap realTransferTensorflow(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
-        Bitmap baseBitmap = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+    private String getErrorMsg(String first) {
+        String msg = "";
+        if (TRANS_RESULT_NO_CONTENT.equals(first)) {
+            msg = getContext().getString(R.string.you_did_not_choose_content);
+        } else if (TRANS_RESULT_NO_STYLE.equals(first)) {
+            msg = getContext().getString(R.string.you_did_not_choose_style);
+        } else {
+            msg = getContext().getString(R.string.unkown_error);
+        }
+        return msg;
+    }
+
+    private Pair<String, Bitmap> realTransferTensorflow(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
+        Bitmap baseBitmap = repealRedoManager.getBaseBitmap();
         Bitmap sBm = styleBm, cBm = baseBitmap;
         // 第二步，使用合适的尺寸迁移图片
         if (isChangeStyle) {
@@ -750,28 +882,35 @@ public class StyleTransferFragment extends BasePtuFragment {
             styleBm = sBm;
         } else {
             baseBitmap = cBm = bm;
-            pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
+            repealRedoManager.setBaseBm(bm);
         }
 
         StyleTransferTensorflow transfer = StyleTransferTensorflow.getInstance();
-        if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
-            if (isChangeStyle) {
+        if (isChangeStyle) {
+            if (transfer.isContentExit() && isReuse) { //  // 重用内容 上次内容存在
                 cBm = null;
-            } else {
+            } else if (cBm == null) {  // 上次内容不存在,但是内容图为空
+                return new Pair<String, Bitmap>(TRANS_RESULT_NO_CONTENT, null);
+            }
+        } else {  // 重用风格
+            if (transfer.isStyleExist() && isReuse) { // 上次风格存在
                 sBm = null;
+            } else if (sBm == null) { // 上次风格不存在，但是风格图为空
+                return new Pair<String, Bitmap>(TRANS_RESULT_NO_STYLE, null);
             }
         }
+
         if (baseBitmap.getWidth() > StyleTransferTensorflow.CONTENT_SIZE * 2.5 || baseBitmap.getHeight() > StyleTransferTensorflow.CONTENT_SIZE * 2.5) {
-            return transfer.transferBigSize(baseBitmap, sBm, getActivity());
+            return new Pair<String, Bitmap>(TRANS_RESULT_SUCCESS, transfer.transferBigSize(baseBitmap, sBm, getActivity()));
         } else {
-            return transfer.transfer(cBm, sBm, getActivity());
+            return new Pair<String, Bitmap>(TRANS_RESULT_SUCCESS, transfer.transfer(cBm, sBm, getActivity()));
         }
     }
 
     @org.jetbrains.annotations.Nullable
-    private Bitmap transferPytorch(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
+    private Pair<String, Bitmap> transferPytorch(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
         SPUtil.putTransferFinish(false);
-        Bitmap sBm = styleBm, cBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+        Bitmap sBm = styleBm, cBm = repealRedoManager.getBaseBitmap();
         Bitmap rstBm = null;
         try {
             // 第二步，使用合适的尺寸迁移图片
@@ -780,7 +919,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                 styleBm = sBm;
             } else {
                 cBm = bm;
-                pTuActivityInterface.getRepealRedoManager().setBaseBm(bm);
+                repealRedoManager.setBaseBm(bm);
             }
 
             StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
@@ -791,7 +930,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     sBm = null;
                 }
             }
-            return transfer.transfer(cBm, sBm, 1);
+            return new Pair<String, Bitmap>(TRANS_RESULT_SUCCESS, transfer.transfer(cBm, sBm, 1));
         } catch (Throwable e) {
             e.printStackTrace();
             if (e instanceof OutOfMemoryError || e instanceof StackOverflowError || e.getMessage().contains("not enough memory")) { // 尺寸太大，爆内存，主动调小
@@ -799,11 +938,11 @@ public class StyleTransferFragment extends BasePtuFragment {
                     Log.d(TAG, String.format("尝试尺寸 %d 失败", AllData.globalSettings.maxSupportContentSize));
                 }
                 AllData.globalSettings.maxSupportContentSize *= 0.8f;
-                Bitmap contentBm = pTuActivityInterface.getRepealRedoManager().getBaseBitmap();
+                Bitmap contentBm = repealRedoManager.getBaseBitmap();
                 double ratio = AllData.globalSettings.maxSupportContentSize * 1f / (contentBm.getWidth() * contentBm.getHeight());
                 contentBm = Bitmap.createScaledBitmap(contentBm, (int) (ratio * contentBm.getWidth()),
                         (int) (ratio * contentBm.getHeight()), true);
-                pTuActivityInterface.getRepealRedoManager().setBaseBm(contentBm);
+                repealRedoManager.setBaseBm(contentBm);
                 SPUtil.putTransferFinish(true);
             } else {
                 Log.e(TAG, "transferPt: 风格迁移出现未知错误 使用Google模型");
@@ -813,6 +952,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
         // 第一次成功，放入合适的尺寸
         SPUtil.putTransferFinish(true);
-        return rstBm;
+        return new Pair<>(TRANS_RESULT_SUCCESS, rstBm);
     }
 }

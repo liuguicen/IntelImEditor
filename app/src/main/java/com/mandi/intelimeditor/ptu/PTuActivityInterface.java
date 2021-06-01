@@ -6,6 +6,7 @@ import android.view.View;
 import com.mandi.intelimeditor.ptu.common.SecondFuncController;
 import com.mandi.intelimeditor.ptu.gif.GifManager;
 import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
+import com.mandi.intelimeditor.ptu.repealRedo.StepData;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public interface PTuActivityInterface {
 
     void showProgress(int progress);
 
-    RepealRedoManager getRepealRedoManager();
+    RepealRedoManager<StepData> getRepealRedoManager();
 
     void dismissProgress();
 }

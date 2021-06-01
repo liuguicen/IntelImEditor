@@ -211,6 +211,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * <p>2为获取图片的宽，3为获取图片的高度
      */
     private String picPath = null;
+    private String originalPath; // 如果传入的url，这个保存url格式下的路径
     private final int MAX_STEP = 10;
     private RepealRedoManager<StepData> repealRedoManager;
 
@@ -237,7 +238,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     private RepealRedoListener repealRedoListener;
     private SaveSetInstance saveSetInstance;
-
     /**
      * currentFrag
      * 这两个用于处理fragment切换动画时出现的异常
@@ -258,7 +258,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     private TxBannerAd bannerAd;
     private PopupWindow pop;
     private boolean isStyle;
-    private Bitmap styleBm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -270,7 +269,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         setTitle("");
         initView();
         initFragment();
-        analysisPicPath(null); // 开始图片加载流程
+        startLoadpic(null); // 开始图片加载流程
         LogUtil.printMemoryInfo(TAG + " 启动 ", this);
         // contentTensor = createTensor();
     }
@@ -292,8 +291,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         if (PTU_ACTION_AS_INTERMEDIATE_PTU.equals(intent.getAction())) {
             isIntermediatePtu = true;
         }
-        isStyle = intent.getBooleanExtra(INTENT_EXTRA_IS_STYLE, false);
         addUsedTags(true, intent.getStringExtra(INTENT_EXTRA_CHOSEN_TAGS));
+        isStyle = getIntent().getBooleanExtra(INTENT_EXTRA_IS_STYLE, false);
     }
 
     /******************************* AC生命周期部分 *******************************/
@@ -512,15 +511,11 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             }
         });
         mPtuToolbar.switchToolbarBtn(false);
-        initPtuNotice();
     }
 
-    private void initPtuNotice() {
-        String ptuNotice = getIntent().getStringExtra(INTENT_EXTRA_PTU_NOTICE);
-
-        if (isStyle) {
-            ptuNotice = getString(R.string.choose_content_for_style);
-        }
+    private void showPtuNotice(String ptuNotice) {
+        if (ptuNotice == null)
+            ptuNotice = getIntent().getStringExtra(INTENT_EXTRA_PTU_NOTICE);
 
         if (ptuNotice != null) {
             View noticeLayout = findViewById(R.id.ptu_notice_layout);
@@ -571,7 +566,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      *
      * @param url url非空表示已知图片url,通常来源于切换底图，否则从Intent获取
      */
-    private void analysisPicPath(@Nullable String url) {
+    private void startLoadpic(@Nullable String url) {
         if (mIsInLoading) { // 加载中，不要再再加载了
             return;
         }
@@ -623,7 +618,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     } else {
                         picPath = url;
                     }
-
+                    originalPath = picPath;
                     // second，解析和处理URL，变成可用的格式
                     if (FileTool.urlType(picPath) == FileTool.UrlType.URL) {
                         try {
@@ -646,7 +641,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     }
 
                     if (picPath != null && picPath.equals(oldPath)) { // 相同路径，不加载了，减少消耗
-                        onLoadSuccess(isReplace, null);
+                        afterLoadSuccess(isReplace, null);
                         emitter.onComplete();
                         return;
                     }
@@ -732,12 +727,9 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     public void onNext(@NotNull Bitmap bitmap) {
                         //TODO 图片内存泄漏
                         if (isDestroyed()) return;
-                        if (isStyle) {
-                            styleBm = bitmap;
-                            if (transferFrag != null) {
-                                transferFrag.setStyleBm(styleBm);
-                            }
-                        } else {
+                        if (isStyle)
+                            showPtuNotice(getString(R.string.choose_content_for_style));
+                        else {
                             ptuSeeView.setBitmapAndInit(bitmap, totalBound);
                             if (ptuSeeView.getSourceBm() != null) { // 这里为空概率应该很小很小
                                 repealRedoManager.setBaseBm(bitmap.copy(Bitmap.Config.ARGB_8888, true));
@@ -745,7 +737,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                                 LogUtil.e("设置PTuSeeView底图失败！");
                             }
                         }
-                        onLoadSuccess(isReplace, bitmap);
+                        afterLoadSuccess(isReplace, bitmap);
                         LogUtil.d("显示图片Bitmap完成");
                     }
                 });
@@ -817,7 +809,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                     public void onNext(GifManager gifManager) {
                         if (isDestroyed()) return;
                         gifManager.initPtuSeeView(ptuSeeView, totalBound);
-                        onLoadSuccess(isReplace, null);
+                        afterLoadSuccess(isReplace, null);
                     }
                 });
     }
@@ -853,7 +845,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
     }
 
-    private void onLoadSuccess(boolean isReplace, Bitmap bm) {
+    private void afterLoadSuccess(boolean isReplace, Bitmap bm) {
         if (!isReplace) { // 跳转到子功能
             int toChildFunction = getIntent().getIntExtra(INTENT_EXTRA_TO_CHILD_FUNCTION, -1);
             if (PtuUtil.isSecondEditMode(toChildFunction)) {
@@ -861,7 +853,12 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             } else if (PtuUtil.CHILD_FUNCTION_GIF == toChildFunction) {
                 switchFragment(EDIT_GIF, null);
             } else {
-                switchFragment(EDIT_TRANSFER, new TransferController(isStyle ? null : bm, isStyle ? bm : null));
+                TransferController transferController = new TransferController(
+                        isStyle ? null : bm,
+                        isStyle ? null : originalPath,
+                        isStyle ? bm : null,
+                        isStyle ? originalPath : null);
+                switchFragment(EDIT_TRANSFER, transferController);
 //                getVggFeature(bm, true);
             }
         }
@@ -923,7 +920,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     public void replaceBase(String url) {
         // url 不能为空，为空出大问题
         if (url == null) return;
-        analysisPicPath(url);
+        startLoadpic(url);
         // afterSure(new );
     }
 
@@ -1190,7 +1187,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         if (transferFrag == null) {
             transferFrag = new StyleTransferFragment();
             transferFrag.setPTuActivityInterface(this);
-            transferFrag.setStyleBm(styleBm);
         }
         //更换底部导航栏
         transferFrag.initBeforeCreateView(transferController);
@@ -1803,7 +1799,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     @Override
-    public RepealRedoManager getRepealRedoManager() {
+    public RepealRedoManager<StepData> getRepealRedoManager() {
         return repealRedoManager;
     }
 

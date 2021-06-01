@@ -42,7 +42,7 @@ public class StyleTransferTensorflow {
     /**
      * 注意必须小于{@link #CONTENT_SIZE / 2}
      */
-    private static final int ADJACENT_LEN = 40;
+    private static int ADJACENT_LEN = 80;
     public static final int STYLE_SIZE = 256;
     private final String STYLE_PREDICT_INT8_MODEL = "style_predict_quantized_256.tflite";
     private final String STYLE_TRANSFER_INT8_MODEL = "style_transfer_quantized_384.tflite";
@@ -160,7 +160,6 @@ public class StyleTransferTensorflow {
                         c_PixArray, c_Buffer);
             }
             if (sBm != null) {
-                ByteBuffer sInput;
                 sConvertCanvas.drawBitmap(sBm, null,
                         new Rect(0, 0, sConvertCanvas.getWidth(), sConvertCanvas.getHeight()),
                         BitmapUtil.getBitmapPaint());
@@ -201,8 +200,10 @@ public class StyleTransferTensorflow {
     }
 
     /**
-     * 注意传入空表示使用上一次的
+     *
+     * 传入空表示使用上一次的, 注意目前不能重用内容图
      * 将图片裁剪成一个个的小图再迁移,最后拼接起来，拼接的时候对边缘进行平滑过渡处理，证明是可行的，但是编码相当复杂
+     *
      */
     public Bitmap transferBigSize(Bitmap cBm, Bitmap sBm, Context context) {
         try {
@@ -291,6 +292,14 @@ public class StyleTransferTensorflow {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean isStyleExist() {
+        return sPredict != null;
+    }
+
+    public boolean isContentExit() {
+        return c_Range != null;
     }
 
     @NotNull
@@ -430,7 +439,7 @@ public class StyleTransferTensorflow {
         return nodePos;
     }
 
-    public static ArrayList<Integer> getNodePosFill(int len) {
+    public static ArrayList<Integer> getNodePosFill(int totalLen) {
         ArrayList<Integer> nodePos = new ArrayList<>();
 
         nodePos.add(0);
@@ -440,12 +449,12 @@ public class StyleTransferTensorflow {
         if (SPUtil.getHighResolutionMode()) {
             patchNumber = 5;
         }
-        int patchLen = Math.max(len / patchNumber, CONTENT_SIZE); // 目前就只能设置到2倍，多了就很容易丢失整体信息，出现不和谐的块
-        for (int pos = patchLen; pos + patchLen / 3 < len; pos += patchLen) {
+        int patchLen = Math.max(totalLen / patchNumber, CONTENT_SIZE); // 目前就只能设置到2倍，多了就很容易丢失整体信息，出现不和谐的块
+        for (int pos = patchLen; pos + patchLen / 3 < totalLen; pos += patchLen) {
             nodePos.add(pos); // 这个块的终点
             nodePos.add(pos - ADJACENT_LEN); // 下一个块的起点
         }
-        nodePos.add(len); // 最后的位置是边界
+        nodePos.add(totalLen); // 最后的位置是边界
         return nodePos;
     }
 }
