@@ -60,4 +60,5 @@ class BottomFunctionView : FrameLayout {
             titleTv.setTextColor(ContextCompat.getColorStateList(it, resColorId))
         };
     }
+
 }

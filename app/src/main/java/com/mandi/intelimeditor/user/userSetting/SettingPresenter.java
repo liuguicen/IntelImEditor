@@ -33,7 +33,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 /**
  * Created by LiuGuicen on 2017/1/5 0005.

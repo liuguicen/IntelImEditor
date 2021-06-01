@@ -113,7 +113,7 @@ public class PTuResultActivity extends BaseActivity {
             @Override
             public void onError(Throwable throwable) {
                 LogUtil.d(TAG, "网络出错，不能获取贴图 = " + " - " + throwable.getMessage());
-                initAd();
+//                initAd();
             }
 
             @Override
@@ -122,7 +122,7 @@ public class PTuResultActivity extends BaseActivity {
                 if (picResList.size() != 0) {
                     showRecommendRes(picResList);
                 } else {
-                    initAd();
+//                    initAd();
                 }
             }
         });

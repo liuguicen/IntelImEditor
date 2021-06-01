@@ -1,6 +1,5 @@
 package com.mandi.intelimeditor.user.userSetting;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,7 +24,7 @@ import com.mandi.intelimeditor.dialog.FirstUseDialog;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userAccount.LocalUserInfo;
 
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 import com.mandi.intelimeditor.common.view.SettingsItemView;
 
 import com.mandi.intelimeditor.user.userVip.OpenVipActivity;

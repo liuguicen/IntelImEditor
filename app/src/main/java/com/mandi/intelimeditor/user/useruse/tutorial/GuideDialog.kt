@@ -8,7 +8,7 @@ import com.mandi.intelimeditor.user.useruse.tutorial.Tutorial
 import com.mandi.intelimeditor.dialog.IBaseDialog
 import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.dialog_tutorial.*
-import util.CoverLoader
+import com.mandi.intelimeditor.common.util.CoverLoader
 
 /**
  * 作者：yonglong

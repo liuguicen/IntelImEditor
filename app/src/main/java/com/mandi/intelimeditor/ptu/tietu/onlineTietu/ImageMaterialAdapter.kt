@@ -1,5 +1,6 @@
 package com.mandi.intelimeditor.ptu.tietu.onlineTietu
 
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -11,10 +12,9 @@ import com.mandi.intelimeditor.R
 import com.mandi.intelimeditor.ad.LockUtil
 import com.mandi.intelimeditor.ad.tencentAD.ListAdStrategyController
 import com.mandi.intelimeditor.common.util.FileTool
-import com.mandi.intelimeditor.home.data.UsuPathManger
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
-import com.qq.e.comm.util.FileUtil
-import util.CoverLoader
+import com.mandi.intelimeditor.ptu.transfer.StyleTransferFragment
+import com.mandi.intelimeditor.common.util.CoverLoader
 
 /**
  * P图界面的贴图列表的Adapter
@@ -37,11 +37,18 @@ class ImageMaterialAdapter :
             holder.getView<ConstraintLayout>(R.id.container)
                 .addView(frameLayout, frameLayout.layoutParams)
         } else {
-            CoverLoader.loadImageView(
-                context,
-                item.data.url?.url,
-                holder.getView<ImageView>(R.id.iv_pic)
-            )
+            if (StyleTransferFragment.ALL == item.data.url?.url) {
+                holder.setVisible(R.id.bfv_local, true)
+                holder.getView<ImageView>(R.id.iv_pic).setBackgroundColor(Color.WHITE)
+                holder.getView<ImageView>(R.id.iv_pic).setImageDrawable(null)
+            } else {
+                holder.setVisible(R.id.bfv_local, false)
+                CoverLoader.loadImageView(
+                    context,
+                    item.data.url?.url,
+                    holder.getView<ImageView>(R.id.iv_pic)
+                )
+            }
             // 注意不能用转换后的url
             val isUnlocked = LockUtil.sUnlockData[item.data.url?.url.hashCode().toString()]
             if (isUnlocked != null && !isUnlocked) {

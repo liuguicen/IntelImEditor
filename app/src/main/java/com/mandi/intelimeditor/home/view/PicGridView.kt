@@ -10,7 +10,7 @@ import com.mandi.intelimeditor.common.util.Util
 import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData
 import com.mandi.intelimeditor.R
 import kotlinx.android.synthetic.main.item_pic_resource.view.*
-import util.CoverLoader
+import com.mandi.intelimeditor.common.util.CoverLoader
 
 class PicGridView : FrameLayout {
     var onClickListener: ((Int) -> Unit)? = null

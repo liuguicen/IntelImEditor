@@ -16,7 +16,7 @@ import com.mandi.intelimeditor.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 
 public class HelpAdapter extends RecyclerView.Adapter<HelpAdapter.FAQViewHolder> {

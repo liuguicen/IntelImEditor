@@ -15,7 +15,7 @@
         android:gravity="center"
         tools:text="12" />
 
-    <com.mandi.intelimeditor.ptu.view.MRangeSeekBar
+    <com.mandi.intelimeditor.common.view.MRangeSeekBar
         android:id="@+id/seek_bar_popw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -191,7 +191,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     public LocalPicAdapter createPicAdapter() {
         picAdapter = new LocalPicAdapter(mContext);
         if (!AdData.judgeAdClose() && mView != null) {
-            picAdapter.initAdData(AdData.getTxPicAdPool());
+//            picAdapter.initAdData(AdData.getTxPicAdPool());
         }
         return picAdapter;
     }

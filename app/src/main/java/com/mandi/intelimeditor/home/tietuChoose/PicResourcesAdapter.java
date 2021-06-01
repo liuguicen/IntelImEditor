@@ -51,7 +51,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 /**
  * Created by liuguicen on 2016/8/31.
@@ -124,12 +124,12 @@ public class PicResourcesAdapter extends BasePicAdapter {
      * @param isFewPic 是否是少图模式，设置为true会在末尾添加大的信息流广告
      */
     public void initAdData(boolean isFewPic) {
-        AdStrategyUtil adStrategyUtil = new AdStrategyUtil(AdData.AdSpaceName.PIC_RES_FEED, AllData.appConfig.pic_res_ad_strategy);
-        if (adStrategyUtil.isShow("TX")) {
-            buildTxFeed(false, isFewPic);
-        } else { // 默认
-            buildTTFeed(false, isFewPic);
-        }
+//        AdStrategyUtil adStrategyUtil = new AdStrategyUtil(AdData.AdSpaceName.PIC_RES_FEED, AllData.appConfig.pic_res_ad_strategy);
+//        if (adStrategyUtil.isShow("TX")) {
+//            buildTxFeed(false, isFewPic);
+//        } else { // 默认
+//            buildTTFeed(false, isFewPic);
+//        }
         SPUtil.addAndPutAdSpaceExposeNumber(AdData.AdSpaceName.PIC_RES_FEED);
     }
 

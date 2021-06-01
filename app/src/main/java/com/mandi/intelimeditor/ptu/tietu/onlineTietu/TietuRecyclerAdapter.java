@@ -13,11 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.LockUtil;
 import com.mandi.intelimeditor.ad.tencentAD.AdUtil;
 import com.mandi.intelimeditor.ad.tencentAD.ListAdStrategyController;
-import com.mandi.intelimeditor.ad.tencentAD.TxFeedAdPool;
 import com.mandi.intelimeditor.ad.ttAD.videoAd.TTRewardVad;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
@@ -33,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 
 /**

@@ -90,7 +90,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 /**
  * 显示所选的最近的或某个文件夹下面的所有图片
@@ -216,7 +216,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
             getScreenSize();
 //            sendNotify();
             AllData.globalSettings.readDeviceInfo();// 这个方法需要存储权限
-            TTRewardVadManager.getInstance().initAd(this); // 头条广告的
+//            TTRewardVadManager.getInstance().initAd(this); // 头条广告的
             startBackgroundService(this);
         }
     }
@@ -236,7 +236,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     }
 
     private void initData() {
-        FullScreenVadManager.getInstance().initAd(this);
+//        FullScreenVadManager.getInstance().initAd(this);
         mHomePresenter = new HomePresenter(this);
     }
 

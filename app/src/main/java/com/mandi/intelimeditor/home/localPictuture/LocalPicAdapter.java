@@ -51,9 +51,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.CoverLoader;
-
-import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData.PicListItemType;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 import static com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData.PicListItemType.GROUP;
 

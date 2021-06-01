@@ -99,7 +99,7 @@ public class IntelImEditApplication extends MultiDexApplication {
         AdData.checkAdClose(this);
         Log.e("------------", "init: 应用初始化成功");
         initUm();
-        // initAd();
+//         initAd();
         initBugly();
     }
 

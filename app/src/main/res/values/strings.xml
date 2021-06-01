@@ -42,6 +42,7 @@
     <string name="cut_rotate">旋转</string>
     <string name="cut_flip">翻转</string>
     <string name="title_choose_local">本机</string>
+    <string name="local">本地</string>
     <string name="title_choose_tietu">贴图</string>
     <string name="title_choose_template">模板</string>
     <string name="save_size">图片大小(省流发送)</string>

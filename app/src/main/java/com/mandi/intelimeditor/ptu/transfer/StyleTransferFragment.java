@@ -42,8 +42,8 @@ import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
-import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
 import com.mandi.intelimeditor.common.view.ImageDecoration;
+import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
 import com.mandi.intelimeditor.home.HomeActivity;
 import com.mandi.intelimeditor.home.view.BottomFunctionView;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
@@ -62,7 +62,6 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.TietuRecyclerAdapter;
 import com.mandi.intelimeditor.ptu.view.PtuSeeView;
 import com.mandi.intelimeditor.user.US;
-import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
@@ -268,8 +267,6 @@ public class StyleTransferFragment extends BasePtuFragment {
                 PicResource oneTietu = chooseListAdapter.getData().get(position).data;
                 if (oneTietu != null && oneTietu.getUrl() != null) {
                     String url = oneTietu.getUrl().getUrl();
-                    ViewGroup parent = (ViewGroup) chooseRcv.getParent();
-                    FirstUseUtil.tietuGuide(mContext);
                     transfer(url, isChooseStyleMode, !isFirstUse);
                     isFirstUse = false;
                     MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());

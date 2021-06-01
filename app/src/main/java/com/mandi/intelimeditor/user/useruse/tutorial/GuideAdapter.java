@@ -14,7 +14,7 @@ import com.mandi.intelimeditor.R;
 
 import java.util.List;
 
-import util.CoverLoader;
+import com.mandi.intelimeditor.common.util.CoverLoader;
 
 
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.TutorialViewHolder> {
