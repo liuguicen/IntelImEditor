@@ -105,9 +105,9 @@ public class DeformationFragment extends BasePtuFragment {
     @Override
     public List<FunctionInfoBean> getFunctionList() {
         pFunctionList.clear();
-        pFunctionList.add(new FunctionInfoBean(R.string.example, R.drawable.icon_deformation, R.drawable.function_background_text_yellow, PtuUtil.EDIT_CUT));
-        pFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size, R.drawable.function_background_tietu_green, PtuUtil.EDIT_CUT));
-        pFunctionList.add(new FunctionInfoBean(R.string.compose_gif, R.drawable.ic_gif, R.drawable.function_background_draw_pink, PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.example, R.drawable.icon_deformation, PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size, PtuUtil.EDIT_CUT));
+        pFunctionList.add(new FunctionInfoBean(R.string.compose_gif, R.drawable.ic_gif, PtuUtil.EDIT_CUT));
         return super.getFunctionList();
     }
 

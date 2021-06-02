@@ -1790,6 +1790,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     public void showProgress(int progress) {
+        LogUtil.d(TAG, "进度：" + progress);
         if (dialog == null) {
             initProgress(null, -1);
         }

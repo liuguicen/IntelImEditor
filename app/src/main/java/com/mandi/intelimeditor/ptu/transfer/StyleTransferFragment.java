@@ -49,6 +49,7 @@ import com.mandi.intelimeditor.common.view.ImageDecoration;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
 import com.mandi.intelimeditor.dialog.FirstUseDialog;
 import com.mandi.intelimeditor.home.HomeActivity;
+import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.view.BottomFunctionView;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
 import com.mandi.intelimeditor.ptu.PTuActivityInterface;
@@ -92,6 +93,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     static final String TRANS_RESULT_UNKNOWN_FAIL = "unknown reason";
 
     public static final int EDIT_MODE = PtuUtil.EDIT_DRAW;
+
     private Context mContext;
 
     private PTuActivityInterface pTuActivityInterface;
@@ -99,8 +101,13 @@ public class StyleTransferFragment extends BasePtuFragment {
     private RepealRedoListener repealRedoListener;
     private PtuBaseChooser ptuBaseChooser;
     private RecyclerView chooseRcv;
+
     private boolean isChooseStyleMode = true;
+
     private ImageMaterialAdapter chooseListAdapter;
+    private PicResource chooseImage;
+    private PicResource chooseStyleImage;
+
     static final int bottonWidth = Util.dp2Px(20);
     private TransferController transferController;
     public static final String MODEL_ADAIN = "adain";
@@ -120,6 +127,7 @@ public class StyleTransferFragment extends BasePtuFragment {
     private PicResource lastStyle;
     private RepealRedoManager<StepData> repealRedoManager;
     private PicResource lastContent;
+    private GridLayoutManager gridLayoutManager;
 
 
     @Override
@@ -169,7 +177,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         //底部的贴图列表
         chooseRcv = new RecyclerView(mContext);
 
-        GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(mContext, TietuRecyclerAdapter.DEFAULT_ROW_NUMBER,
+        gridLayoutManager = new WrapContentGridLayoutManager(mContext, TietuRecyclerAdapter.DEFAULT_ROW_NUMBER,
                 GridLayoutManager.HORIZONTAL, false);
         chooseRcv.setLayoutManager(gridLayoutManager);
 
@@ -198,32 +206,34 @@ public class StyleTransferFragment extends BasePtuFragment {
         chooseContentBtn = rootView.findViewById(R.id.choose_content);
 
         chooseContentBtn.setOnClickListener(v -> {
-            if (chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
-                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
-                getScollPos(gridLayoutManager);
-                chooseContentBtn.setChosen(false);
-                chooseStyleBtn.setChosen(false);
-            } else {
-                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-                isChooseStyleMode = false;
-                prepareListView(view);
-                showContentList();
-            }
+//            if (chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
+//                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+//                getScollPos(gridLayoutManager);
+//                chooseContentBtn.setChosen(false);
+//                chooseStyleBtn.setChosen(false);
+//            } else {
+//                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
+//                isChooseStyleMode = false;
+//                prepareListView(view);
+//                showContentList();
+//            }
+            changeImageOrStyle(v, false);
         });
 
         chooseStyleBtn = rootView.findViewById(R.id.choose_style);
         chooseStyleBtn.setOnClickListener(v -> {
-            if (chooseRcv.getParent() != null) {
-                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
-                getScollPos(gridLayoutManager);
-                chooseContentBtn.setChosen(false);
-                chooseStyleBtn.setChosen(false);
-            } else {
-                US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-                isChooseStyleMode = true;
-                prepareListView(view);
-                showStyleList();
-            }
+            changeImageOrStyle(v, true);
+//            if (chooseRcv.getParent() != null) {
+//                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+//                getScollPos(gridLayoutManager);
+//                chooseContentBtn.setChosen(false);
+//                chooseStyleBtn.setChosen(false);
+//            } else {
+//                US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
+//                isChooseStyleMode = true;
+//                prepareListView(view);
+//                showStyleList();
+//            }
         });
 
         BottomFunctionView chooseModel = rootView.findViewById(R.id.choose_model);
@@ -249,6 +259,49 @@ public class StyleTransferFragment extends BasePtuFragment {
             showContentList();
         }
     }
+
+    /**
+     * 选择换照片或选风格
+     */
+    private void changeImageOrStyle(View view, boolean isStyle) {
+        if (chooseRcv.getParent() != null) {
+            ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+        }
+        if (isStyle) {
+            chooseStyleBtn.setChosen(!chooseStyleBtn.getSelectedStatus());
+            if (chooseStyleBtn.getSelectedStatus()) {
+                chooseContentBtn.setChosen(false);
+                getScollPos(gridLayoutManager);
+                US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
+                isChooseStyleMode = true;
+                prepareListView(view);
+                showStyleList();
+            }
+        } else {
+            chooseContentBtn.setChosen(!chooseContentBtn.getSelectedStatus());
+            if (chooseContentBtn.getSelectedStatus()) {
+                chooseStyleBtn.setChosen(false);
+                getScollPos(gridLayoutManager);
+                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
+                isChooseStyleMode = false;
+                prepareListView(view);
+                showContentList();
+            }
+//            if (chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
+//                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+//                getScollPos(gridLayoutManager);
+//                chooseContentBtn.setChosen(false);
+//                chooseStyleBtn.setChosen(false);
+//            } else {
+//                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
+//                isChooseStyleMode = false;
+//                prepareListView(view);
+//                showContentList();
+//            }
+        }
+
+    }
+
 
     private void getScollPos(GridLayoutManager gridLayoutManager) {
         if (!isChooseStyleMode) {
@@ -351,7 +404,13 @@ public class StyleTransferFragment extends BasePtuFragment {
                     ToastUtils.show("抱歉！未获取到图片");
                     return;
                 }
-
+                if (isChooseStyleMode) {
+                    chooseStyleImage = oneTietu;
+                    chooseListAdapter.selectPosition(chooseStyleImage);
+                } else {
+                    chooseImage = oneTietu;
+                    chooseListAdapter.selectPosition(chooseImage);
+                }
                 if (isChooseStyleMode && oneTietu.equals(lastStyle)) {
                     ptuSeeView.replaceSourceBm(repealRedoManager.getBaseBitmap());
                     return;
@@ -585,17 +644,19 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     private void showStyleOrContentList(List<PicResource> list) {
         if (list == null) list = new ArrayList<>();
-        chooseListAdapter.setList(list);
-        chooseListAdapter.add(0, PicResource.path2PicResource(ALL));
-        int pos = !isChooseStyleMode ? lastContentPos : lastStylePos;
-        int offset = !isChooseStyleMode ? lastContentOffset : lastStyleOffset;
         if (isChooseStyleMode) {
             chooseContentBtn.setChosen(false);
             chooseStyleBtn.setChosen(true);
+            chooseListAdapter.setList(list, chooseStyleImage);
         } else {
             chooseStyleBtn.setChosen(false);
             chooseContentBtn.setChosen(true);
+            chooseListAdapter.setList(list, chooseImage);
         }
+        chooseListAdapter.add(0, PicResource.path2PicResource(ALL));
+        int pos = !isChooseStyleMode ? lastContentPos : lastStylePos;
+        int offset = !isChooseStyleMode ? lastContentOffset : lastStyleOffset;
+
         // chooseListAdapter.setSelect(lastChoseID);
         if (pos >= 0) {
             ((LinearLayoutManager) chooseRcv.getLayoutManager()).scrollToPositionWithOffset(pos, offset);
@@ -604,7 +665,7 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     private void onNoStylePic() {
         if (chooseListAdapter != null) { // 这个方法会异步回调，此时tietuListAdapter已经回收置空了，原来自己就没处理，GG
-            chooseListAdapter.setList(new ArrayList<PicResource>());
+            chooseListAdapter.setList(new ArrayList<PicResource>(), null);
             String msg;
             msg = mContext.getString(R.string.no_network_style_notice);
             PtuUtil.onNoPicResource(msg);
@@ -660,14 +721,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         if (ptuSeeView != null) {
             ptuSeeView.setCanDoubleClick(true);
         }
-        // Fragment动画导致子View还没清除就添加出错的问题，
-        // 这是一种处理方式，但是退出动画没了，如果前面一种处理方式不行，再在用这种
-        /*if (rootView != null) {
-            ViewGroup parentView = (ViewGroup) rootView.getParent();
-            if (parentView != null) {
-                parentView.removeView(rootView);
-            }
-        }*/
         EventBus.getDefault().unregister(this);
     }
 
@@ -751,37 +804,6 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     public interface DeforActionListener {
         void deforComposeGif(List<GifFrame> bmList);
-    }
-
-    /**
-     * 获取圆角位图的方法
-     *
-     * @param bitmap 需要转化成圆角的位图
-     * @return 处理后的圆角位图
-     */
-    private Bitmap getCircleBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bottonWidth, bottonWidth, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
-        final Rect dstRect = new Rect(0, 0, bottonWidth, bottonWidth);
-        int w = bitmap.getWidth(), h = bitmap.getHeight();
-        final Rect srcRect = new Rect(0, (h - w) / 2, w, (h - w) / 2 + w);
-        if (bitmap.getWidth() > bitmap.getHeight()) {
-            srcRect.set((w - h) / 2, 0, (w - h) / 2, h);
-        }
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        int x = bottonWidth;
-        //这是圆drawCircle
-        canvas.drawCircle(x / 2f, x / 2f, x / 2f, paint);
-        //这是圆角drawRoundRect
-//        canvas.drawRoundRect(new RectF(rect), pixels, pixels, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
-        return output;
-
     }
 
     /**

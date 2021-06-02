@@ -147,14 +147,6 @@
         <item name="android:background">@drawable/function_background_text_yellow</item>
     </style>
 
-    <style name="function_tietu_image" parent="function_image">
-        <item name="android:background">@drawable/function_background_tietu_green</item>
-    </style>
-
-    <style name="function_draw_image" parent="function_image">
-        <item name="android:background">@drawable/function_background_draw_pink</item>
-    </style>
-
     <!--选择图片titel相关-->
     <style name="chooseTitleLayout">
         <item name="android:layout_width">0dp</item>

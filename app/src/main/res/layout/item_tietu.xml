@@ -31,12 +31,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_6"
-        android:visibility="gone"
-        app:bfv_icon="@drawable/twotone_folder_open"
+        app:bfv_icon="@drawable/round_dashboard_customize"
         app:bfv_title="@string/local"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/half_transparent_black"
+        android:elevation="@dimen/dp_4"
+        android:padding="@dimen/dp_24"
+        android:src="@drawable/round_done"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius="@dimen/dp_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

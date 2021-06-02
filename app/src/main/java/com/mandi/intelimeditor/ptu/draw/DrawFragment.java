@@ -501,10 +501,8 @@ public class DrawFragment extends BasePtuFragment {
     private void clearDraw() {
         isInClearDraw = !isInClearDraw;
         if (isInClearDraw) {
-            drawStyleTv.setIconBackgroundResource(R.drawable.function_background_text_yellow);
             drawView.selectPaintStyle(DrawView.PAINT_STYLE_CLEAR_DRAW);
         } else {
-            drawStyleTv.setIconBackgroundResource(R.drawable.function_background_draw_pink);
             drawView.selectPaintStyle(lastStyle);
         }
     }

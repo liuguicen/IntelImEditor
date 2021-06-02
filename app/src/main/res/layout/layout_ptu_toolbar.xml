@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dp_16"
         android:background="@drawable/bg_btn_ptu"
+        android:elevation="@dimen/dp_4"
         android:padding="@dimen/dp_6"
         android:src="@drawable/round_close_black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,6 +25,7 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginStart="@dimen/dp_16"
         android:background="@drawable/bg_btn_ptu"
+        android:elevation="@dimen/dp_4"
         android:padding="@dimen/dp_4"
         android:src="@drawable/round_keyboard_arrow_left"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -77,6 +79,7 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_16"
         android:background="@drawable/bg_btn_ptu"
+        android:elevation="@dimen/dp_4"
         android:gravity="center"
         android:paddingStart="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
@@ -90,16 +93,18 @@
 
     <ImageView
         android:id="@+id/iv_sure"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="?android:selectableItemBackground"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:src="@drawable/ic_done"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/bg_btn_ptu"
+        android:elevation="@dimen/dp_4"
+        android:padding="@dimen/dp_4"
+        android:src="@drawable/round_done"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

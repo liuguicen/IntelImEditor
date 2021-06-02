@@ -76,6 +76,12 @@ public class PtuUtil {
     public static final int PIC_LIST_2_GIF = 4;
     public static final int BM_LIST_2_GIF = 5;
 
+    //风格迁移状态
+    public static final int STYLE_TRANSFER_IMAGE = 1;
+    public static final int STYLE_TRANSFER_STYLE = 2;
+    public static final int STYLE_TRANSFER_NONE = 3;
+
+
     private static int mGetTietuFailedNumber = 0;
     private static Paint sPaint;
 

@@ -337,7 +337,7 @@ public class TextFragment extends BasePtuFragment {
             if (mRubberFunctionList == null) {
                 mRubberFunctionList = new ArrayList<>();
                 mRubberFunctionList.add(new FunctionInfoBean(R.string.size, R.mipmap.fixed_size, PtuUtil.EDIT_REND));
-                mRubberFunctionList.add(new FunctionInfoBean(R.string.text_color, R.drawable.color, PtuUtil.EDIT_REND));
+                mRubberFunctionList.add(new FunctionInfoBean(R.string.text_color, R.drawable.round_color_lens, PtuUtil.EDIT_REND));
                 mRubberFunctionList.add(new FunctionInfoBean(R.string.rubber, R.drawable.ic_tick, PtuUtil.EDIT_REND));
             }
             pFunctionAdapter.setNewInstance(mRubberFunctionList);

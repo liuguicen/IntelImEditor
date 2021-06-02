@@ -1,6 +1,8 @@
 package com.mandi.intelimeditor.home.view
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,6 +15,8 @@ import kotlinx.android.synthetic.main.item_func_list.view.*
 class BottomFunctionView : FrameLayout {
     var onClickListener: ((Int) -> Unit)? = null
     var mContext: Context? = null
+    var selectedStatus: Boolean = false
+    var defaultColors: ColorStateList? = null //默认选中颜色
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         attrs?.let { initView(context, it) }
@@ -43,10 +47,9 @@ class BottomFunctionView : FrameLayout {
             iconIv.background = iconBg
         }
         colors?.let {
-            titleTv.setTextColor(it)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                iconIv.imageTintList = it
-            }
+            defaultColors = it
+            setTintColor(it)
+            selectedStatus = true
         }
         lockIv.visibility = if (isLock) View.VISIBLE else View.GONE
     }
@@ -59,21 +62,26 @@ class BottomFunctionView : FrameLayout {
         iconIv.setBackgroundResource(resImageId)
     }
 
-    fun setTintColor(resColorId: Int) {
+    fun setTintColor(colors: ColorStateList?) {
         mContext?.let {
-            titleTv.setTextColor(ContextCompat.getColorStateList(it, resColorId))
+            titleTv.setTextColor(colors)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                iconIv.imageTintList = colors
+            }
         };
     }
 
     fun setChosen(isChose: Boolean) {
-        mContext?.let {
-            titleTv.setTextColor(
-                ContextCompat.getColorStateList(
-                    it,
-                    if (isChose) R.color.text_checked_color else R.color.text_deep_black
-                )
-            )
-        };
+        this.selectedStatus = isChose
+        if (isChose) {
+            if (defaultColors == null) {
+                setTintColor(ColorStateList.valueOf(Color.parseColor("#ff5722")))
+            } else {
+                setTintColor(defaultColors)
+            }
+        } else {
+            setTintColor(ColorStateList.valueOf(Color.BLACK))
+        }
     }
 
 }

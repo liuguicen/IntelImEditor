@@ -257,15 +257,15 @@ public class TietuFragment extends BasePtuFragment {
             ptuBaseChooser = new PtuBaseChooser(mContext, this, pTuActivityInterface, null);
             ptuBaseChooser.setIsUpdateHeat(false);
             ptuBaseChooser.show();
-            pFunctionList.add(new FunctionInfoBean(R.string.choose_base_pic, R.mipmap.choose_base, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
+            pFunctionList.add(new FunctionInfoBean(R.string.choose_base_pic, R.mipmap.choose_base, PtuUtil.EDIT_TIETU));
             addTietuByPath(funcControl.tietuUrl, null);
         }
         //        mFunctionList.add(new FunctionInfoBean(R.string.property, R.mipmap.baojian, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
-        pFunctionList.add(new FunctionInfoBean(R.string.expression, R.mipmap.tietu, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
-        pFunctionList.add(new FunctionInfoBean(R.string.my_tietu, R.mipmap.my_tietu, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
-        pFunctionList.add(new FunctionInfoBean(R.string.fuse, R.mipmap.synthesis, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
-        pFunctionList.add(new FunctionInfoBean(R.string.stretch, R.drawable.stretch_icon, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
-        pFunctionList.add(new FunctionInfoBean(R.string.tools, R.drawable.tools, R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
+        pFunctionList.add(new FunctionInfoBean(R.string.expression, R.mipmap.tietu, PtuUtil.EDIT_TIETU));
+        pFunctionList.add(new FunctionInfoBean(R.string.my_tietu, R.mipmap.my_tietu, PtuUtil.EDIT_TIETU));
+        pFunctionList.add(new FunctionInfoBean(R.string.fuse, R.mipmap.synthesis, PtuUtil.EDIT_TIETU));
+        pFunctionList.add(new FunctionInfoBean(R.string.stretch, R.drawable.stretch_icon, PtuUtil.EDIT_TIETU));
+        pFunctionList.add(new FunctionInfoBean(R.string.tools, R.drawable.tools, PtuUtil.EDIT_TIETU));
     }
 
     @Override

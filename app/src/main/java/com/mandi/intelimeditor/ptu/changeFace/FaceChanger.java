@@ -210,8 +210,7 @@ public class FaceChanger {
         int[] iconIdList = new int[]{R.mipmap.choose_base, R.drawable.adjust_levels, R.mipmap.eraser, R.drawable.clear_icon, R.drawable.tools};
         mFunctionList = new ArrayList<>();
         for (int i = 0; i < nameIdList.length; i++) {
-            mFunctionList.add(new FunctionInfoBean(nameIdList[i], iconIdList[i],
-                    R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
+            mFunctionList.add(new FunctionInfoBean(nameIdList[i], iconIdList[i], PtuUtil.EDIT_TIETU));
         }
         this.functionRcv = mFunctionRcv;
         mFunctionAdapter = new FunctionAdapter(activity, mFunctionList);
@@ -285,11 +284,10 @@ public class FaceChanger {
 
     private void switchClearBgFunction() {
         int[] nameIdList = new int[]{R.string.size, R.string.text_color, R.string.finish};
-        int[] iconIdList = new int[]{R.mipmap.fixed_size, R.drawable.color, R.drawable.ic_tick};
+        int[] iconIdList = new int[]{R.mipmap.fixed_size, R.drawable.ic_color_lens, R.drawable.ic_tick};
         mFunctionList = new ArrayList<>();
         for (int i = 0; i < nameIdList.length; i++) {
-            mFunctionList.add(new FunctionInfoBean(nameIdList[i], iconIdList[i],
-                    R.drawable.function_background_tietu_green, PtuUtil.EDIT_TIETU));
+            mFunctionList.add(new FunctionInfoBean(nameIdList[i], iconIdList[i], PtuUtil.EDIT_TIETU));
         }
         mFunctionAdapter = new FunctionAdapter(activity, mFunctionList);
 
