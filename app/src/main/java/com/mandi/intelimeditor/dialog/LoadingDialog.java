@@ -3,11 +3,16 @@ package com.mandi.intelimeditor.dialog;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mandi.intelimeditor.dialog.IBaseDialog;
 import com.mandi.intelimeditor.R;
+import com.wang.avi.AVLoadingIndicatorView;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -46,6 +51,7 @@ public class LoadingDialog extends IBaseDialog {
     public void setProgress(String progress) {
         this.progress = progress;
         if (progressTv != null) {
+            progressTv.setVisibility(View.VISIBLE);
             progressTv.setText(progress);
         }
     }
@@ -58,13 +64,19 @@ public class LoadingDialog extends IBaseDialog {
         }
     }
 
+    @Nullable
     @Override
-    public void onActivityCreated(@androidx.annotation.Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getRootView() != null && !TextUtils.isEmpty(loadingInfo)) {
+    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (getRootView() != null) {
             tv = getRootView().findViewById(R.id.progressTips);
+            AVLoadingIndicatorView avi = getRootView().findViewById(R.id.progressBar1);
+            avi.show();
             progressTv = getRootView().findViewById(R.id.progressTv);
-            tv.setText(loadingInfo);
+            if (!TextUtils.isEmpty(loadingInfo)) {
+                tv.setText(loadingInfo);
+            }
         }
+        return view;
     }
 }

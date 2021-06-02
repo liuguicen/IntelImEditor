@@ -836,14 +836,13 @@ public class StyleTransferFragment extends BasePtuFragment {
             emitter.onComplete();
         })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(bm -> {
                     // 更新UI进度和图片
                     getActivity().runOnUiThread(() -> {
                         pTuActivityInterface.showProgress(10);
                         onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
                     });
-
+                    pTuActivityInterface.showProgress(20);
                     // 第二步，使用合适的尺寸迁移图片
                     Pair<String, Bitmap> res;
                     if (MODEL_GOOGLE.equals(model)) {
@@ -851,6 +850,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     } else {
                         res = transferPytorch(bm, isStyle, false);
                     }
+                    pTuActivityInterface.showProgress(90);
                     if (res == null || res.second == null) {
                         throw new Exception(getErrorMsg(res != null ? res.first : ""));
                     }
@@ -860,6 +860,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                 .subscribe(new SimpleObserver<Bitmap>() {
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Bitmap bitmap) {
+                        pTuActivityInterface.showProgress(100);
                         ptuSeeView.replaceSourceBm(bitmap);
                         pTuActivityInterface.dismissProgress();
                         isProcessing = false;

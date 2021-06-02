@@ -1,6 +1,7 @@
 package com.mandi.intelimeditor.ptu;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1790,13 +1792,15 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
     }
 
     public void showProgress(int progress) {
-        LogUtil.d(TAG, "进度：" + progress);
-        if (dialog == null) {
-            initProgress(null, -1);
-        }
-        if (!isDestroyed() && dialog.isShowing()) { // 可能已被其它地方取消显示，就不显示了
-            dialog.setProgress(progress + "");
-        }
+        runOnUiThread(() -> {
+            LogUtil.d(TAG, "进度：" + progress);
+            if (dialog == null) {
+                initProgress("创建艺术作品中...", -1);
+            }
+            if (!isDestroyed() && dialog.isShowing()) { // 可能已被其它地方取消显示，就不显示了
+                dialog.setProgress(progress + "%");
+            }
+        });
     }
 
     @Override
