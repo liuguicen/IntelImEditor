@@ -76,16 +76,18 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
             @Override
             public void onNext(@NonNull String value) {
                 initSetAndShowPicList();
+                mView.dismissLoading();
             }
 
             @Override
             public void onError(@NonNull Throwable error) {
                 ToastUtils.show("扫描图片出错了");
+                mView.dismissLoading();
             }
 
             @Override
             public void onComplete() {
-
+                mView.dismissLoading();
             }
         });
     }

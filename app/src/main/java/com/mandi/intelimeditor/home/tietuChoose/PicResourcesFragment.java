@@ -165,7 +165,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         super.loadData(isFirstLoad);
         if (isFirstLoad) {
             LogUtil.d(TAG, " mLoadingView show");
-            showLoading(true);
+            showLoading();
             presenter = new PicResourcesPresenter(mContext, this, mFirstClass, mSecondClass);
             initLocalView();
             presenter.start();
@@ -424,7 +424,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
 
     @Override
     public void onDownloadStateChange(boolean isSuccess, @Nullable List<PicResource> list) {
-        showLoading(false);
+        dismissLoading();
         if (!isSuccess && getActivity() != null) {
             mTvDownloadInfo.setVisibility(View.VISIBLE);
             if (PicResource.SECOND_CLASS_MY.equals(mSecondClass)) {

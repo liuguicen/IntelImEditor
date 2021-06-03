@@ -285,7 +285,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
         pictureGridView.setAdapter(picAdapter);
 //        Debug.stopMethodTracing();
         Log.d("end trace", "time " + System.currentTimeMillis() / 1000);
-        showLoading(false);
+        dismissLoading();
     }
 
     /**
@@ -423,7 +423,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
 
     @Override
     public void startLoad() {
-        showLoading(true);
+        showLoading();
         if (mPresenter != null) {
             mPresenter.start();
         }

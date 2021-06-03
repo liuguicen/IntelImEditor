@@ -56,12 +56,7 @@ object PicDirInfoManager {
             }
         }
     }
-    /**
-     * 多处使用，便于统一格式，免得更改时到处改
-     *
-     * @param name   文件名称
-     * @param number 文件数量
-     */
+
     /**
      * 多处使用，便于统一格式，免得更改时到处改
      *

@@ -75,9 +75,14 @@ public abstract class BaseFragment extends Fragment {
     public void initData() {
     }
 
-    public void showLoading(boolean show) {
-        baseLoadingView.showLoading(show);
+    public void showLoading() {
+        baseLoadingView.showLoading(true);
     }
+
+    public void dismissLoading() {
+        baseLoadingView.showLoading(false);
+    }
+
 
     /**
      * 带文字的LoadingView

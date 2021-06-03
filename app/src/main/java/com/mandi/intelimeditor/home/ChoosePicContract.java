@@ -50,6 +50,8 @@ public interface ChoosePicContract {
         void onOneChosen(String path);
 
         void onMultiChose();
+
+        void dismissLoading();
     }
 
     interface PicPresenter extends BasePresenter {

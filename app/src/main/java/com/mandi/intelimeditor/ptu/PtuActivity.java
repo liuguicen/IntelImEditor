@@ -1,7 +1,6 @@
 package com.mandi.intelimeditor.ptu;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -711,7 +709,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                             : AllData.globalSettings.maxSupportContentSize;
                     maxSupportSize *= maxSupportSize;
                     Bitmap bm = BitmapUtil.decodeLossslessInSize(picPath, maxSupportSize);
-                    if (bm == null) emitter.onError(new Exception("加载图片出错"));
+                    if (bm == null) {
+                        emitter.onError(new Exception("加载图片出错"));
+                        return;
+                    }
                     emitter.onNext(bm);
                     LogUtil.d("加载图片的Bitmap完成");
                     emitter.onComplete();
@@ -756,7 +757,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         } else {
             initProgress("解析GIF中...", -1);
         }
-        showProgress(0);
+        showProgressUiThread(0);
         View gifOperationLayout = findViewById(R.id.gif_operation_layout);
         gifManager.initView(gifOperationLayout);
         FirstUseUtil.gifPreviewGuide(this, findViewById(R.id.gif_play_all), findViewById(R.id.gif_operation_layout));
@@ -1791,7 +1792,10 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
     }
 
-    public void showProgress(int progress) {
+    /**
+     * 会自动切换ui线程，调用方法不用切换
+     */
+    public void showProgressUiThread(int progress) {
         runOnUiThread(() -> {
             LogUtil.d(TAG, "进度：" + progress);
             if (dialog == null) {
@@ -1817,7 +1821,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @Override
     public void onProgress(int progress) {
-        runOnUiThread(() -> showProgress(progress));
+          showProgressUiThread(progress);
     }
 
     public void dismissProgress() {

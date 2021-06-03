@@ -62,7 +62,7 @@ public interface PTuActivityInterface {
 
     void hidePtuNotice();
 
-    void showProgress(int progress);
+    void showProgressUiThread(int progress);
 
     RepealRedoManager<StepData> getRepealRedoManager();
 

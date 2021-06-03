@@ -4,12 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -41,6 +36,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.FileTool;
 import com.mandi.intelimeditor.common.util.LogUtil;
+import com.mandi.intelimeditor.common.util.ProgressCallback;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
 import com.mandi.intelimeditor.common.util.Util;
@@ -49,7 +45,6 @@ import com.mandi.intelimeditor.common.view.ImageDecoration;
 import com.mandi.intelimeditor.common.view.PtuConstraintLayout;
 import com.mandi.intelimeditor.dialog.FirstUseDialog;
 import com.mandi.intelimeditor.home.HomeActivity;
-import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.view.BottomFunctionView;
 import com.mandi.intelimeditor.ptu.BasePtuFragment;
 import com.mandi.intelimeditor.ptu.PTuActivityInterface;
@@ -58,7 +53,6 @@ import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.RepealRedoListener;
 import com.mandi.intelimeditor.ptu.common.PtuBaseChooser;
 import com.mandi.intelimeditor.ptu.common.TransferController;
-import com.mandi.intelimeditor.ptu.gif.GifFrame;
 import com.mandi.intelimeditor.ptu.repealRedo.CutStepData;
 import com.mandi.intelimeditor.ptu.repealRedo.RepealRedoManager;
 import com.mandi.intelimeditor.ptu.repealRedo.StepData;
@@ -87,7 +81,6 @@ public class StyleTransferFragment extends BasePtuFragment {
     public static final String ALL = "all";
     private String TAG = "StyleTransferFragment";
     static final String TRANS_RESULT_STATE = "TRANS_RESULT_STATE";
-    static final String TRANS_RESULT_SUCCESS = "success";
     static final String TRANS_RESULT_NO_CONTENT = "no_content_pic";
     static final String TRANS_RESULT_NO_STYLE = "no_style_pic";
     static final String TRANS_RESULT_UNKNOWN_FAIL = "unknown reason";
@@ -206,34 +199,12 @@ public class StyleTransferFragment extends BasePtuFragment {
         chooseContentBtn = rootView.findViewById(R.id.choose_content);
 
         chooseContentBtn.setOnClickListener(v -> {
-//            if (chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
-//                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
-//                getScollPos(gridLayoutManager);
-//                chooseContentBtn.setChosen(false);
-//                chooseStyleBtn.setChosen(false);
-//            } else {
-//                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-//                isChooseStyleMode = false;
-//                prepareListView(view);
-//                showContentList();
-//            }
             changeImageOrStyle(v, false);
         });
 
         chooseStyleBtn = rootView.findViewById(R.id.choose_style);
         chooseStyleBtn.setOnClickListener(v -> {
             changeImageOrStyle(v, true);
-//            if (chooseRcv.getParent() != null) {
-//                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
-//                getScollPos(gridLayoutManager);
-//                chooseContentBtn.setChosen(false);
-//                chooseStyleBtn.setChosen(false);
-//            } else {
-//                US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
-//                isChooseStyleMode = true;
-//                prepareListView(view);
-//                showStyleList();
-//            }
         });
 
         BottomFunctionView chooseModel = rootView.findViewById(R.id.choose_model);
@@ -264,8 +235,11 @@ public class StyleTransferFragment extends BasePtuFragment {
      * 选择换照片或选风格
      */
     private void changeImageOrStyle(View view, boolean isStyle) {
-        if (chooseRcv.getParent() != null) {
+        if (chooseRcv.getParent() != null) { // 第一次点击让列表消失 感觉上这个更好
             ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
+            chooseStyleBtn.setChosen(!chooseStyleBtn.getSelectedStatus());
+            chooseContentBtn.setChosen(!chooseContentBtn.getSelectedStatus());
+            return;
         }
         if (isStyle) {
             chooseStyleBtn.setChosen(!chooseStyleBtn.getSelectedStatus());
@@ -287,17 +261,6 @@ public class StyleTransferFragment extends BasePtuFragment {
                 prepareListView(view);
                 showContentList();
             }
-//            if (chooseRcv.getParent() != null) { // 已经选择了内容，那么进入全部图片界面
-//                ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
-//                getScollPos(gridLayoutManager);
-//                chooseContentBtn.setChosen(false);
-//                chooseStyleBtn.setChosen(false);
-//            } else {
-//                US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
-//                isChooseStyleMode = false;
-//                prepareListView(view);
-//                showContentList();
-//            }
         }
 
     }
@@ -328,7 +291,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         dmodel1.setText("高清");
         dmodel1.setOnClickListener(v -> {
             new FirstUseDialog(getContext()).createDialog("",
-                    "高清模式可使生成照片更清晰！\n但是可能会引起局部失真，或者应用崩溃！",
+                    "高清模式可使生成照片更清晰！\n但是耗时更长, 可能会引起局部失真，或者应用崩溃！",
                     new FirstUseDialog.ActionListener() {
                         @Override
                         public void onSure() {
@@ -336,13 +299,13 @@ public class StyleTransferFragment extends BasePtuFragment {
                         }
                     });
             SPUtil.putHighResolutionMode(true);
-            dmodel1.setTextColor(Util.getColor(R.color.text_checked_color));
             // model = MODEL_ADAIN;
             clearModelChoose(modelTxtList);
             // dmodel1.setTextColor(Util.getColor(R.color.text_checked_color));
+            dmodel1.setTextColor(Util.getColor(R.color.text_checked_color));
             // transfer(styleBm, true, false);
         });
-        final TextView model2 = createItem(pad, HDOpen, modelTxtList);
+        final TextView model2 = createItem(pad, !HDOpen, modelTxtList);
         model2.setText("一般");
         model2.setOnClickListener(v -> {
             SPUtil.putHighResolutionMode(false);
@@ -406,13 +369,15 @@ public class StyleTransferFragment extends BasePtuFragment {
                 }
                 if (isChooseStyleMode) {
                     chooseStyleImage = oneTietu;
-                    chooseListAdapter.selectPosition(chooseStyleImage);
+                    chooseListAdapter.setSelectedItem(chooseStyleImage);
                 } else {
                     chooseImage = oneTietu;
-                    chooseListAdapter.selectPosition(chooseImage);
+                    chooseListAdapter.setSelectedItem(chooseImage);
                 }
                 if (isChooseStyleMode && oneTietu.equals(lastStyle)) {
+                    lastStyle = null;
                     ptuSeeView.replaceSourceBm(repealRedoManager.getBaseBitmap());
+                    chooseListAdapter.setSelectedItem(null);
                     return;
                 } else if (oneTietu.equals(lastContent)) { // 点击重复的内容
                     return;
@@ -794,19 +759,18 @@ public class StyleTransferFragment extends BasePtuFragment {
     public boolean onBackPressed(boolean isFromKey) {
         // 修改较多，防止误点离开，全面屏手势容易和绘图操作混淆
         // 次数多，且不是第二次点击，就退出
-
         return false;
     }
 
     public void initBeforeCreateView(TransferController transferController) {
         this.transferController = transferController;
-    }
-
-    public interface DeforActionListener {
-        void deforComposeGif(List<GifFrame> bmList);
+        isFirstUse = true;
     }
 
     /**
+     * 更改这里面的方法一定要注意，目前有未知原因的StackOverFlow错误，不知道很莫名其妙的一些更改就会导致
+     * 比如在迁移方法里面添加会切换主线程的进程通知
+     *
      * @param isReuse 模型是否重用上次的content或者style
      */
     public void transfer(Object obj, boolean isStyle, boolean isReuse) {
@@ -816,7 +780,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
         isProcessing = true;
         pTuActivityInterface.hidePtuNotice();
-        pTuActivityInterface.showProgress(0);
+        pTuActivityInterface.showProgressUiThread(0);
 
         Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
             if (LogUtil.debugStyleTransfer) {
@@ -836,13 +800,11 @@ public class StyleTransferFragment extends BasePtuFragment {
             emitter.onComplete();
         })
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
                 .map(bm -> {
                     // 更新UI进度和图片
-                    getActivity().runOnUiThread(() -> {
-                        pTuActivityInterface.showProgress(10);
-                        onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
-                    });
-                    pTuActivityInterface.showProgress(20);
+                    progressCallback.onProgress(5);
+                    pTuActivityInterface.showProgressUiThread(20);
                     // 第二步，使用合适的尺寸迁移图片
                     Pair<String, Bitmap> res;
                     if (MODEL_GOOGLE.equals(model)) {
@@ -850,9 +812,9 @@ public class StyleTransferFragment extends BasePtuFragment {
                     } else {
                         res = transferPytorch(bm, isStyle, false);
                     }
-                    pTuActivityInterface.showProgress(90);
-                    if (res == null || res.second == null) {
-                        throw new Exception(getErrorMsg(res != null ? res.first : ""));
+                    progressCallback.onProgress(100);
+                    if (res.second == null) { // 出错
+                        throw new Exception(getErrorMsg(res.first));
                     }
                     return res.second;
                 }).subscribeOn(AndroidSchedulers.mainThread())
@@ -860,7 +822,6 @@ public class StyleTransferFragment extends BasePtuFragment {
                 .subscribe(new SimpleObserver<Bitmap>() {
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Bitmap bitmap) {
-                        pTuActivityInterface.showProgress(100);
                         ptuSeeView.replaceSourceBm(bitmap);
                         pTuActivityInterface.dismissProgress();
                         isProcessing = false;
@@ -884,18 +845,37 @@ public class StyleTransferFragment extends BasePtuFragment {
 
     }
 
-    private String getErrorMsg(String first) {
+    /**
+     * null 表示没错误
+     */
+    private String getErrorMsg(String error) {
         String msg = "";
-        if (TRANS_RESULT_NO_CONTENT.equals(first)) {
+        if (TRANS_RESULT_NO_CONTENT.equals(error)) {
             msg = getContext().getString(R.string.you_did_not_choose_content);
-        } else if (TRANS_RESULT_NO_STYLE.equals(first)) {
+        } else if (TRANS_RESULT_NO_STYLE.equals(error)) {
             msg = getContext().getString(R.string.you_did_not_choose_style);
+        } else if (error != null) {
+            msg = error;
         } else {
             msg = getContext().getString(R.string.unkown_error);
         }
         return msg;
     }
 
+    ProgressCallback progressCallback = new ProgressCallback() {
+        @Override
+        public void setMax(int max) {
+
+        }
+
+        @Override
+        public void onProgress(int progress) {
+            if (isDetached()) return;
+            pTuActivityInterface.showProgressUiThread(progress);
+        }
+    };
+
+    @NotNull
     private Pair<String, Bitmap> realTransferTensorflow(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
         Bitmap baseBitmap = repealRedoManager.getBaseBitmap();
         Bitmap sBm = styleBm, cBm = baseBitmap;
@@ -913,24 +893,27 @@ public class StyleTransferFragment extends BasePtuFragment {
             if (transfer.isContentExit() && isReuse) { //  // 重用内容 上次内容存在
                 cBm = null;
             } else if (cBm == null) {  // 上次内容不存在,但是内容图为空
-                return new Pair<String, Bitmap>(TRANS_RESULT_NO_CONTENT, null);
+                return new Pair<>(TRANS_RESULT_NO_CONTENT, null);
             }
         } else {  // 重用风格
             if (transfer.isStyleExist() && isReuse) { // 上次风格存在
                 sBm = null;
             } else if (sBm == null) { // 上次风格不存在，但是风格图为空
-                return new Pair<String, Bitmap>(TRANS_RESULT_NO_STYLE, null);
+                return new Pair<>(TRANS_RESULT_NO_STYLE, null);
             }
         }
-
+        progressCallback.onProgress(10);
+        Bitmap rstBm;
         if (baseBitmap.getWidth() > StyleTransferTensorflow.CONTENT_SIZE * 2.5 || baseBitmap.getHeight() > StyleTransferTensorflow.CONTENT_SIZE * 2.5) {
-            return new Pair<String, Bitmap>(TRANS_RESULT_SUCCESS, transfer.transferBigSize(baseBitmap, sBm, getActivity()));
+            rstBm = transfer.transferBigSize(baseBitmap, sBm, progressCallback);
         } else {
-            return new Pair<String, Bitmap>(TRANS_RESULT_SUCCESS, transfer.transfer(cBm, sBm, getActivity()));
+            rstBm = transfer.transfer(cBm, sBm, progressCallback);
         }
+        String errorMsg = rstBm == null ? "" : null;
+        return new Pair<>(errorMsg, rstBm);
     }
 
-    @org.jetbrains.annotations.Nullable
+    @NotNull
     private Pair<String, Bitmap> transferPytorch(@NotNull Bitmap bm, boolean isChangeStyle, boolean isReuse) {
         SPUtil.putTransferFinish(false);
         Bitmap sBm = styleBm, cBm = repealRedoManager.getBaseBitmap();
@@ -953,7 +936,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     sBm = null;
                 }
             }
-            return new Pair<String, Bitmap>(TRANS_RESULT_SUCCESS, transfer.transfer(cBm, sBm, 1));
+            return new Pair<>(null, transfer.transfer(cBm, sBm, 1));
         } catch (Throwable e) {
             e.printStackTrace();
             if (e instanceof OutOfMemoryError || e instanceof StackOverflowError || e.getMessage().contains("not enough memory")) { // 尺寸太大，爆内存，主动调小
@@ -975,6 +958,6 @@ public class StyleTransferFragment extends BasePtuFragment {
         }
         // 第一次成功，放入合适的尺寸
         SPUtil.putTransferFinish(true);
-        return new Pair<>(TRANS_RESULT_SUCCESS, rstBm);
+        return new Pair<>(null, rstBm);
     }
 }

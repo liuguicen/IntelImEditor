@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -25,7 +26,7 @@ class ImageMaterialAdapter :
 
     private val mAdController: ListAdStrategyController? = null
     var isUpdateHeat = true
-    private var selectedPos: PicResource? = null
+    private var selectedItem: PicResource? = null
 
     constructor() : super() {
         addItemType(PicResourceItemData.PicListItemType.TX_PIC_AD, R.layout.item_tietu_list);
@@ -51,7 +52,7 @@ class ImageMaterialAdapter :
                 )
             }
             //选中状态
-            holder.setVisible(R.id.iv_select, selectedPos == item.data)
+            holder.setVisible(R.id.iv_select, selectedItem == item.data)
             // 注意不能用转换后的url
             val isUnlocked = LockUtil.sUnlockData[item.data.url?.url.hashCode().toString()]
             if (isUnlocked != null && !isUnlocked) {
@@ -99,7 +100,7 @@ class ImageMaterialAdapter :
 
     fun setList(list: List<PicResource>, selectPic: PicResource?) {
         groupedList.clear()
-        selectedPos = selectPic
+        selectedItem = selectPic
         mAdController?.reSet()
         for (i in list.indices) {
             val data = list[i]
@@ -127,8 +128,8 @@ class ImageMaterialAdapter :
         super.addData(id, PicResourceItemData(picRes, PicResourceItemData.PicListItemType.ITEM))
     }
 
-    fun selectPosition(position: PicResource) {
-        selectedPos = position
+    fun setSelectedItem(selectedItem: PicResource?) {
+        this.selectedItem = selectedItem
         notifyDataSetChanged()
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -12,9 +11,11 @@ import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.dataAndLogic.SPUtil;
 import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.LogUtil;
+import com.mandi.intelimeditor.common.util.ProgressCallback;
 import com.mandi.intelimeditor.common.util.geoutil.MRect;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.gpu.GpuDelegate;
 
@@ -25,7 +26,6 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +44,8 @@ public class StyleTransferTensorflow {
      */
     private static int ADJACENT_LEN = 80;
     public static final int STYLE_SIZE = 256;
-    private final String STYLE_PREDICT_INT8_MODEL = "style_predict_quantized_256.tflite";
-    private final String STYLE_TRANSFER_INT8_MODEL = "style_transfer_quantized_384.tflite";
-    private final String STYLE_PREDICT_FLOAT16_MODEL = "style_predict_f16_256.tflite";
-    private final String STYLE_TRANSFER_FLOAT16_MODEL = "style_transfer_f16_384.tflite";
+    private final String STYLE_PREDICT_FLOAT16_MODEL = "predict.tflite";
+    private final String STYLE_TRANSFER_FLOAT16_MODEL = "transfer.tflite";
     private Bitmap sConvertBm;
 
 
@@ -94,8 +92,8 @@ public class StyleTransferTensorflow {
                 interpreterPredict = getInterpreter(context, STYLE_PREDICT_FLOAT16_MODEL, true);
                 interpreterTransform = getInterpreter(context, STYLE_TRANSFER_FLOAT16_MODEL, true);
             } else {
-                interpreterPredict = getInterpreter(context, STYLE_PREDICT_INT8_MODEL, false);
-                interpreterTransform = getInterpreter(context, STYLE_TRANSFER_INT8_MODEL, false);
+                // interpreterPredict = getInterpreter(context, STYLE_PREDICT_INT8_MODEL, false);
+                // interpreterTransform = getInterpreter(context, STYLE_TRANSFER_INT8_MODEL, false);
             }
             Log.d(TAG, "StyleTransfer: 模型加载完成");
             c_ConvertBm = Bitmap.createBitmap(CONTENT_SIZE, CONTENT_SIZE, Bitmap.Config.ARGB_8888);
@@ -146,8 +144,9 @@ public class StyleTransferTensorflow {
 
     /**
      * 注意传入空表示使用上一次的
+     * @param progressCallback 进度10% - 95% 其余留给上层
      */
-    public Bitmap transfer(Bitmap cBm, Bitmap sBm, Context context) {
+    public Bitmap transfer(Bitmap cBm, Bitmap sBm, ProgressCallback progressCallback) {
         try {
             Log.d(TAG, "start transfer google models");
             Log.d(TAG, "execute: use gpu = " + useGPU + "  thread number = " + numberThreads);
@@ -159,12 +158,14 @@ public class StyleTransferTensorflow {
                 ImageUtils.Companion.bitmapToByteBuffer(c_ConvertBm, 0, 255,
                         c_PixArray, c_Buffer);
             }
+            if (progressCallback != null) progressCallback.onProgress(15);
             if (sBm != null) {
                 sConvertCanvas.drawBitmap(sBm, null,
                         new Rect(0, 0, sConvertCanvas.getWidth(), sConvertCanvas.getHeight()),
                         BitmapUtil.getBitmapPaint());
                 ImageUtils.Companion.bitmapToByteBuffer(sConvertBm, 0, 255,
                         sPixArray, sBuffer);
+                if (progressCallback != null) progressCallback.onProgress(20);
                 Object[] stylePredictInput = new Object[]{sBuffer};
                 Map<Integer, Object> stylePredictOutput = new HashMap<>();
                 stylePredictOutput.put(0, sPredict);
@@ -174,6 +175,7 @@ public class StyleTransferTensorflow {
                 interpreterPredict.runForMultipleInputsOutputs(stylePredictInput, stylePredictOutput);
                 LogUtil.logTimeConsumeAndRecord("第一步 风格预测完成 ");
             }
+            if (progressCallback != null) progressCallback.onProgress(25);
             LogUtil.logTimeConsumeAndRecord("创建基础数据和风格预测完成");
 
             LogUtil.logTimeConsumeAndRecord("转换bm完成");
@@ -186,11 +188,13 @@ public class StyleTransferTensorflow {
                     transferOutput
             );
             LogUtil.logTimeConsumeAndRecord("第二步 风格迁移完成 ");
+            if (progressCallback != null) progressCallback.onProgress(65);
             Bitmap styledImage =
                     ImageUtils.Companion.convertArrayToBitmap(outputArray, c_Range);
             Bitmap.createScaledBitmap(styledImage, styledImage.getWidth() * 2,
                     styledImage.getHeight() * 2, true);
             LogUtil.logTimeConsumeAndRecord("第三步 转换结果图片完成");
+            if (progressCallback != null) progressCallback.onProgress(95);
             isFirstTransfer = false;
             return styledImage;
         } catch (Exception e) {
@@ -200,12 +204,11 @@ public class StyleTransferTensorflow {
     }
 
     /**
-     *
      * 传入空表示使用上一次的, 注意目前不能重用内容图
      * 将图片裁剪成一个个的小图再迁移,最后拼接起来，拼接的时候对边缘进行平滑过渡处理，证明是可行的，但是编码相当复杂
-     *
+     * @param progressCallback 进度10% - 95% 其余留给上层
      */
-    public Bitmap transferBigSize(Bitmap cBm, Bitmap sBm, Context context) {
+    public Bitmap transferBigSize(Bitmap cBm, Bitmap sBm, @Nullable ProgressCallback progressCallback) {
         try {
             Log.d(TAG, "start transfer google models");
             Log.d(TAG, "use big size, execute: use gpu = " + useGPU + "  thread number = " + numberThreads);
@@ -216,6 +219,7 @@ public class StyleTransferTensorflow {
                         new Rect(0, 0, sConvertCanvas.getWidth(), sConvertCanvas.getHeight()),
                         BitmapUtil.getBitmapPaint());
                 ImageUtils.Companion.bitmapToByteBuffer(sConvertBm, 0, 255, sPixArray, sBuffer);
+                if (progressCallback != null) progressCallback.onProgress(15);
                 Object[] inputsForPredict = new Object[]{sBuffer};
                 Map<Integer, Object> outputsForPredict = new HashMap<>();
                 outputsForPredict.put(0, sPredict);
@@ -224,11 +228,15 @@ public class StyleTransferTensorflow {
                 // That would be a good practice in case this was applied to a video stream.
                 interpreterPredict.runForMultipleInputsOutputs(inputsForPredict, outputsForPredict);
                 LogUtil.logTimeConsumeAndRecord("第一步 风格预测完成 ");
+                if (progressCallback != null) progressCallback.onProgress(20);
             }
             int srcW = cBm.getWidth(), srcH = cBm.getHeight();
             ArrayList<Integer> wPos = getNodePosFill(srcW);
             ArrayList<Integer> hPos = getNodePosFill(srcH);
-            Log.d(TAG, "transferBigSize: patch number " + wPos.size() * hPos.size());
+            int patchNumber = wPos.size() * hPos.size();
+            Log.d(TAG, "transferBigSize: patch number " + patchNumber);
+            float progressSeg = (50 - 20) * 1f / patchNumber;
+            float progress = 20;
 
             ArrayList<float[][][][]> patchRstBmList = new ArrayList<>();
             ArrayList<Rect> patchRangeList = new ArrayList<>();
@@ -243,7 +251,10 @@ public class StyleTransferTensorflow {
                     // Log.d(TAG, "transferBigSize: 准备数据完成");
                     // 第二步，模型推理
                     // 下面就是模型的标准运行流程了，装备传入模型的输入输出数据结构，run，然后处理输出即可
-                    Log.d(TAG, "patch " + i + " , " + j + " range =  " + patchRangeInContent + "转换bm完成");
+                    Log.d(TAG, "patch " + i * j + " range =  " + patchRangeInContent + "转换bm完成");
+                    if (progressCallback != null)
+                        progressCallback.onProgress((int) (progress += 0.2 * progressSeg));
+
                     Object[] inputsForTransfer = new Object[]{c_Buffer, sPredict};
                     Map<Integer, Object> outputsForStyleTransfer = new HashMap<>();
                     float[][][][] outputImage = new float[1][CONTENT_SIZE][CONTENT_SIZE][3];
@@ -252,6 +263,8 @@ public class StyleTransferTensorflow {
                             inputsForTransfer,
                             outputsForStyleTransfer
                     );
+                    if (progressCallback != null)
+                        progressCallback.onProgress((int) (progress += 0.8 * progressSeg));
 
                     // 第三步 处理输出结果
                     // 全部统一到输入的content的坐标系下
@@ -276,6 +289,8 @@ public class StyleTransferTensorflow {
                     // outBm里面就是expendPatch，没有缩放，坐标系一致
                     patchRstBmList.add(outputImage);
                     patchRangeList.add(patchRangeInContent);
+                    if (progressCallback != null)
+                        progressCallback.onProgress((int) (progress += progressSeg));
                     // rstCanvas.drawRect(patchInContent, LogUtil.getLogPaint());
                     // Log.d(TAG, "第三步 patch" + i + " , " + j + " 模型传输完成");
                     // Log.d(TAG, "transferBigSize: patch in content = " + patchInContent);
@@ -283,9 +298,12 @@ public class StyleTransferTensorflow {
                     // Log.d(TAG, "transferBigSize: ");
                 }
             }
+            Log.d(TAG, "transferBigSize: 第二步 分块迁移完成");
+            if (progressCallback != null) progressCallback.onProgress(50);
+            // 目前耗时主要在这里
+            BitmapUtil.BitmapPixelsConverter rstConverter = catPicPatch(cBm, patchRstBmList, patchRangeList, progressCallback);
 
-            BitmapUtil.BitmapPixelsConverter rstConverter = catPicPatch(cBm, patchRstBmList, patchRangeList);
-
+            if (progressCallback != null) progressCallback.onProgress(95);
             Log.d(TAG, "第三步 拼接结果图片完成");
             return rstConverter.getBimap();
         } catch (Exception e) {
@@ -303,9 +321,13 @@ public class StyleTransferTensorflow {
     }
 
     @NotNull
-    private BitmapUtil.BitmapPixelsConverter catPicPatch(Bitmap cBm, ArrayList<float[][][][]> patchRstBmList, ArrayList<Rect> patchRangeList) {
+    private BitmapUtil.BitmapPixelsConverter catPicPatch(Bitmap cBm, ArrayList<float[][][][]> patchRstBmList, ArrayList<Rect> patchRangeList
+            , ProgressCallback progressCallback) {
         Log.d(TAG, "transferBigSize: 开始拼接patch块");
         BitmapUtil.BitmapPixelsConverter rstConverter = new BitmapUtil.BitmapPixelsConverter(cBm.getWidth(), cBm.getHeight());
+
+        float progressSeg = (95 - 50) * 1f / patchRstBmList.size();
+        float progress = 50;
         for (int i = 0; i < patchRstBmList.size(); i++) {
             float[][][][] patchArray = patchRstBmList.get(i);
             Rect patchRange = patchRangeList.get(i);
@@ -353,8 +375,11 @@ public class StyleTransferTensorflow {
                         // }
                         // rstConverter.setPixel(xInContent, yInContent, patchPix);
                     }
+
                 }
             }
+
+            if (progressCallback != null) progressCallback.onProgress((int) (progress += progressSeg));
             // Log.d(TAG, "transferBigSize: patch " + i + "写入完成");
         }
         // rstCanvas.drawBitmap(styledImage, patchInOut, patchInContent, BitmapUtil.getBitmapPaint());

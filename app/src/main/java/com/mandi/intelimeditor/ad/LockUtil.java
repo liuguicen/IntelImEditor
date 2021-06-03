@@ -101,7 +101,6 @@ public class LockUtil {
                 start += j;
                 LockUtil.picResLockedPosition.add(start);
             }
-        picResLockedPosition.clear();
     }
     /**
      * 长时间没看激励视频, 资源加锁的
