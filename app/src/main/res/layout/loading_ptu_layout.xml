@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/bg_dialog_btn"
-        android:padding="@dimen/dp_16">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10">
 
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/progressBar1"
@@ -26,26 +28,20 @@
             android:id="@+id/progressTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/red"
-            app:layout_constraintBottom_toBottomOf="@+id/progressBar1"
-            app:layout_constraintEnd_toEndOf="@+id/progressBar1"
-            app:layout_constraintStart_toStartOf="@+id/progressBar1"
-            app:layout_constraintTop_toTopOf="@+id/progressBar1" />
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="10%"
+            android:textColor="@color/red" />
 
         <TextView
             android:id="@+id/progressTips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
             android:text="@string/loading"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar1" />
+            android:textSize="@dimen/sp_14" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </FrameLayout>
 

@@ -842,7 +842,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                         pTuActivityInterface.showProgress(10);
                         onChosenBm(isStyle ? null : bm, isStyle ? bm : null);
                     });
-                    pTuActivityInterface.showProgress(20);
+                    pTuActivityInterface.showProgress(15);
                     // 第二步，使用合适的尺寸迁移图片
                     Pair<String, Bitmap> res;
                     if (MODEL_GOOGLE.equals(model)) {
