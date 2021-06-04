@@ -927,15 +927,15 @@ public class StyleTransferFragment extends BasePtuFragment {
                 repealRedoManager.setBaseBm(bm);
             }
 
-            StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
-            if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
-                if (isChangeStyle) {
-                    cBm = null;
-                } else {
-                    sBm = null;
-                }
-            }
-            return new Pair<>(null, transfer.transfer(cBm, sBm, 1));
+            // StyleTransferPytorch transfer = StyleTransferPytorch.getInstance();
+            // if (isReuse) { // 不是第一次，转换器中已经保存了上一次的数据
+            //     if (isChangeStyle) {
+            //         cBm = null;
+            //     } else {
+            //         sBm = null;
+            //     }
+            // }
+            // return new Pair<>(null, transfer.transfer(cBm, sBm, 1));
         } catch (Throwable e) {
             e.printStackTrace();
             if (e instanceof OutOfMemoryError || e instanceof StackOverflowError || e.getMessage().contains("not enough memory")) { // 尺寸太大，爆内存，主动调小

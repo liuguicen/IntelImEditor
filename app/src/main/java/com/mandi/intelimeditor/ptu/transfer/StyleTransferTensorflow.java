@@ -13,6 +13,7 @@ import com.mandi.intelimeditor.common.util.BitmapUtil;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.ProgressCallback;
 import com.mandi.intelimeditor.common.util.geoutil.MRect;
+import com.mandi.intelimeditor.user.userSetting.SPConstants;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -144,6 +145,7 @@ public class StyleTransferTensorflow {
 
     /**
      * 注意传入空表示使用上一次的
+     *
      * @param progressCallback 进度10% - 95% 其余留给上层
      */
     public Bitmap transfer(Bitmap cBm, Bitmap sBm, ProgressCallback progressCallback) {
@@ -206,6 +208,7 @@ public class StyleTransferTensorflow {
     /**
      * 传入空表示使用上一次的, 注意目前不能重用内容图
      * 将图片裁剪成一个个的小图再迁移,最后拼接起来，拼接的时候对边缘进行平滑过渡处理，证明是可行的，但是编码相当复杂
+     *
      * @param progressCallback 进度10% - 95% 其余留给上层
      */
     public Bitmap transferBigSize(Bitmap cBm, Bitmap sBm, @Nullable ProgressCallback progressCallback) {
@@ -251,7 +254,7 @@ public class StyleTransferTensorflow {
                     // Log.d(TAG, "transferBigSize: 准备数据完成");
                     // 第二步，模型推理
                     // 下面就是模型的标准运行流程了，装备传入模型的输入输出数据结构，run，然后处理输出即可
-                    Log.d(TAG, "patch " + i * j + " range =  " + patchRangeInContent + "转换bm完成");
+                    Log.d(TAG, "patch " + (i * hPos.size() + j) + " range =  " + patchRangeInContent + "转换bm完成");
                     if (progressCallback != null)
                         progressCallback.onProgress((int) (progress += 0.2 * progressSeg));
 
@@ -328,19 +331,19 @@ public class StyleTransferTensorflow {
 
         float progressSeg = (95 - 50) * 1f / patchRstBmList.size();
         float progress = 50;
+        float ADJACENT_LEN_1 = 1f / ADJACENT_LEN;
         for (int i = 0; i < patchRstBmList.size(); i++) {
             float[][][][] patchArray = patchRstBmList.get(i);
             Rect patchRange = patchRangeList.get(i);
             MRect noAdjacentRange = getNoAdjacentRange(patchRangeList.get(i), cBm);
-
             for (int xInContent = patchRange.left; xInContent < patchRange.right; xInContent++) {
                 for (int yInContent = patchRange.top; yInContent < patchRange.bottom; yInContent++) {
                     int xInPatch = xInContent - patchRange.left;
                     int yInPatch = yInContent - patchRange.top;
                     int patchPix = getPix(patchArray, xInPatch, yInPatch);
 
-                    List<Float> dis = noAdjacentRange.disEdge(xInContent, yInContent);
-                    if (dis.size() == 1 && dis.get(0) <= 0) { // 在内部
+                    List<Float> dis = disEdge(xInContent, yInContent, noAdjacentRange);
+                    if (dis.get(0) <= 0) { // 在内部
                         rstConverter.setPixel(xInContent, yInContent, patchPix);
                     } else {
                         // 对于邻接区，分为两种情况，边相邻，角相邻
@@ -350,7 +353,7 @@ public class StyleTransferTensorflow {
                         // 最后结果就是 横向距离反比，乘以纵向距离反比，如下
                         float ratio = 1;
                         for (final Float d : dis) {
-                            ratio *= (ADJACENT_LEN - d) / ADJACENT_LEN;
+                            ratio *= (ADJACENT_LEN - d) * ADJACENT_LEN_1;
                         }
 
                         int pix = rstConverter.getPixel(xInContent, yInContent);
@@ -379,11 +382,54 @@ public class StyleTransferTensorflow {
                 }
             }
 
-            if (progressCallback != null) progressCallback.onProgress((int) (progress += progressSeg));
-            // Log.d(TAG, "transferBigSize: patch " + i + "写入完成");
+            Log.d(TAG, "transferBigSize: patch " + i + "写入完成");
+            if (progressCallback != null)
+                progressCallback.onProgress((int) (progress += progressSeg));
         }
         // rstCanvas.drawBitmap(styledImage, patchInOut, patchInContent, BitmapUtil.getBitmapPaint());
         return rstConverter;
+    }
+
+
+    /**
+     * 与边界的距离, 如果在内部返回负的距离，外部非边角返回正的距离，外部边角返回两个值
+     * 画个图，用if else 划分区域，然后一个个返回距离，处理过的划掉，直到9个区域处理完
+     * 返回列表，用以区分是否处于角上
+     */
+    private List<Float> disEdge(float x, float y, MRect rect) { // 距离边界的距离
+        ArrayList<Float> dis = new ArrayList<>();
+        if (x >= rect.left) { // 左边界的右边
+            if (x <= rect.right) { // 右边界的左边
+                if (y < rect.top) { // 上边界上边
+                    dis.add(rect.top - y);
+                } else if (y > rect.bottom) { // 下边界下边
+                    dis.add(y - rect.bottom);
+                } else { // 上下边界的中间, 矩形中间，比较四条边距离
+                    dis.add(-1f);
+                }
+            } else { // 右边界的右边
+                if (y < rect.top) {
+                    dis.add(x - rect.right);
+                    dis.add(rect.top - y);
+                } else if (y > rect.bottom) {
+                    dis.add(x - rect.right);
+                    dis.add(y - rect.bottom);
+                } else {
+                    dis.add(x - rect.right);
+                }
+            }
+        } else { // 左边界的左边
+            if (y < rect.top) {
+                dis.add(rect.left - x);
+                dis.add(rect.top - y);
+            } else if (y > rect.bottom) {
+                dis.add(rect.left - x);
+                dis.add(y - rect.bottom);
+            } else {
+                dis.add(rect.left - x);
+            }
+        }
+        return dis;
     }
 
     private float[][][][] Bitmap2FloatArray(Bitmap bm) {

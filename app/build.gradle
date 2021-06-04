@@ -36,7 +36,8 @@ android {
                         "-DMNN_OPENCL=true", "-DMNN_OPENGL=true"
 //                abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
 //                abiFilters "armeabi-v7a"
-                abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
+//                abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
+                abiFilters 'armeabi-v7a', 'arm64-v8a' // 一起打包，测试用
                 // Android Studio 4.0 之后必须同时在这里设置过滤才行，估计是给cmake设置的，外面是给纯Android设置的
             }
         }
@@ -50,9 +51,11 @@ android {
             // - armeabi: ARM v5 这是相当老旧的一个版本，缺少对浮点数计算的硬件支持，在需要大量计算时有性能瓶颈
             // - armeabi-v7a: ARM v7
             // - arm64-v8a: 64位支持
+
 //            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
 //            abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
-            abiFilters 'armeabi-v7a' // 32位的
+//            abiFilters 'armeabi-v7a' // 32位的
+            abiFilters 'armeabi-v7a', 'arm64-v8a' // 一起打包，测试用
         }
 
         //默认渠道包
@@ -359,8 +362,8 @@ dependencies {
 
     // 机器学习相关
 //     pytorch 还是不行 它运行了之后不释放内存，不管是创建tensor还是forward之后
-    implementation 'org.pytorch:pytorch_android:1.8.0'
-    implementation 'org.pytorch:pytorch_android_torchvision:1.8.0'
+//    implementation 'org.pytorch:pytorch_android:1.8.0'
+//    implementation 'org.pytorch:pytorch_android_torchvision:1.8.0'
 
     implementation 'com.tencent.bugly:crashreport_upgrade:1.5.0'
     implementation 'com.wang.avi:library:2.1.3'
