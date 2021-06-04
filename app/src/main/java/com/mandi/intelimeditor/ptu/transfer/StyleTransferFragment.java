@@ -803,8 +803,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                 .observeOn(Schedulers.computation())
                 .map(bm -> {
                     // 更新UI进度和图片
-                    progressCallback.onProgress(5);
-                    pTuActivityInterface.showProgressUiThread(20);
+                    pTuActivityInterface.showProgressUiThread(10);
                     // 第二步，使用合适的尺寸迁移图片
                     Pair<String, Bitmap> res;
                     if (MODEL_GOOGLE.equals(model)) {
@@ -812,7 +811,6 @@ public class StyleTransferFragment extends BasePtuFragment {
                     } else {
                         res = transferPytorch(bm, isStyle, false);
                     }
-                    progressCallback.onProgress(100);
                     if (res.second == null) { // 出错
                         throw new Exception(getErrorMsg(res.first));
                     }
@@ -822,6 +820,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                 .subscribe(new SimpleObserver<Bitmap>() {
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull Bitmap bitmap) {
+                        progressCallback.onProgress(100);
                         ptuSeeView.replaceSourceBm(bitmap);
                         pTuActivityInterface.dismissProgress();
                         isProcessing = false;

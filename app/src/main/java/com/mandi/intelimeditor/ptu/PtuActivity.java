@@ -1787,8 +1787,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         if (dialog == null) {
             dialog = LoadingDialog.newInstance(title);
             dialog.showIt(this);
-            dismissLoading();
-            dialog.showIt(this);
         }
     }
 

@@ -68,6 +68,7 @@ public class LoadingDialog extends IBaseDialog {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        setCancelable(false);
         if (getRootView() != null) {
             tv = getRootView().findViewById(R.id.progressTips);
             AVLoadingIndicatorView avi = getRootView().findViewById(R.id.progressBar1);
