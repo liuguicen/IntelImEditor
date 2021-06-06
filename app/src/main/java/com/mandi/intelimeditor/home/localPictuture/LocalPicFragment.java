@@ -38,12 +38,15 @@ import com.mandi.intelimeditor.home.tietuChoose.PicResourceItemData;
 import com.mandi.intelimeditor.home.view.PopupMenu;
 
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
+import com.mandi.intelimeditor.ptu.transfer.StyleTransferFragment;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.useruse.FirstUseUtil;
 import com.mandi.intelimeditor.R;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 import cn.bmob.v3.datatype.BmobFile;
@@ -93,7 +96,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
     }
 
     /**
-     * @see com.mandi.intelimeditor.common.BaseLazyLoadFragment#loadData(boolean) 
+     * @see com.mandi.intelimeditor.common.BaseLazyLoadFragment#loadData(boolean)
      */
     @Override
     public void loadData(boolean isFirstLoad) {
@@ -166,7 +169,11 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
                     List<String> currentPicPathList = mPresenter.getCurrentPicPathList();
                     int min = Math.min(currentPicPathList.size(), 200);
                     currentPicPathList = currentPicPathList.subList(0, min);
-                    chooseItem(chosenItem, PicResource.pathList2PicResList(currentPicPathList));
+
+                    Set<String> categories = getActivity().getIntent().getCategories();
+                    boolean isChooseStyle = categories == null ? false : categories.contains(StyleTransferFragment.CHOOSE_PIC_CATEGORY_STYLE);
+
+                    chooseItem(chosenItem, isChooseStyle ? new ArrayList<>() : PicResource.pathList2PicResList(currentPicPathList));
                 } else {
                     mPresenter.switchChooseItem(position);
                 }

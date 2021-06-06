@@ -64,6 +64,7 @@ import com.mandi.intelimeditor.ptu.PtuUtil;
 import com.mandi.intelimeditor.ptu.saveAndShare.PTuResultData;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import com.mandi.intelimeditor.ptu.tietu.onlineTietu.ViewPager2FragmentAdapter;
+import com.mandi.intelimeditor.ptu.transfer.StyleTransferFragment;
 import com.mandi.intelimeditor.user.US;
 import com.mandi.intelimeditor.user.userAccount.LocalUserInfo;
 import com.mandi.intelimeditor.user.userSetting.AboutAppActivity;
@@ -90,6 +91,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+
 import com.mandi.intelimeditor.common.util.CoverLoader;
 
 /**
@@ -102,8 +104,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
     // 下面这两个可以合并复用
     public static final String PTU_ACTION_CHOOSE_TIETU = "choose_tietu";
-    public static final String CHOOSE_PIC_CATEGORY_STYLE = "action_choose_style";
-    public static final String CHOOSE_PIC_CATEGORY_CONTENT = "action_choose_content";
 
     public static final int REQUEST_CODE_NORMAL = 0;
     public static final int REQUEST_CODE_CHOOSE_PIC_FROM_SYSTEM = 12;
@@ -236,7 +236,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     }
 
     private void initData() {
-       FullScreenVadManager.getInstance().initAd(this);
+        FullScreenVadManager.getInstance().initAd(this);
         mHomePresenter = new HomePresenter(this);
     }
 
@@ -621,14 +621,15 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         if (bmobFile == null) {
             return; // 无动作
         }
+        if (categoryList == null) categoryList = new ArrayList<>();
         String path = bmobFile.getUrl();
         String action = getIntent().getAction();
         Set<String> categories = getIntent().getCategories();
-        if (categories != null && categories.contains(CHOOSE_PIC_CATEGORY_STYLE)) {
+        if (categories != null && categories.contains(StyleTransferFragment.CHOOSE_PIC_CATEGORY_STYLE)) {
             AllData.curStyleList = categoryList;
         }
-        if (categories != null && categories.contains((CHOOSE_PIC_CATEGORY_CONTENT))) {
-            AllData.contentList = categoryList;
+        if (categories != null && categories.contains((StyleTransferFragment.CHOOSE_PIC_CATEGORY_CONTENT))) {
+            AllData.curContentList = categoryList;
         }
 
         if (INTENT_ACTION_ONLY_CHOSE_PIC.equals(action)) {

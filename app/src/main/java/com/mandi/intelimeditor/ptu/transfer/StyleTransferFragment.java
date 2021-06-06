@@ -79,6 +79,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class StyleTransferFragment extends BasePtuFragment {
     public static final String ALL = "all";
+    public static final String CHOOSE_PIC_CATEGORY_STYLE = "action_choose_style";
+    public static final String CHOOSE_PIC_CATEGORY_CONTENT = "action_choose_content";
     private String TAG = "StyleTransferFragment";
     static final String TRANS_RESULT_STATE = "TRANS_RESULT_STATE";
     static final String TRANS_RESULT_NO_CONTENT = "no_content_pic";
@@ -134,12 +136,12 @@ public class StyleTransferFragment extends BasePtuFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boolean lastTransferSuccess = SPUtil.getTransferSuccess();
-        if (!lastTransferSuccess) {
-            AllData.globalSettings.setMaxSupportContentSize((int) (AllData.globalSettings.maxSupportContentSize * 0.8));
-        } else {
-            AllData.globalSettings.setMaxSupportContentSize((int) (AllData.globalSettings.maxSupportContentSize * 1.01));
-        }
+        // boolean lastTransferSuccess = SPUtil.getTransferSuccess();
+        // if (!lastTransferSuccess) {
+        //     AllData.globalSettings.setMaxSupportContentSize((int) (AllData.globalSettings.maxSupportContentSize * 0.8));
+        // } else {
+        //     AllData.globalSettings.setMaxSupportContentSize((int) (AllData.globalSettings.maxSupportContentSize * 1.01));
+        // }
         mContext = getActivity();
         isProcessing = false;
     }
@@ -179,8 +181,8 @@ public class StyleTransferFragment extends BasePtuFragment {
             if (transferController.contentBm != null) {
                 isChooseStyleMode = true;
                 lastStyle = PicResource.path2PicResource(transferController.contentUrl);
-                if (AllData.contentList != null) {
-                    lastContentPos = AllData.contentList.indexOf(lastStyle) + 1;
+                if (AllData.curContentList != null) {
+                    lastContentPos = AllData.curContentList.indexOf(lastStyle) + 1;
                     lastContentOffset = AllData.getScreenWidth() / 2;
                 }
             }
@@ -484,8 +486,8 @@ public class StyleTransferFragment extends BasePtuFragment {
         US.putPTuTietuEvent(US.PTU_TIETU_MORE);
         Intent intent = new Intent(mContext, HomeActivity.class);
         intent.setAction(HomeActivity.INTENT_ACTION_ONLY_CHOSE_PIC);
-        intent.addCategory(isChooseStyleMode ? HomeActivity.CHOOSE_PIC_CATEGORY_STYLE : HomeActivity.CHOOSE_PIC_CATEGORY_CONTENT);
-        intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, isChooseStyleMode ? HomeActivity.TEMPLATE_FRAG_ID : HomeActivity.LOCAL_FRAG_ID);
+        intent.addCategory(isChooseStyleMode ? CHOOSE_PIC_CATEGORY_STYLE : CHOOSE_PIC_CATEGORY_CONTENT);
+        intent.putExtra(HomeActivity.INTENT_EXTRA_FRAGMENT_ID, isChooseStyleMode ? HomeActivity.LOCAL_FRAG_ID : HomeActivity.TEMPLATE_FRAG_ID);
         startActivityForResult(intent, isChooseStyleMode ? PtuActivity.REQUEST_CODE_CHOOSE_STYLE : PtuActivity.REQUEST_CODE_CHOOSE_CONTENT);
     }
 
@@ -540,8 +542,8 @@ public class StyleTransferFragment extends BasePtuFragment {
     }
 
     private void showContentList() {
-        if (AllData.contentList.size() != 0) {
-            showStyleOrContentList(AllData.contentList);
+        if (AllData.curContentList.size() != 0) {
+            showStyleOrContentList(AllData.curContentList);
         } else { // 没有指定，显示最近图片列表
             AllData.queryLocalPicList(new Emitter<String>() {
                 @Override
@@ -549,8 +551,8 @@ public class StyleTransferFragment extends BasePtuFragment {
                     if (isDetached()) {
                         return;
                     }
-                    AllData.contentList = AllData.sMediaInfoScanner.convertRecentPath2PicResList();
-                    showStyleOrContentList(AllData.contentList);
+                    AllData.curContentList = AllData.sMediaInfoScanner.convertRecentPath2PicResList();
+                    showStyleOrContentList(AllData.curContentList);
                 }
 
                 @Override
@@ -643,9 +645,9 @@ public class StyleTransferFragment extends BasePtuFragment {
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_CONTENT && data != null) {
             PicResource picRes = (PicResource) data.getSerializableExtra(HomeActivity.INTENT_EXTRA_CHOSEN_PIC_RES);
             transfer(picRes.getUrlString(), false, true);
-            lastContentPos = AllData.contentList.indexOf(picRes) + 1;
+            lastContentPos = AllData.curContentList.indexOf(picRes) + 1;
             lastContentOffset = AllData.getScreenWidth() / 2;
-            showStyleOrContentList(AllData.contentList);
+            showStyleOrContentList(AllData.curContentList);
         }
 
         if (requestCode == PtuActivity.REQUEST_CODE_CHOOSE_STYLE && data != null) {

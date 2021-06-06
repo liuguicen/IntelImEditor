@@ -399,6 +399,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
             pop.dismiss();
             pop = null;
         }
+        AllData.curStyleList = new ArrayList<>(); // 不能直接清空
+        AllData.curContentList = new ArrayList<>();
         MyDatabase.getInstance().close();
         FirstUseUtil.release(this);
     }

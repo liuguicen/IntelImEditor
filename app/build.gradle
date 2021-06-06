@@ -35,6 +35,7 @@ android {
                 arguments "-DANDROID_STL=c++_shared", "-DANDROID_ARM_NEON=TRUE", "-DANDROID_PLATFORM=android-21",
                         "-DMNN_OPENCL=true", "-DMNN_OPENGL=true"
 //                abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
+                // 注意！！！ 下面还有一个节点也要指定abi！！！
 //                abiFilters "armeabi-v7a"
 //                abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
                 abiFilters 'armeabi-v7a', 'arm64-v8a' // 一起打包，测试用
@@ -53,6 +54,7 @@ android {
             // - arm64-v8a: 64位支持
 
 //            abiFilters 'armeabi-v7a', 'x86_64' // 模拟器需要
+            // 注意！！！ 上面还有一个节点也要指定abi！！！
 //            abiFilters 'arm64-v8a' // 目前应用厂商要求64位的了，就是arm64-v8a
 //            abiFilters 'armeabi-v7a' // 32位的
             abiFilters 'armeabi-v7a', 'arm64-v8a' // 一起打包，测试用
@@ -62,8 +64,9 @@ android {
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"]//添加一个默认渠道号
     }
 
-// 编译C++时反注释下面代码
+    // 编译C++时反注释下面代码,以及 sourceSets { main { 下面的1 注意清空缓存 clean 手动删除等防止错误
     //编译c++生成的so文件位置在 app/build/intermediates/cmake 文件夹下，开发c++的时候可以每次都编译.
+    // 注意生成的一个share C++ 的so库 似乎是自动生成的 也需要加进来
     //如果c++已经OK了稳定了，不用每次去编译c代码，可以将生产的so文件copy到jniLibs即可。注释掉编译脚本代码。
 //    externalNativeBuild {
 //        cmake {

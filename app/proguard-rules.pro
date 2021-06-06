@@ -19,10 +19,12 @@
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
+-printmapping map.txt
 
 # keep BmobSDK
 -dontwarn cn.bmob.v3.**
 -keep class cn.bmob.v3.** {*;}
+-keep class cn.bmob.aar.** {*;}
 
 # 确保JavaBean不被混淆-否则gson将无法将数据解析成具体对象
 -keep class * extends cn.bmob.v3.BmobObject {
@@ -50,6 +52,34 @@
  rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
+# Gson begin ##########################################
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+
+# Gson specific classes
+-dontwarn sun.misc.**
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.google.gson.examples.android.model.** { <fields>; }
+
+# Prevent proguard from stripping interface information from TypeAdapter, TypeAdapterFactory,
+# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
+-keep class * extends com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Prevent R8 from leaving Data object members always null
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+# gson end ##############################
+
 # 如果你需要兼容6.0系统，请不要混淆org.apache.http.legacy.jar
 -dontwarn android.net.compatibility.**
 -dontwarn android.net.http.**
@@ -69,6 +99,11 @@
   **[] $VALUES;
   public *;
 }
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+-keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
+  *** rewind();
+}
+
 # for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
@@ -92,6 +127,12 @@
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
  rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
+
+# qq分享和登录的
+-keep class com.tencent.connect.** {*;}
+-keep class com.tencent.open.** {*;}
+-keep class com.tencent.tauth.** {*;}
+
 
 # 如果你需要兼容6.0系统，请不要混淆org.apache.http.legacy.jar
 -dontwarn android.net.compatibility.**
@@ -139,7 +180,7 @@ public static final int *;
 -keep class okio.**{*;}
 -dontwarn okio.**
 
-#腾讯广点通
+#腾讯广点通 优量汇
 -keep class com.qq.e.** {
     public protected *;
 }
@@ -156,6 +197,7 @@ public static final int *;
 -keep class com.tencent.** {
     *;
 }
+-keep class com.tencent.smtt.** { *; }
 -dontwarn dalvik.**
 -dontwarn com.tencent.smtt.**
 
@@ -184,9 +226,10 @@ public static final int *;
 #头条穿山甲
 -keep class com.bytedance.sdk.openadsdk.** { *; }
 -keep public interface com.bytedance.sdk.openadsdk.downloadnew.** {*;}
--keep class com.ss.sys.ces.* {*;}
+-keep class com.pgl.sys.ces.** {*;}
 -keep class com.bytedance.embed_dr.** {*;}
 -keep class com.bytedance.embedapplog.** {*;}
+-keep class com.ss.sys.ces.* {*;}
 
 #eventBus的，使用了注解形式，必须声明，不然方法混了之后找不到
 -keepattributes *Annotation*
@@ -200,7 +243,7 @@ public static final int *;
     <init>(java.lang.Throwable);
 }
 
-# 支付宝
+# 支付宝  官方文档没有任何说明，只能全部复制下来了
 -dontshrink
 -dontpreverify
 -dontoptimize
@@ -208,7 +251,6 @@ public static final int *;
 
 -flattenpackagehierarchy
 -allowaccessmodification
--printmapping map.txt
 
 -optimizationpasses 7
 -verbose
@@ -275,6 +317,7 @@ public static final int *;
 # can be remapped
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
+# 支付宝 end
 
 #AndroidX混淆
 -keep class com.google.android.material.** {*;}
@@ -284,7 +327,6 @@ public static final int *;
 -dontwarn com.google.android.material.**
 -dontnote com.google.android.material.**
 -dontwarn androidx.**
-
 
 #kaijia广告的
 -keep class com.kaijia.adsdk.*.** { *; }
@@ -328,8 +370,10 @@ public static final int *;
    public static final int *;
 }
 
+# 腾讯bugly
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
+-keep class android.support.**{*;}
 
 # 铠甲
 -keep class com.kaijia.adsdk.*.** { *; }
@@ -345,6 +389,8 @@ public static **[] values();
 public static ** valueOf(java.lang.String);
 }
 -keep class com.baidu.mobads.** { *; }
+
+
 ## 铠甲：移动广告联盟
 -keep class com.baidu.mobad.** { *; }
 -keep class com.bun.miitmdid.core.** {*;}
@@ -378,3 +424,7 @@ public <methods>;
 -dontwarn com.ksad.**
 -dontwarn aegon.chrome.**
 # 铠甲 end
+
+记录:
+支付宝的不确定
+bmob的不确定
