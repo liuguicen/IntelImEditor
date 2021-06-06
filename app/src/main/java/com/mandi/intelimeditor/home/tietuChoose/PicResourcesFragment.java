@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
@@ -221,7 +223,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         if (isTietu) {
             spanCount = 3;
         }
-        WrapContentLinearLayoutManager linearLayoutManager = new WrapContentLinearLayoutManager(getContext());
+        StaggeredGridLayoutManager linearLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         picResRcv.setLayoutManager(linearLayoutManager);
         picResRcv.setAdapter(picResAdapter);
         picResAdapter.setClickListener((itemHolder, view) -> {
@@ -232,7 +234,8 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             } else if (itemHolder instanceof GroupHolder) {
                 PicResGroupItemData picResGroup = picResAdapter.getImageUrlList().get(position).picResGroup;
                 if (view.getId() == R.id.tv_pic_header_more) {
-                    lastGroupPosition = linearLayoutManager.findLastVisibleItemPosition();
+                    int[] lastPositions = new int[((StaggeredGridLayoutManager) linearLayoutManager).getSpanCount()];
+                    lastGroupPosition = linearLayoutManager.findLastVisibleItemPositions(lastPositions)[0];
                     lastOffset = linearLayoutManager.findViewByPosition(lastGroupPosition).getTop();
                     showPicsInGroup(picResGroup.title, picResGroup.resItemList);
                     return;
@@ -309,7 +312,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
     /**
      * 显示分组列表
      *
-     * @param title        标题
+     * @param title 标题
      */
     private void showPicsInGroup(String title, List<PicResourceItemData> picList) {
         isShowPicInGroup = true;

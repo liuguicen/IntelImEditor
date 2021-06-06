@@ -78,6 +78,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
     private RequestOptions mLowPriorityOption;
 
     private boolean isAddNewFeatureHeader = false;
+    private boolean isShowPreview = false; //是否显示预览图
     private String adPositionName = "图片列表";
 
     private RequestOptions getRequsetOptions(int position) {
@@ -86,6 +87,10 @@ public class PicResourcesAdapter extends BasePicAdapter {
         } else {
             return mLowPriorityOption;
         }
+    }
+
+    public void setShowPreview(boolean showPreview) {
+        isShowPreview = showPreview;
     }
 
     public PicResourcesAdapter(Context context, int spanCount) {
@@ -260,8 +265,13 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 || viewType == PicResourceItemData.PicListItemType.TX_PIC_AD) {
             return createAdHolder(parent, viewType);
         } else {  // item
-            View view = layoutInflater.inflate(R.layout.item_pic_resource, parent, false);
-            final ItemHolder itemHolder = new ItemHolder(view);
+            View rootView;
+            if (isShowPreview) {
+                rootView = layoutInflater.inflate(R.layout.item_pic_resource_style, parent, false);
+            } else {
+                rootView = layoutInflater.inflate(R.layout.item_pic_resource, parent, false);
+            }
+            final ItemHolder itemHolder = new ItemHolder(rootView);
             itemHolder.updateLayoutParams(parent);
             return itemHolder;
         }
@@ -355,8 +365,16 @@ public class PicResourcesAdapter extends BasePicAdapter {
             itemHolder.lockView.setVisibility(View.VISIBLE);
         }
         PicResource itemData = itemDataList.get(position).data;
+        LogUtil.d(TAG, " rst url =" + BmobUtil.getUrlOfSmallerSize(itemData.getRstUrl()));
         if (itemData != null) {
             String tag = itemData.getTag();
+            //只有首页列表显示预览图
+            if (isShowPreview && !TextUtils.isEmpty(BmobUtil.getUrlOfSmallerSize(itemData.getRstUrl()))) {
+                itemHolder.setViewVisible(itemHolder.previewPicIv, true);
+                CoverLoader.INSTANCE.loadOriginImageView(mContext, BmobUtil.getUrlOfSmallerSize(itemData.getRstUrl()), itemHolder.previewPicIv);
+            } else {
+                itemHolder.setViewVisible(itemHolder.previewPicIv, false);
+            }
             if (itemData.getHeat() != null && itemData.getHeat() != 0 && tag != null) {
                 itemHolder.hotTv.setVisibility(View.VISIBLE);
                 itemHolder.tagTv.setVisibility(View.VISIBLE);
@@ -369,6 +387,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
         } else {
             itemHolder.hotTv.setVisibility(View.GONE);
             itemHolder.tagTv.setVisibility(View.GONE);
+            itemHolder.setViewVisible(itemHolder.previewPicIv, false);
         }
         itemHolder.iv.setOnClickListener(v -> {
             checkLock_andExeClick(itemHolder, v, itemDataList.get(position));
@@ -402,27 +421,6 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 clickListener.onItemClick(itemHolder, v);
         }
     }
-
-//    /**
-//     * 在Adapter里面检测是否加锁，并弹出解锁对话框，因为adapter复用，增加代码复用以及避免出错
-//     * 检测加锁，并执行点击事件
-//     */
-//    private void checkLock_and_ExeSpecialClick(RecyclerView.ViewHolder itemHolder, View v, PicResourceItemData item) {
-//        PicResource picResource = item.data;
-//        String url = picResource.getUrlString();
-//        Runnable taskAfterUnlock = () -> { // 相当于一个简便的监听器，监听解锁成功
-//            item.isUnlock = true;
-//            notifyDataSetChanged(); // adapter里面设置成已解锁，并更新视图
-//            if (multiFuncListener != null)
-//                multiFuncListener.onItemClick(itemHolder, v, CommonConstant.CHANGE_BAOZOU_FACE);  // 解锁成功，相当于点击成功，执行正常的点击任务
-//        };
-//        if (LockUtil.checkLock(mContext, url, mIsTietu, taskAfterUnlock)) {
-//            picResource.updateHeat();  // 锁住的仍然更新热度
-//        } else { // 没有被锁住，执行正常的点击任务
-//            if (multiFuncListener != null)
-//                multiFuncListener.onItemClick(itemHolder, v, CommonConstant.CHANGE_BAOZOU_FACE);
-//        }
-//    }
 
     private void bindAd(ADHolder holder, int position) {
         if (mAdController_feed != null) { // 信息流
@@ -550,7 +548,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
 
 
     public class ItemHolder extends RecyclerView.ViewHolder {
-        public ImageView iv;
+        public ImageView iv, previewPicIv;
         public ImageView lockView;
         public TextView hotTv;
         public TextView tagTv;
@@ -558,6 +556,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
 
         public ItemHolder(View itemView) {
             super(itemView);
+            previewPicIv = itemView.findViewById(R.id.previewPicIv);
             iv = itemView.findViewById(R.id.picIv);
             lockView = itemView.findViewById(R.id.lockView);
             hotTv = itemView.findViewById(R.id.hotTv);
@@ -590,6 +589,12 @@ public class PicResourcesAdapter extends BasePicAdapter {
             lockView.setLayoutParams(params);
 
             itemView.setLayoutParams(layoutParams);
+        }
+
+        public void setViewVisible(View view, boolean visible) {
+            if (view != null) {
+                view.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
         }
     }
 

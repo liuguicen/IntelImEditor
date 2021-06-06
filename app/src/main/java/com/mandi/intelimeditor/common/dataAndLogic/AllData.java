@@ -315,26 +315,26 @@ public class AllData {
                         LockUtil.updateUnlockIfNeeded(allResList); // 加锁
                         LockUtil.sUnlockData.clear();
 
-                        String thePath = Environment.getExternalStorageDirectory().toString();
-                        PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
-                        p1.setCategory(PicResource.CATEGORY_STYLE);
-                        p1.setHeat(1000);
-                        p1.setTag("梵高 星空");
-                        allResList.add(p1);
-                        p1 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
-                        p1.setCategory(PicResource.CATEGORY_STYLE);
-                        p1.setHeat(100);
-                        p1.setTag("动漫 新海诚");
-                        allResList.add(p1);
-                        p1 = PicResource.path2PicResource(thePath + File.separator + "test3.jpg");
-                        p1.setCategory(PicResource.CATEGORY_STYLE);
-                        allResList.add(p1);
-                        p1 = PicResource.path2PicResource(thePath + File.separator + "test4.jpg");
-                        p1.setCategory(PicResource.CATEGORY_STYLE);
-                        allResList.add(p1);
-                        p1 = PicResource.path2PicResource(thePath + File.separator + "test5.jpg");
-                        p1.setCategory(PicResource.CATEGORY_STYLE);
-                        allResList.add(p1);
+//                        String thePath = Environment.getExternalStorageDirectory().toString();
+//                        PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");
+//                        p1.setCategory(PicResource.CATEGORY_STYLE);
+//                        p1.setHeat(1000);
+//                        p1.setTag("梵高 星空");
+//                        allResList.add(p1);
+//                        p1 = PicResource.path2PicResource(thePath + File.separator + "test2.jpg");
+//                        p1.setCategory(PicResource.CATEGORY_STYLE);
+//                        p1.setHeat(100);
+//                        p1.setTag("动漫 新海诚");
+//                        allResList.add(p1);
+//                        p1 = PicResource.path2PicResource(thePath + File.separator + "test3.jpg");
+//                        p1.setCategory(PicResource.CATEGORY_STYLE);
+//                        allResList.add(p1);
+//                        p1 = PicResource.path2PicResource(thePath + File.separator + "test4.jpg");
+//                        p1.setCategory(PicResource.CATEGORY_STYLE);
+//                        allResList.add(p1);
+//                        p1 = PicResource.path2PicResource(thePath + File.separator + "test5.jpg");
+//                        p1.setCategory(PicResource.CATEGORY_STYLE);
+//                        allResList.add(p1);
 
 
                         for (Emitter<List<PicResource>> emitter : allResQuery) {

@@ -48,6 +48,7 @@ public class PicResource extends BmobObject {
     public static final String PIC_STICKER_LATEST_LIST = "pic_latest_list";//表情、道具最新列表
 
     private BmobFile url;
+    private BmobFile rst; //风格迁移后的效果图
     private String category;//
     private Integer heat; // 热度
     private String resourceClass; // 大的资源类别
@@ -59,6 +60,11 @@ public class PicResource extends BmobObject {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getRstUrl() {
+        if (rst == null) return null;
+        return rst.getUrl();
     }
 
     /**

@@ -239,14 +239,14 @@ public class StyleTransferFragment extends BasePtuFragment {
     private void changeImageOrStyle(View view, boolean isStyle) {
         if (chooseRcv.getParent() != null) { // 第一次点击让列表消失 感觉上这个更好
             ((ViewGroup) chooseRcv.getParent()).removeView(chooseRcv);
-            chooseStyleBtn.setChosen(!chooseStyleBtn.getSelectedStatus());
-            chooseContentBtn.setChosen(!chooseContentBtn.getSelectedStatus());
+            chooseStyleBtn.setChosen(false);
+            chooseContentBtn.setChosen(false);
             return;
         }
         if (isStyle) {
             chooseStyleBtn.setChosen(!chooseStyleBtn.getSelectedStatus());
             if (chooseStyleBtn.getSelectedStatus()) {
-                chooseContentBtn.setChosen(false);
+//                chooseContentBtn.setChosen(false);
                 getScollPos(gridLayoutManager);
                 US.putPTuDeforEvent(US.PTU_DEFOR_SIZE);
                 isChooseStyleMode = true;
@@ -256,7 +256,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         } else {
             chooseContentBtn.setChosen(!chooseContentBtn.getSelectedStatus());
             if (chooseContentBtn.getSelectedStatus()) {
-                chooseStyleBtn.setChosen(false);
+//                chooseStyleBtn.setChosen(false);
                 getScollPos(gridLayoutManager);
                 US.putPTuDeforEvent(US.PTU_DEFOR_EXAMPLE);
                 isChooseStyleMode = false;

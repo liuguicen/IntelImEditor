@@ -4,22 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <!--不要和本地图片共用布局-->
-    <!--   背景去掉，不用加，不让界面太挤
-     android:background="@drawable/bg_radius_white"-->
-    <!--margin在代码在设置了
-    android:layout_marginStart="@dimen/pic_resource_list_tietu_margin"
-    android:layout_marginTop="@dimen/pic_resource_list_tietu_margin_big"
-    android:layout_marginEnd="@dimen/pic_resource_list_tietu_margin"
-    android:layout_marginBottom="@dimen/pic_resource_list_tietu_margin_big"-->
 
     <ImageView
         android:id="@+id/picIv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/icon"
-        android:scaleType="fitXY"
         android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@mipmap/icon"
         app:layout_constraintBottom_toTopOf="@+id/hotTv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,9 +56,9 @@
         android:text="200"
         android:textColor="@color/light_grey"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picIv"
-        app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
