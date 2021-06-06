@@ -373,8 +373,8 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                     }
 
                     @Override
-                    public void addToMyTietu() {
-                        MyDatabase.getInstance().insertMyTietu(url, System.currentTimeMillis());
+                    public void addToMyTietu() {AllData.getThreadPool_single().execute(() ->
+                        MyDatabase.getInstance().insertMyTietu(url, System.currentTimeMillis()));
                     }
 
                     @Override

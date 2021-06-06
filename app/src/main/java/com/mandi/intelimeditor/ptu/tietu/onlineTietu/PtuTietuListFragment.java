@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mandi.intelimeditor.common.BaseLazyLoadFragment;
 import com.mandi.intelimeditor.common.RcvItemClickListener1;
+import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
@@ -80,7 +81,7 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
             mViewModel.getPicResources().observe(getViewLifecycleOwner(), new Observer<List<PicResourceItemData>>() {
                 @Override
                 public void onChanged(List<PicResourceItemData> picResources) {
-                    if(isDestroyView) return;
+                    if (isDestroyView) return;
                     tietuListAdapter.setItemList(picResources);
 
                     LogUtil.logTimeConsume(title + " 完成数据加载，放入了Adapter中");
@@ -155,7 +156,8 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
                 if (oneTietu != null && oneTietu.getUrl() != null) {
                     String url = oneTietu.getUrl().getUrl();
                     FirstUseUtil.tietuGuide(mContext);
-                    MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
+                    AllData.getThreadPool_single().execute(() ->
+                            MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis()));
                     //点击图片，设置到图片上
                     if (getActivity() instanceof PtuActivity && ((PtuActivity) getActivity()).tietuFrag != null) {
                         FirstUseUtil.tietuGuide(getContext());
@@ -173,10 +175,10 @@ public class PtuTietuListFragment extends BaseLazyLoadFragment {
     private void loadPicListByTitle(String title) {
         if (isTagGroup) {
             if (LogUtil.debugPtuTietuList)
-            LogUtil.d(TAG, "获取贴图成功 = " + title + " - " + picResList.size());
+                LogUtil.d(TAG, "获取贴图成功 = " + title + " - " + picResList.size());
             tietuListAdapter.setList(picResList);
             if (LogUtil.debugPtuTietuList)
-            LogUtil.logTimeConsume(title + " 完成数据加载，放入了Adapter中");
+                LogUtil.logTimeConsume(title + " 完成数据加载，放入了Adapter中");
             if (picResList.size() > 0) {
                 showLoading(true, null, Color.WHITE);
             } else {

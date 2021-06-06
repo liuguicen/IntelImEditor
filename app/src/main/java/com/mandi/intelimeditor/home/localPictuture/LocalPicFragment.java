@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -23,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.FileTool;
 
@@ -50,7 +49,6 @@ import java.util.Set;
 
 
 import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.listener.FetchUserInfoListener;
 
 /**
  * 本地图片列表
@@ -226,7 +224,8 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
 
                         @Override
                         public void addMyTietu(String path) {
-                            MyDatabase.getInstance().insertMyTietu(path, System.currentTimeMillis());
+                            AllData.getThreadPool_single().execute(() ->
+                            MyDatabase.getInstance().insertMyTietu(path, System.currentTimeMillis()));
                             mPresenter.cancelChosen();
                         }
 

@@ -392,7 +392,8 @@ public class StyleTransferFragment extends BasePtuFragment {
                     ViewGroup parent = (ViewGroup) chooseRcv.getParent();
                     transfer(url, isChooseStyleMode, !isFirstUse);
                     isFirstUse = false;
-                    MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
+                    AllData.getThreadPool_single().execute(() ->
+                            MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis()));
                 } else {
                     Log.e(this.getClass().getSimpleName(), "点击贴图后获取失败");
                 }

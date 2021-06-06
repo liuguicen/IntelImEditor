@@ -201,6 +201,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     @Override
     public void switch2UserInfoView(LocalUserInfo userInfo, @Nullable String toastMsg) {
+        if (isDestroyed()) return; // 异步加载的 要判断Ac退出
         if (toastMsg != null && !toastMsg.isEmpty()) {
             ToastUtils.show(toastMsg);
         }
@@ -250,6 +251,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     @Override
     public void switch2LoginView(@Nullable String toastMsg) {
+        if (isDestroyed()) return; // 异步加载的 要判断Ac退出
+
         if (!TextUtils.isEmpty(toastMsg)) {
             ToastUtils.show(toastMsg);
         }
@@ -262,6 +265,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     @Override
     public void onUserLoginSuccess() {
+        if (isDestroyed()) return; // 异步加载的 要判断Ac退出
+
         setResult(CommonConstant.RESULT_CODE_HAS_USER_LOGIN_SUCCESS);
         // 如果是为了开通VIP而进入，并且登录成功
         // 那么跳转到开通VIP的界面

@@ -401,7 +401,6 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
         AllData.curStyleList = new ArrayList<>(); // 不能直接清空
         AllData.curContentList = new ArrayList<>();
-        MyDatabase.getInstance().close();
         FirstUseUtil.release(this);
     }
 
@@ -1530,7 +1529,8 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                             bundle.putString(PTuResultData.NEW_PIC_PATH, finalSavePath);
                             setReturnResultAndFinish(PTuResultData.FINISH_INTERMEDIATE_PTU, bundle);
                         } else if (digBm != null) { // 抠图的，不做其它动作
-                            MyDatabase.getInstance().insertMyTietu(finalSavePath, System.currentTimeMillis());
+                            AllData.getThreadPool_single().execute(() ->
+                            MyDatabase.getInstance().insertMyTietu(finalSavePath, System.currentTimeMillis()));
                             // TODO: 2019/6/13 这个Path的切换
                             // AllData.getPTuBmPool().putBitmap(finalSavePath, digBm);
                             FirstUseUtil.firstDig(PtuActivity.this);

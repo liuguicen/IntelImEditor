@@ -32,6 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.reactivex.Emitter;
 import io.reactivex.Observable;
@@ -85,10 +87,13 @@ public class AllData {
      */
     public static Paint sTransparentPaint;
 
+
     public static SimpleDateFormat bmobDataParser = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss");
 
     private static IWXAPI wxAPI;
+
+    private static ExecutorService singleThreadExecutor;
 
     static {
         Log.e(TAG, "static initializer: 静态初始化了");
@@ -181,6 +186,12 @@ public class AllData {
         return sPTuBmPool;
     }
 
+    public static ExecutorService getThreadPool_single() {
+        if (singleThreadExecutor == null) {
+            singleThreadExecutor = Executors.newFixedThreadPool(2);
+        }
+        return singleThreadExecutor;
+    }
 
     public static UsuPathManger usuManager;
     public static MediaInfoScanner sMediaInfoScanner;

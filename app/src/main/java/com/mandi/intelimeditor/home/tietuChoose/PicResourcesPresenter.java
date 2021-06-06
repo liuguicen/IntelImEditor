@@ -16,6 +16,7 @@ import com.mandi.intelimeditor.ptu.tietu.onlineTietu.PicResource;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Emitter;
@@ -62,7 +63,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     }
 
 
-    private List<PicResource> originList; // 里面采用的默认排序，和其它排序不太一样
+    private List<PicResource> originList = new ArrayList<>(); // 里面采用的默认排序，和其它排序不太一样
 
     /**
      * 开始加载数据

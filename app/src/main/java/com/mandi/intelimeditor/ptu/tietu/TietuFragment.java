@@ -795,7 +795,7 @@ public class TietuFragment extends BasePtuFragment {
         @Override
         public void onItemClick(RecyclerView.ViewHolder itemHolder, View view) {
             int position = itemHolder.getLayoutPosition();
-            if (position == -1) return;
+            if (position < 0 || position >= tietuListAdapter.getItemCount()) return;
             if (tietuListAdapter != null) {
                 PicResource oneTietu = tietuListAdapter.get(position).data;
                 if (oneTietu != null && oneTietu.getUrl() != null) {
@@ -803,7 +803,8 @@ public class TietuFragment extends BasePtuFragment {
                     ViewGroup parent = (ViewGroup) tietuRcv.getParent();
                     FirstUseUtil.tietuGuide(mContext);
                     addTietuByMultiType(url, oneTietu.getTag());
-                    MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis());
+                    AllData.getThreadPool_single().execute(() ->
+                            MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis()));
                     // 移除选择列表视图
                     // 这里一开始出了bug，视频播放可能长达30秒，出现变化，直接getParent为空了
                     if (parent != null) {

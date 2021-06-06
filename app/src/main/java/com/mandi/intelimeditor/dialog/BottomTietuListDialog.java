@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -357,8 +358,12 @@ public class BottomTietuListDialog extends BottomSheetDialogFragment implements 
         PicResSearchSortUtil.searchPicResByQueryString(searchString, PicResource.FIRST_CLASS_TIETU, new Emitter<List<PicResource>>() {
             @Override
             public void onNext(@io.reactivex.annotations.NonNull List<PicResource> value) {
+                if (isDetached()) return;
                 searchResultFrag.refresh(value);
-                Util.hideInputMethod(getActivity(), searchContentTv);
+                FragmentActivity activity = getActivity();
+                if (activity != null) // 保守判断一下
+                    Util.hideInputMethod(activity, searchContentTv);
+
             }
 
             @Override

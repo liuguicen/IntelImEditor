@@ -184,6 +184,9 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
     protected void onResume() {
         super.onResume();
         mHomePresenter.start();
+        // Android 8.0 之后不允许在后台（APP切换到后台若干秒之类不算）启动服务，
+        // 这里虽然是启动，但是部分机型onCreate里面调用会报错！！！
+        startBackgroundService(this);
     }
 
     /**
@@ -217,7 +220,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 //            sendNotify();
             AllData.globalSettings.readDeviceInfo();// 这个方法需要存储权限
             TTRewardVadManager.getInstance().initAd(this); // 头条广告的
-            startBackgroundService(this);
         }
     }
 
@@ -581,6 +583,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+        // 保守处理 清理一下
+        MyDatabase.getInstance().close();
     }
 
 

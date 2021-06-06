@@ -113,10 +113,6 @@ public class InstallPolicy {
                 myDatabase.insertPreferShare(packageNames[i], shareTitles[i], time--);
         } catch (Exception e) {
             Log.e("数据库", e.getMessage());
-        } finally {
-            if (myDatabase != null) {
-                myDatabase.close();
-            }
         }
 
     }

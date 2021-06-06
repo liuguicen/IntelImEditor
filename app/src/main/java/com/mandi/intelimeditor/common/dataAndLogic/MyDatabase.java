@@ -252,9 +252,6 @@ public class MyDatabase {
      */
     //    有两个返回值，不能直接返回，传入应用获取
     public void queryAllMyTietu(List<String> pathList) {
-        if (db == null) {
-
-        }
         Cursor cursor = db.rawQuery("select path from recent_style order by time desc ", new String[]{});
         while (cursor.moveToNext()) {
             String path = cursor.getString(0);
@@ -285,6 +282,11 @@ public class MyDatabase {
     }
 
 
+    /**
+     * google官方文档
+     * 由于在数据库关闭时，调用 getWritableDatabase() 和 getReadableDatabase() 的成本比较高，因此只要您有可能需要访问数据库，就应保持数据库连接处于打开状态。
+     * 通常情况下，最好在发出调用的 Activity 的 onDestroy() 中关闭数据库。
+     */
     public void close() {
         if (db != null) {
             db.close();

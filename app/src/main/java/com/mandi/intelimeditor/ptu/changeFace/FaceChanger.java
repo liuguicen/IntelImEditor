@@ -497,11 +497,10 @@ public class FaceChanger {
                 BitmapUtil.SaveResult saveResult = BitmapUtil.saveBitmap(activity, finalTietuBm, picPath);
                 if (!BitmapUtil.SaveResult.SAVE_RESULT_FAILED.equals(saveResult.result)) {
                     try {
-                        MyDatabase.getInstance().insertMyTietu(picPath, System.currentTimeMillis());
+                        AllData.getThreadPool_single().execute(() ->
+                                MyDatabase.getInstance().insertMyTietu(picPath, System.currentTimeMillis()));
                     } catch (Exception e) {
                         // nothing
-                    } finally {
-                        MyDatabase.getInstance().close();
                     }
                     ToastUtils.show("暴走脸已保存，可在首页查看！", Toast.LENGTH_LONG);
                 }

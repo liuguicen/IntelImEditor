@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.core.util.Pair;
 
+import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.FileTool;
 import com.mandi.intelimeditor.common.util.TimeDateUtil;
@@ -64,8 +65,6 @@ public class UsuPathManger {
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception(mContext.getString(R.string.failed_to_get_data_from_local_db));
-        } finally {
-            mDB.close();
         }
         return mUsuallyPicPathList;
     }
@@ -82,7 +81,7 @@ public class UsuPathManger {
 
     /**
      * @return 有used路径时，返回最后一个used路径的位置
-     *         如果一个used路径都没有，会返回到USED_FLAG的位置
+     * 如果一个used路径都没有，会返回到USED_FLAG的位置
      */
     private int getUsedEnd() {
         for (int i = 1; i < mUsuallyPicPathList.size(); i++) {
@@ -115,12 +114,12 @@ public class UsuPathManger {
                 mDB.deleteOdlestUsedPic();
                 mUsuallyPicPathList.remove(getUsedEnd());
             }
-            mDB.insertUsedPic(path, lastTime++);
+
+            AllData.getThreadPool_single().execute(() ->
+                    mDB.insertUsedPic(path, lastTime++));
             mUsuallyPicPathList.add(getUsedStart(), path);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mDB.close();
         }
     }
 
@@ -138,8 +137,6 @@ public class UsuPathManger {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mDB.close();
         }
     }
 
@@ -155,7 +152,7 @@ public class UsuPathManger {
 
     /**
      * @return 有prefer路径时，返回最后一个prefer路径的位置
-     *         如果一个prefer路径都没有，会返回到PREFER_FLAG的位置
+     * 如果一个prefer路径都没有，会返回到PREFER_FLAG的位置
      */
     private int getPreferEnd() {
         for (int i = 1; i < mUsuallyPicPathList.size(); i++) {
@@ -176,8 +173,6 @@ public class UsuPathManger {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mDB.close();
         }
         return false;
     }
@@ -200,8 +195,6 @@ public class UsuPathManger {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mDB.close();
         }
     }
 
@@ -305,7 +298,7 @@ public class UsuPathManger {
 
     /**
      * @return 返回最近图片的开始位置，RECENT_FLAG下一个位置，
-     *         没有最近图片时，会越界！注意使用时判断！
+     * 没有最近图片时，会越界！注意使用时判断！
      */
     private int getRecentStart() {
         for (int i = 1; i < mUsuallyPicPathList.size(); i++) {
@@ -326,8 +319,6 @@ public class UsuPathManger {
             mUsuallyPicPathList.remove(path); // 不用检查了，直接删就行
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            mDB.close();
         }
     }
 
