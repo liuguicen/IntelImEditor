@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.datatype.BmobFile;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Function;
@@ -183,7 +184,7 @@ public class PtuBaseChooser {
                     }
 
                     @Override
-                    public void onNext(List<PicResource> picResource_list) {
+                    public void onNext(@NotNull List<PicResource> picResource_list) {
                         int size = picResource_list.size();
                         if (size == 0) {
                             PtuUtil.onNoPicResource(mContext.getString(R.string.no_template_resource));
@@ -195,7 +196,10 @@ public class PtuBaseChooser {
                             if (priorTagList == null) {
                                 id = AllData.sRandom.nextInt(size);
                             }
-                            mPTuActivityInterface.replaceBase(picResource_list.get(id).getUrl().getUrl());
+                            BmobFile url = picResource_list.get(id).getUrl();
+                            if (url != null) {
+                                mPTuActivityInterface.replaceBase(url.getUrl());
+                            }
                         }
                         mTemplateDataList = picResource_list;
                         templateListAdapter.setList(picResource_list);

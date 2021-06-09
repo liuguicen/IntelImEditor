@@ -315,6 +315,7 @@ public class AllData {
                     public void onComplete() {
                         LockUtil.updateUnlockIfNeeded(allResList); // 加锁
                         LockUtil.sUnlockData.clear();
+                        LockUtil.picResLockedPosition.clear();
 
 //                        String thePath = Environment.getExternalStorageDirectory().toString();
 //                        PicResource p1 = PicResource.path2PicResource(thePath + File.separator + "test1.jpg");

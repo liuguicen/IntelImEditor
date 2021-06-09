@@ -110,7 +110,7 @@ public class PicResourceItemData implements MultiItemEntity {
     }
 
     private void setLockData() {
-        if (data == null) return;
+        if (data == null || data.getUrl() == null) return;
         // 要解锁的
         isUnlock = true;
         String key = String.valueOf(data.getUrl().getUrl().hashCode());

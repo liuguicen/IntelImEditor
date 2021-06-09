@@ -262,7 +262,7 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                     int position = itemHolder.getLayoutPosition();
                     if (position == -1) return true;
                     PicResourceItemData itemData = picResAdapter.getImageUrlList().get(position);
-                    if (itemData.data == null) return true;
+                    if (itemData.data == null || itemData.data.getUrl() == null) return true;
                     String url = itemData.data.getUrl().getUrl();
                     Observable
                             .create((ObservableOnSubscribe<String>) emitter -> {
@@ -376,8 +376,9 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
                     }
 
                     @Override
-                    public void addToMyTietu() {AllData.getThreadPool_single().execute(() ->
-                        MyDatabase.getInstance().insertMyTietu(url, System.currentTimeMillis()));
+                    public void addToMyTietu() {
+                        AllData.getThreadPool_single().execute(() ->
+                                MyDatabase.getInstance().insertMyTietu(url, System.currentTimeMillis()));
                     }
 
                     @Override

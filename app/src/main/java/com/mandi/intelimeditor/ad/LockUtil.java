@@ -99,9 +99,11 @@ public class LockUtil {
         for (int i = 1; i < 40; i++)
             for (int j = 4; j < 9; j++) { // 不能用随机，那样每次位置不同，错的
                 start += j;
-                LockUtil.picResLockedPosition.add(start);
+                picResLockedPosition.add(start);
             }
+        picResLockedPosition.clear();
     }
+
     /**
      * 长时间没看激励视频, 资源加锁的
      * 目前策略是，点击之后加锁，用户下次进入APP就会锁上了
@@ -161,7 +163,8 @@ public class LockUtil {
             // 1 将url取出来，装入Set便于比较
             HashSet<String> picHashCodeSet = new HashSet<>();
             for (PicResource PicResource : picList) {
-                picHashCodeSet.add(String.valueOf(PicResource.getUrl().getUrl().hashCode()));
+                if (PicResource.getUrl() != null)
+                    picHashCodeSet.add(String.valueOf(PicResource.getUrl().getUrl().hashCode()));
             }
 
             // 2 暂存已经解锁的数据中， 要和现在的list依然匹配的，因为list里面有些可能已经改变了
