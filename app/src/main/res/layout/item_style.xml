@@ -11,6 +11,6 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/dp_4"
         android:scaleType="centerCrop"
-        android:src="@mipmap/icon" />
+        android:src="@mipmap/app_logo" />
 
 </LinearLayout>

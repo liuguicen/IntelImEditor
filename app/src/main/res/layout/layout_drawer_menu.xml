@@ -20,7 +20,7 @@
             android:layout_height="64dp"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:src="@mipmap/icon"
+            android:src="@mipmap/app_logo"
             app:riv_border_color="@color/amber"
             app:riv_border_width="@dimen/dp_2"
             app:riv_corner_radius="32dp" />

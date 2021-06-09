@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.mandi.intelimeditor.common.util.BmobUtil
 import com.mandi.intelimeditor.R
 
 /**
@@ -31,8 +30,8 @@ object CoverLoader {
         if (imageView == null) return
         Glide.with(mContext)
                 .load(BmobUtil.getUrlOfSmallerSize(url))
-                .placeholder(R.mipmap.icon)
-                .error(R.mipmap.icon)
+                .placeholder(R.mipmap.app_logo)
+                .error(R.mipmap.app_logo)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
@@ -51,8 +50,8 @@ object CoverLoader {
         Glide.with(mContext).clear(imageView)
         Glide.with(mContext)
                 .load(url)
-                .placeholder(R.mipmap.icon)
-                .error(R.mipmap.icon)
+                .placeholder(R.mipmap.app_logo)
+                .error(R.mipmap.app_logo)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
@@ -67,8 +66,8 @@ object CoverLoader {
         Glide.with(mContext).clear(imageView)
         Glide.with(mContext)
                 .load(url)
-                .placeholder(R.mipmap.icon)
-                .error(R.mipmap.icon)
+                .placeholder(R.mipmap.app_logo)
+                .error(R.mipmap.app_logo)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
     }
@@ -80,7 +79,7 @@ object CoverLoader {
         Glide.with(mContext)
                 .load(url)
                 .placeholder(placeHolder)
-                .error(R.mipmap.icon)
+                .error(R.mipmap.app_logo)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
     }

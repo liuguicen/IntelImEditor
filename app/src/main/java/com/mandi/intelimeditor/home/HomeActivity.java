@@ -837,7 +837,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         // 当用户下来通知栏时候看到的就是RemoteViews中自定义的Notification布局
         RemoteViews contentView = new RemoteViews(this.getPackageName(),
                 R.layout.layout_notification);
-        contentView.setImageViewResource(R.id.notify_icon, R.mipmap.icon);
+        contentView.setImageViewResource(R.id.notify_icon, R.mipmap.app_logo);
         contentView.setImageViewResource(R.id.notify_make_image, R.mipmap.notify_make);
         contentView.setTextViewText(R.id.notify_make_name,
                 getResources().getString(R.string.make_expression));
@@ -857,7 +857,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, initChannelId())
                 .setCustomContentView(contentView)
-                .setSmallIcon(R.mipmap.icon);
+                .setSmallIcon(R.mipmap.app_logo);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId(CommonConstant.QUICKLY_PTU_NOTICE_CHANNEL_ID);
         }
@@ -931,7 +931,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         }
 
         ImageView headerImage = mHeaderView.findViewById(R.id.headerCoverIv);
-        headerImage.setImageResource(R.mipmap.icon);
+        headerImage.setImageResource(R.mipmap.app_logo);
         headerImage.setOnClickListener(v ->
                 startActivity(new Intent(this, SettingActivity.class)));
     }

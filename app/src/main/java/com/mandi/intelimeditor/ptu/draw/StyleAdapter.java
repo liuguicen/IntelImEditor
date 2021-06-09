@@ -23,10 +23,10 @@ public class StyleAdapter extends RecyclerView.Adapter<StyleAdapter.StyleViewHol
 
     public StyleAdapter(Context context) {
         mContext = context;
-        icons.add(R.mipmap.icon);
-        icons.add(R.mipmap.icon);
-        icons.add(R.mipmap.icon);
-        icons.add(R.mipmap.icon);
+        icons.add(R.mipmap.app_logo);
+        icons.add(R.mipmap.app_logo);
+        icons.add(R.mipmap.app_logo);
+        icons.add(R.mipmap.app_logo);
         icons.add(R.drawable.graffiti_btn_eraser);
     }
 

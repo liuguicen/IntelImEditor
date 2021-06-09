@@ -35,7 +35,7 @@
     <application
         android:name=".common.appInfo.IntelImEditApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/app_icon"
+        android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_config"
