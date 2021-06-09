@@ -173,7 +173,7 @@ public class PicResourcesPresenter implements TietuChooseContract.Presenter {
     @Override
     public PicResourcesAdapter createPicAdapter() {
         picResAdapter = new PicResourcesAdapter(mContext, 2);
-        picResAdapter.setShowPreview(true);
+        picResAdapter.setShowPreview(false);
         picResAdapter.initAdData(false);
         return picResAdapter;
     }

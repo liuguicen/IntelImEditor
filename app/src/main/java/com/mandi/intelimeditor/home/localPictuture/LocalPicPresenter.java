@@ -93,7 +93,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     }
 
     private void initSetAndShowPicList() {
-        sMediaInfoScanner.updateRecentPicList(usuManager);
+        usuManager.updateRecentInfoInUsu(sMediaInfoScanner.getSortedPicPathsByTime());
         currentPicPathList = usuManager.getUsuPaths();
         Log.d(TAG, "currentPicPathList:" + currentPicPathList.size());
         picAdapter.setImageUrls(currentPicPathList, true);
@@ -125,11 +125,11 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                     public MediaInfoScanner.PicUpdateType apply(Integer type) throws Exception {
                         if (type == 1) {
                             Log.d(TAG, "call: 进行图片更新了");
-                            MediaInfoScanner.PicUpdateType picUpdateType = sMediaInfoScanner.updateRecentPicList(usuManager);
+                            usuManager.updateRecentInfoInUsu(sMediaInfoScanner.getSortedPicPathsByTime());
                             if (latestPic != null && !usuManager.hasRecentPic(latestPic) &&
                                     !usuManager.getUsuPaths().contains(latestPic))//解决最新添加的图片扫描不到的问题，手动添加
                                 usuManager.addRecentPathStart(latestPic);
-                            return picUpdateType;
+                            return MediaInfoScanner.PicUpdateType.CHANGE_ALL_PIC;
                         } else {
                             LogUtil.d("更新图片文件信息");
                             return sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);

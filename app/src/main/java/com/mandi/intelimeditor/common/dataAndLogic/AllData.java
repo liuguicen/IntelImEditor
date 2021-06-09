@@ -65,6 +65,7 @@ public class AllData {
     public static boolean hasLoadGuide = false;
     public static List<PicResource> curStyleList = new ArrayList<>();
     public static List<PicResource> curContentList = new ArrayList<>();
+    public static boolean hasInitBackgroundService = false;
     private static BitmapPool sPTuBmPool;
 
 

@@ -120,8 +120,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
      */
     public static final String INTENT_EXTRA_FRAGMENT_ID = "FRAGMENT_ID";
 
-    public static final int TEMPLATE_FRAG_ID = 0;
-    public static final int LOCAL_FRAG_ID = 1;
+    public static final int TEMPLATE_FRAG_ID = 1;
+    public static final int LOCAL_FRAG_ID = 0;
 
     boolean mIsFromCreate = false;
     static String intentAction = "";
@@ -186,7 +186,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         mHomePresenter.start();
         // Android 8.0 之后不允许在后台（APP切换到后台若干秒之类不算）启动服务，
         // 这里虽然是启动，但是部分机型onCreate里面调用会报错！！！
-        startBackgroundService(this);
+        if (!AllData.hasInitBackgroundService ) {
+           AllData.hasInitBackgroundService = true;
+           startBackgroundService(this);
+        }
     }
 
     /**
@@ -416,8 +419,8 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
 
         Log.e(TAG, "启动了 mTietuChooseFragment == null:" + (mLocalPicFragment == null));
         mViewPagerFragmentAdapter = new ViewPager2FragmentAdapter(this);
-        mViewPagerFragmentAdapter.addFragment(mTemplateFragment, "风格");
         mViewPagerFragmentAdapter.addFragment(mLocalPicFragment, "本地");
+        mViewPagerFragmentAdapter.addFragment(mTemplateFragment, "风格");
         mViewPager.setAdapter(mViewPagerFragmentAdapter);
         mViewPager.setOffscreenPageLimit(3);
         //使用viewpager+tabLayout界面切换
@@ -629,7 +632,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View, Vie
         String path = bmobFile.getUrl();
         String action = getIntent().getAction();
         Set<String> categories = getIntent().getCategories();
-        if (categories != null && categories.contains(StyleTransferFragment.CHOOSE_PIC_CATEGORY_STYLE)) {
+        if (categories != null && categories.contains(StyleTransferFragment.CHOOSE_PIC_CATEGORY_STYLE) && categoryList.size() > 0) {
             AllData.curStyleList = categoryList;
         }
         if (categories != null && categories.contains((StyleTransferFragment.CHOOSE_PIC_CATEGORY_CONTENT))) {

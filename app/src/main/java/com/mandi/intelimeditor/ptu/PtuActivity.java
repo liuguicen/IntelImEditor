@@ -1530,7 +1530,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
                             setReturnResultAndFinish(PTuResultData.FINISH_INTERMEDIATE_PTU, bundle);
                         } else if (digBm != null) { // 抠图的，不做其它动作
                             AllData.getThreadPool_single().execute(() ->
-                            MyDatabase.getInstance().insertMyTietu(finalSavePath, System.currentTimeMillis()));
+                                    MyDatabase.getInstance().insertMyTietu(finalSavePath, System.currentTimeMillis()));
                             // TODO: 2019/6/13 这个Path的切换
                             // AllData.getPTuBmPool().putBitmap(finalSavePath, digBm);
                             FirstUseUtil.firstDig(PtuActivity.this);
@@ -1796,6 +1796,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
      * 会自动切换ui线程，调用方法不用切换
      */
     public void showProgressUiThread(int progress) {
+        if (isDestroyed()) return;
         runOnUiThread(() -> {
             LogUtil.d(TAG, "进度：" + progress);
             if (dialog == null) {
@@ -1821,17 +1822,20 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
 
     @Override
     public void onProgress(int progress) {
-          showProgressUiThread(progress);
+        showProgressUiThread(progress);
     }
 
     public void dismissProgress() {
         if (dialog != null && !isDestroyed()) {
-            dialog.dismiss();
+            dialog.dismissAllowingStateLoss();
             dialog = null;
         }
     }
 
     public void showLoading(String msg) {
+        if (isDestroyed()) {
+            return;
+        }
         if (dialog != null) {
             dialog = null;
         }

@@ -21,17 +21,32 @@
 
 -printmapping map.txt
 
+#bmob start ###########################################################################################
+
+-ignorewarnings
+
+-keepattributes Signature,*Annotation*
+
 # keep BmobSDK
 -dontwarn cn.bmob.v3.**
 -keep class cn.bmob.v3.** {*;}
--keep class cn.bmob.aar.** {*;}
 
 # 确保JavaBean不被混淆-否则gson将无法将数据解析成具体对象
 -keep class * extends cn.bmob.v3.BmobObject {
     *;
 }
+-keep class com.example.bmobexample.bean.BankCard{*;}
+-keep class com.example.bmobexample.bean.GameScore{*;}
+-keep class com.example.bmobexample.bean.MyUser{*;}
+-keep class com.example.bmobexample.bean.Person{*;}
+-keep class com.example.bmobexample.file.Movie{*;}
+-keep class com.example.bmobexample.file.Song{*;}
+-keep class com.example.bmobexample.relation.Post{*;}
+-keep class com.example.bmobexample.relation.Comment{*;}
 
 # keep BmobPush
+-dontwarn  cn.bmob.push.**
+-keep class cn.bmob.push.** {*;}
 
 # keep okhttp3、okio
 -dontwarn okhttp3.**
@@ -51,6 +66,19 @@
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
  rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
+
+# 如果你需要兼容6.0系统，请不要混淆org.apache.http.legacy.jar
+-dontwarn android.net.compatibility.**
+-dontwarn android.net.http.**
+-dontwarn com.android.internal.http.multipart.**
+-dontwarn org.apache.commons.**
+-dontwarn org.apache.http.**
+-keep class android.net.compatibility.**{*;}
+-keep class android.net.http.**{*;}
+-keep class com.android.internal.http.multipart.**{*;}
+-keep class org.apache.commons.**{*;}
+# bmob end  ###########################################################################################
+
 
 # Gson begin ##########################################
 # Gson uses generic type information stored in a class file when working with fields. Proguard
@@ -243,7 +271,7 @@ public static final int *;
     <init>(java.lang.Throwable);
 }
 
-# 支付宝  官方文档没有任何说明，只能全部复制下来了
+# 支付宝  没有文档 客服说复制demo的
 -dontshrink
 -dontpreverify
 -dontoptimize
@@ -424,7 +452,3 @@ public <methods>;
 -dontwarn com.ksad.**
 -dontwarn aegon.chrome.**
 # 铠甲 end
-
-记录:
-支付宝的不确定
-bmob的不确定

@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_6"
         app:bfv_icon="@drawable/round_dashboard_customize"
-        app:bfv_title="@string/local"
+        app:bfv_title="@string/all"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

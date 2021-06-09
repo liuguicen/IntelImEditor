@@ -293,7 +293,7 @@ public class StyleTransferFragment extends BasePtuFragment {
         dmodel1.setText("高清");
         dmodel1.setOnClickListener(v -> {
             new FirstUseDialog(getContext()).createDialog("",
-                    "高清模式可使生成照片更清晰！\n但是耗时更长, 可能会引起局部失真，或者应用崩溃！",
+                    "高清模式可使生成照片更清晰！\n但是耗时更长, 可能会引起局部失真",
                     new FirstUseDialog.ActionListener() {
                         @Override
                         public void onSure() {
@@ -392,6 +392,7 @@ public class StyleTransferFragment extends BasePtuFragment {
                     ViewGroup parent = (ViewGroup) chooseRcv.getParent();
                     transfer(url, isChooseStyleMode, !isFirstUse);
                     isFirstUse = false;
+                    oneTietu.updateHeat();
                     AllData.getThreadPool_single().execute(() ->
                             MyDatabase.getInstance().updateMyTietu(url, System.currentTimeMillis()));
                 } else {

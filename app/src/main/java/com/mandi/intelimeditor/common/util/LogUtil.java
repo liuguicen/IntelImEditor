@@ -49,7 +49,7 @@ public final class LogUtil {
     public static boolean debugGif = false;
     public static boolean testSplashAd = false;
     public static boolean debugPtuTietuList = false;
-    public static boolean debugStyleTransfer = true;
+    public static boolean debugStyleTransfer = false;
 
     /**
      * 控制一些调试操作，发版本时记得修改

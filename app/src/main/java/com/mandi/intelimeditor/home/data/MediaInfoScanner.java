@@ -62,7 +62,7 @@ public class MediaInfoScanner {
         CHANGE_RECENT
     }
 
-    private int totalPicNumber;
+    private int lastTotalNumber = 0;
 
     private static final class InstanceHolder {
         private static MediaInfoScanner instance = new MediaInfoScanner();
@@ -73,7 +73,6 @@ public class MediaInfoScanner {
     }
 
     private MediaInfoScanner() {
-        totalPicNumber = 0;
     }
 
     /**
@@ -122,22 +121,14 @@ public class MediaInfoScanner {
             return false;
         }
         if (sortedPicPathsByTime.get(0).first < lastScanTime &&
-                totalPicNumber == sortedPicPathsByTime.size()) {  // 没有更新
+                lastTotalNumber == sortedPicPathsByTime.size()) {  // 没有更新
             lastScanTime = scanTime;
             LogUtil.d("已扫描完成，没有检测到新图片");
             return false;
         }
         lastScanTime = scanTime;
+        lastTotalNumber = sortedPicPathsByTime.size();
         return true;
-    }
-
-    /**
-     * 根据扫描得到的排序好的图片信息，更新最近图片列表
-     */
-    public PicUpdateType updateRecentPicList(UsuPathManger usuPathManger) {
-        totalPicNumber = sortedPicPathsByTime.size();
-        usuPathManger.updateRecentInfoInUsu(sortedPicPathsByTime);
-        return PicUpdateType.CHANGE_ALL_PIC;
     }
 
     public List<PicResource> convertRecentPath2PicResList() {
@@ -346,6 +337,10 @@ public class MediaInfoScanner {
             }
             cursor.close();
         }
+    }
+
+    public List<Pair<Long, String>> getSortedPicPathsByTime() {
+        return sortedPicPathsByTime;
     }
 
     /**

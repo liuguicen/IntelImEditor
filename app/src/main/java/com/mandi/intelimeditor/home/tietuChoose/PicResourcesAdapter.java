@@ -415,7 +415,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
                 clickListener.onItemClick(itemHolder, v);  // 解锁成功，相当于点击成功，执行正常的点击任务
         };
         if (LockUtil.checkLock(mContext, url, mIsTietu, taskAfterUnlock, true)) { // 需要解锁的，通过解锁执行点击任务
-            picResource.updateHeat();  // 锁住的仍然更新热度
+            picResource.updateHeat();  // 锁住的仍然更新热度 // 双重更新
         } else { // 没有被锁住，执行正常的点击任务
             if (clickListener != null)
                 clickListener.onItemClick(itemHolder, v);

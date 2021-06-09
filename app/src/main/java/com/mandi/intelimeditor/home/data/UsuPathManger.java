@@ -252,7 +252,7 @@ public class UsuPathManger {
      *
      * @param sortedPicPathsByTime 排好序的最近图片
      */
-    void updateRecentInfoInUsu(List<Pair<Long, String>> sortedPicPathsByTime) {
+    public void updateRecentInfoInUsu(List<Pair<Long, String>> sortedPicPathsByTime) {
 
         //先清空所有的最近图片路径
         int recentStart = getRecentStart();
