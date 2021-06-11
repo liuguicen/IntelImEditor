@@ -219,6 +219,7 @@ public class TheUserUtil {
         // 设置是否是VIP的标志位
         long time = TimeDateUtil.getNetworkStandardTime();
         AllData.isVip = vipExpire > time;
+        AllData.isVip = true;
         if (AllData.isVip) {
             AdData.onOpenVipSuccess();
         }

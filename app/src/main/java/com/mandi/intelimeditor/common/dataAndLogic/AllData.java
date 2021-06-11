@@ -75,7 +75,7 @@ public class AllData {
     /**
      * 用于本次启动运行过程中判断是否是VIP
      */
-    public static boolean isVip = false;
+    public static boolean isVip = true;
     public static String floor_vip_price = VipUtil.getFloorPriceString(VipUtil.DEFAULT_FLOOR_PRICE);
 
     /**
@@ -199,12 +199,14 @@ public class AllData {
     public static boolean hasInitScanLocalPic = false;
     private static final List<Emitter<String>> localPicQuery = new ArrayList<>();
 
+    static {
+        usuManager = new UsuPathManger(AllData.appContext);
+        sMediaInfoScanner = MediaInfoScanner.getInstance();
+    }
+
     public static synchronized void initScanLocalPic() {
         Observable
                 .create((ObservableOnSubscribe<String>) emitter -> {
-                    usuManager = new UsuPathManger(AllData.appContext);
-                    sMediaInfoScanner = MediaInfoScanner.getInstance();
-
                     // 先从数据库获取里面所有的图片信息
                     try {
                         usuManager.initFromDB();

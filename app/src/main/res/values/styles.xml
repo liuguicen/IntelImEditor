@@ -13,7 +13,6 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
     <!--AppcompatActivity全屏的-->

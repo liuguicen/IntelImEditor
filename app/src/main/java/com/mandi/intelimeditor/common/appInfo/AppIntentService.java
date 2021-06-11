@@ -37,6 +37,7 @@ public class AppIntentService extends IntentService {
         // 根据网络时间再判断一次是否是VIP, 主线程里面不能进行网络连接，只能这里获取好
         long time = TimeDateUtil.getNetworkStandardTime();
         AllData.isVip = AllData.localUserVipExpire > time;
+        AllData.isVip = true;
         Log.d(TAG, "是否是VIP = " + AllData.isVip);
         // 与服务器同步用户信息
         TheUserUtil.syncUserWithServer();

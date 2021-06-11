@@ -30,8 +30,6 @@ object CoverLoader {
         if (imageView == null) return
         Glide.with(mContext)
                 .load(BmobUtil.getUrlOfSmallerSize(url))
-                .placeholder(R.mipmap.app_logo)
-                .error(R.mipmap.app_logo)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
@@ -50,8 +48,6 @@ object CoverLoader {
         Glide.with(mContext).clear(imageView)
         Glide.with(mContext)
                 .load(url)
-                .placeholder(R.mipmap.app_logo)
-                .error(R.mipmap.app_logo)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
@@ -66,8 +62,6 @@ object CoverLoader {
         Glide.with(mContext).clear(imageView)
         Glide.with(mContext)
                 .load(url)
-                .placeholder(R.mipmap.app_logo)
-                .error(R.mipmap.app_logo)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
     }
@@ -79,7 +73,6 @@ object CoverLoader {
         Glide.with(mContext)
                 .load(url)
                 .placeholder(placeHolder)
-                .error(R.mipmap.app_logo)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageView)
     }

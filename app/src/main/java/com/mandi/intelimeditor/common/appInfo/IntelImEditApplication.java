@@ -39,7 +39,7 @@ public class IntelImEditApplication extends MultiDexApplication {
     public static final boolean hasInitAppData = false;
 
     public IntelImEditApplication() {
-        Log.e(TAG, "IntelImEditApplication: 应用创建了");
+        Log.e(TAG, "应用创建了");
 //        Debug.startMethodTracing("app-launch-trace", 80 * 1024 * 1024);
 //        Log.d("start trace", "BaoZouPTuApplication: time " + System.currentTimeMillis() / 1000);
     }
@@ -78,7 +78,6 @@ public class IntelImEditApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         appContext = this;
-        LogUtil.printMemoryInfo(TAG,this);
         initAppData();
     }
 
@@ -88,17 +87,30 @@ public class IntelImEditApplication extends MultiDexApplication {
         AllData.hasReadConfig = new HasReadConfig();
         AllData.globalSettings = new GlobalSettings();
         AllData.sRandom = new Random(System.currentTimeMillis());
-        //重置域名，必须在初始化前重置
-        Bmob.resetDomain("http://ptusdk.musiclake.cn/8/");
-        //初始化bmob
-        Bmob.initialize(this, AppConfig.Bmob_ID); // 再是网络初始化
-        //BmobDatabaseUtil.getServiceUpdateTime("PicResource",null); // 不能放到异步线程中，不然线程中运行bmob初始化没完成而出错，
         new InstallPolicy().processPolicy();  //执行第一次安装或更新新版本所需的东西
         //Thread.setDefaultUncaughtExceptionHandler(new CrashHandler());//设置APP运行异常捕捉器，不用了，目前使用友盟的
         initLocalUserInfo();
         AdData.checkAdClose(this);
         Log.e("------------", "init: 应用初始化成功");
-        initUm();
+        preInitUm();
+
+        // 前面这一段这能做本地初始化和明显不会涉及用户隐私的初始化
+        if (!AllData.hasReadConfig.hasAgreeAppPrivacy()) { // 首次进入，用户没有同意隐私政策，不能初始化一些sdk
+            return;
+        }
+        initAfterUserAgree();
+    }
+
+    /**
+     * bmob应该也可以同意后初始化，暂时不这样
+     */
+    public void initAfterUserAgree() {
+        //重置域名，必须在初始化前重置
+        Bmob.resetDomain("http://ptusdk.musiclake.cn/8/");
+        //初始化bmob
+        Bmob.initialize(this, AppConfig.Bmob_ID); // 再是网络初始化
+        //BmobDatabaseUtil.getServiceUpdateTime("PicResource",null); // 不能放到异步线程中，不然线程中运行bmob初始化没完成而出错，
+        delayInitUM();
         initAd();
         initBugly();
     }
@@ -167,31 +179,28 @@ public class IntelImEditApplication extends MultiDexApplication {
             AllData.localUserVipExpire = SPUtil.getUserVipExpire();
             // 由于启动过程需要，这里先暂时判断，后面会在非主线程里面获取网络时间再进行一次判断
             AllData.isVip = AllData.localUserVipExpire > System.currentTimeMillis();
+            AllData.isVip = true;
         }
     }
 
     /**
      * 初始化友盟
      */
-    private void initUm() {
-        if (!AllData.hasReadConfig.hasAgreeAppPrivacy()) {
-            UMConfigure.preInit(this, AppConfig.UM_ID, AnalyticsConfig.getChannel(this));
-            return;
-        }
-        delayInitUM(this);
+    private void preInitUm() {
+        UMConfigure.preInit(this, AppConfig.UM_ID, AnalyticsConfig.getChannel(this));
     }
 
     /**
      * app合规检查，必须在用户同意隐私政策之后初始化统计sdk
      */
-    public static void delayInitUM(Context context) {
+    public void delayInitUM() {
         /**
          * 初始化common库
          * 参数1:上下文，不能为空
          * 参数2:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
          * 参数3:Push推送业务的secret 填充Umeng Message Secret对应信息（需替换）
          */
-        UMConfigure.init(context, UMConfigure.DEVICE_TYPE_PHONE,  AppConfig.UM_PUSH_ID);
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, AppConfig.UM_PUSH_ID);
         // 开启调试
         UMConfigure.setLogEnabled(false);
         // 选用AUTO页面采集模式，不用手动调用ac的resume和pause

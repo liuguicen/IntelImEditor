@@ -33,9 +33,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.mandi.intelimeditor.common.dataAndLogic.AllData.sMediaInfoScanner;
-import static com.mandi.intelimeditor.common.dataAndLogic.AllData.usuManager;
-
 /**
  * Created by LiuGuicen on 2017/1/17 0017.
  * 本地图片的路径数据是一开始就加载，并在整个应用周期中保活的，因为很多地方用到
@@ -93,13 +90,13 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     }
 
     private void initSetAndShowPicList() {
-        usuManager.updateRecentInfoInUsu(sMediaInfoScanner.getSortedPicPathsByTime());
-        currentPicPathList = usuManager.getUsuPaths();
+        AllData.usuManager.updateRecentInfoInUsu(AllData.sMediaInfoScanner.getSortedPicPathsByTime());
+        currentPicPathList = AllData.usuManager.getUsuPaths();
         Log.d(TAG, "currentPicPathList:" + currentPicPathList.size());
         picAdapter.setImageUrls(currentPicPathList, true);
         mView.showPicList();
 
-        sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
+        AllData.sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, AllData.usuManager);
         mView.initFileInfoViewData();
 
         LogUtil.d(TAG, "初始化显示图片完成");
@@ -111,7 +108,7 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                 new ObservableOnSubscribe<Integer>() {
                     @Override
                     public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
-                        if (sMediaInfoScanner.scanAndUpdatePicInfo()) {
+                        if (AllData.sMediaInfoScanner.scanAndUpdatePicInfo()) {
                             emitter.onNext(1);//更新图片
                             emitter.onNext(2);//更新文件信息
                             emitter.onComplete();
@@ -125,14 +122,14 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                     public MediaInfoScanner.PicUpdateType apply(Integer type) throws Exception {
                         if (type == 1) {
                             Log.d(TAG, "call: 进行图片更新了");
-                            usuManager.updateRecentInfoInUsu(sMediaInfoScanner.getSortedPicPathsByTime());
-                            if (latestPic != null && !usuManager.hasRecentPic(latestPic) &&
-                                    !usuManager.getUsuPaths().contains(latestPic))//解决最新添加的图片扫描不到的问题，手动添加
-                                usuManager.addRecentPathStart(latestPic);
+                            AllData.usuManager.updateRecentInfoInUsu(AllData.sMediaInfoScanner.getSortedPicPathsByTime());
+                            if (latestPic != null && !AllData.usuManager.hasRecentPic(latestPic) &&
+                                    !AllData.usuManager.getUsuPaths().contains(latestPic))//解决最新添加的图片扫描不到的问题，手动添加
+                                AllData.usuManager.addRecentPathStart(latestPic);
                             return MediaInfoScanner.PicUpdateType.CHANGE_ALL_PIC;
                         } else {
                             LogUtil.d("更新图片文件信息");
-                            return sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, usuManager);
+                            return AllData.sMediaInfoScanner.updateAllFileInfo(picDirInfoManager, AllData.usuManager);
                         }
                     }
                 })
@@ -157,14 +154,14 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
                     public void onNext(MediaInfoScanner.PicUpdateType updateType) {
                         switch (updateType) {
                             case CHANGE_ALL_PIC:
-                                if (usuManager.isUsuPic(currentPicPathList)) {
-                                    picAdapter.setImageUrls(usuManager.getUsuPaths(), true);
+                                if (AllData.usuManager.isUsuPic(currentPicPathList)) {
+                                    picAdapter.setImageUrls(AllData.usuManager.getUsuPaths(), true);
                                     mView.refreshPicList();
                                 }
                                 LogUtil.d(TAG, "初始化显示图片完成");
                                 break;
                             case CHANGE_ALL_FILE:
-                                if (!usuManager.isUsuPic(currentPicPathList))
+                                if (!AllData.usuManager.isUsuPic(currentPicPathList))
                                     mView.refreshFileInfosList();
                         }
                     }
@@ -175,15 +172,15 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     @Override
     public void addUsedPathFromUI(String recent_use_pic) {
         // 可以在一屏类显示出来，不添加
-        // if (usuManager.isAdd2Used(recent_use_pic))
+        // if (AllData.usuManager.isAdd2Used(recent_use_pic))
         //         //     return;
 
-        usuManager.addUsedPath(recent_use_pic);
-        picDirInfoManager.updateUsuInfo(usuManager.getUsuPaths());
+        AllData.usuManager.addUsedPath(recent_use_pic);
+        picDirInfoManager.updateUsuInfo(AllData.usuManager.getUsuPaths());
         if (fileInfosAdapter != null) {
             fileInfosAdapter.notifyDataSetChanged();
-            if (currentPicPathList == usuManager.getUsuPaths()) { //当前在常用图片下
-                picAdapter.setImageUrls(usuManager.getUsuPaths(), true);
+            if (currentPicPathList == AllData.usuManager.getUsuPaths()) { //当前在常用图片下
+                picAdapter.setImageUrls(AllData.usuManager.getUsuPaths(), true);
                 mView.refreshPicList();
             }
         }
@@ -206,10 +203,10 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
 
     @Override
     public void deletePreferPath(String path) {
-        usuManager.deletePreferPath(path);
-        picDirInfoManager.updateUsuInfo(usuManager.getUsuPaths());
+        AllData.usuManager.deletePreferPath(path);
+        picDirInfoManager.updateUsuInfo(AllData.usuManager.getUsuPaths());
         fileInfosAdapter.notifyDataSetChanged();
-        if (currentPicPathList == usuManager.getUsuPaths()) {
+        if (currentPicPathList == AllData.usuManager.getUsuPaths()) {
             picAdapter.deletePreferPic(path);
             //            mView.refreshPicList(); //adapter内部调用刷新，这里不用了
         }
@@ -218,10 +215,10 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     @Override
     public void addPreferPath(String path) {
         US.putOtherEvent(US.OTHERS_ADD_TO_PREFER);
-        usuManager.addPreferPath(path);
-        picDirInfoManager.updateUsuInfo(usuManager.getUsuPaths());
+        AllData.usuManager.addPreferPath(path);
+        picDirInfoManager.updateUsuInfo(AllData.usuManager.getUsuPaths());
         fileInfosAdapter.notifyDataSetChanged();
-        if (currentPicPathList == usuManager.getUsuPaths()) {
+        if (currentPicPathList == AllData.usuManager.getUsuPaths()) {
             picAdapter.addPreferPath(path);
             mView.refreshPicList();
         }
@@ -240,8 +237,8 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
         if (position == picDirInfoManager.getAllPicDirInfo().size()) {
             mView.choosePicFromSystem();
         } else if (position == 0) { // 切换到常用图片
-            currentPicPathList = usuManager.getUsuPaths();
-            picAdapter.setImageUrls(usuManager.getUsuPaths(), true);
+            currentPicPathList = AllData.usuManager.getUsuPaths();
+            picAdapter.setImageUrls(AllData.usuManager.getUsuPaths(), true);
             picAdapter.notifyDataSetChanged();
             mView.onTogglePicList(picAdapter);
         } else if (position == 1 && MediaInfoScanner.SHORT_VIDEO_TAG
@@ -294,22 +291,22 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
         boolean isDeleteUsu = false;
         boolean isDeleteShortVideo = false;
         for (String path : pathList) {
-            if (usuManager.getUsuPaths().contains(path)) { //包含在常用列表里面，删除常用列表中的信息
-                usuManager.onDeleteUsuallyPicture(path);
+            if (AllData.usuManager.getUsuPaths().contains(path)) { //包含在常用列表里面，删除常用列表中的信息
+                AllData.usuManager.onDeleteUsuallyPicture(path);
                 isDeleteUsu = true;
             }
-            if (sMediaInfoScanner.isShortVideo(path)) {
-                sMediaInfoScanner.removeSv(path);
+            if (AllData.sMediaInfoScanner.isShortVideo(path)) {
+                AllData.sMediaInfoScanner.removeSv(path);
                 isDeleteShortVideo = true;
             }
             currentPicPathList.remove(path);
             picAdapter.deleteOnePic(path);
         }
         if (isDeleteUsu) {
-            picDirInfoManager.updateUsuInfo(usuManager.getUsuPaths());
+            picDirInfoManager.updateUsuInfo(AllData.usuManager.getUsuPaths());
         }
         if (isDeleteShortVideo) {
-            picDirInfoManager.updateShortVideoInfo(sMediaInfoScanner.getShortVideoMap().keySet());
+            picDirInfoManager.updateShortVideoInfo(AllData.sMediaInfoScanner.getShortVideoMap().keySet());
         }
         picAdapter.notifyDataSetChanged();
         fileInfosAdapter.notifyDataSetChanged();
@@ -332,15 +329,15 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
     public void addNewPath(String newPicPath) {
         if (newPicPath != null) {//最新图片不为空，最新图等于它，并且添加到常用列表，更新文件信息
             latestPic = newPicPath;
-            usuManager.addRecentPathStart(newPicPath);
+            AllData.usuManager.addRecentPathStart(newPicPath);
             // 这里图片没有保存到当前文件夹下面
             //更新文件信息
             if (picDirInfoManager.onAddNewPic(newPicPath)) {
                 mView.refreshPicList();
             }
         }
-        if (currentPicPathList == usuManager.getUsuPaths()) {
-            picAdapter.setImageUrls(usuManager.getUsuPaths(), true);
+        if (currentPicPathList == AllData.usuManager.getUsuPaths()) {
+            picAdapter.setImageUrls(AllData.usuManager.getUsuPaths(), true);
             mView.refreshPicList();
         }
 
@@ -348,12 +345,12 @@ public class LocalPicPresenter implements ChoosePicContract.PicPresenter {
 
     @Override
     public boolean isInPrefer(String path) {
-        return usuManager.isInPrefer(path);
+        return AllData.usuManager.isInPrefer(path);
     }
 
     @Override
     public boolean isInUsu() {
-        return currentPicPathList == usuManager.getUsuPaths();
+        return currentPicPathList == AllData.usuManager.getUsuPaths();
     }
 
     @Override

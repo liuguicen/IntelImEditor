@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/launch_root_layout"
     android:layout_width="match_parent"
@@ -12,13 +13,33 @@
     <!-- 注意：如需要这个Logo区域，建议开发者使用自己的Logo资源，而不是联盟的Logo资源@drawable/gdt_splash_logo，资源规格可参照@drawable/gdt_splash_logo -->
 
     <!-- 默认展示，减少白屏显示时间，广告显示后会覆盖这个界面，不影响广告显示-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/app_logo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"  />
+        <ImageView
+            android:id="@+id/app_logo"
+            android:layout_width="256dp"
+            android:layout_height="256dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/app_logo"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/app_name"
+            android:textColor="@color/text_deep_black"
+            android:textSize="@dimen/text_size_big_xx"
+            app:layout_constraintLeft_toLeftOf="@id/app_logo"
+            app:layout_constraintRight_toRightOf="@id/app_logo"
+            app:layout_constraintTop_toBottomOf="@id/app_logo" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 2.开屏广告容器区域：-->
     <!-- 注意：该区域高度不得小于400dp。在本示例中没有写死splash_container的高度值，是因为第1部分的app_logo区域是一个高度很小的图片。 -->
@@ -30,8 +51,10 @@
         android:id="@+id/splash_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true" />
-     <TextView
+        android:layout_alignParentTop="true"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/skip_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

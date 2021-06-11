@@ -74,12 +74,12 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
 
     // 必选权限
     private static final String[] sNecessaryPermissionsList = new String[]{
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     private static final String[] sOptionalPermissionsList = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE
     };
 
     private static final int PERMISSION_SETTING = 3;
@@ -298,7 +298,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
             AllData.appConfig.putOptionPermissionCount(optionalReadCount + 1);
         }
 
-        // 权限都已经有了，那么直接调用SDK
+        // 权限都已经有了
         if (lackedPermission.size() == 0) {
             afterPermissionSuccess();
         } else {
@@ -475,7 +475,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
                 }
             } else {
                 AllData.hasReadConfig.setAgreeAppPrivacy(true);
-                IntelImEditApplication.delayInitUM(this);  // 首次启动，用户没有同意之前，这个方法是没有调用的
+                IntelImEditApplication.appContext.initAfterUserAgree();  // 首次启动，用户没有同意之前，这个方法是没有调用的
                 checkPermissionAndStart();
             }
             return null;

@@ -17,9 +17,10 @@ android {
         applicationId "com.mandi.intelimeditor"
         minSdkVersion 21
         // 只支持5.0以上
+        // 版本对应关系 https://source.android.com/setup/start/build-numbers
         // 注意Android 9加入了新变化，如果targetsdk >= 29,只能使用新的文件访问方式，
         // 这种方式大概是只能使用Android提供的api访问文件，受到很大限制
-        targetSdkVersion 27 // 注意
+        targetSdkVersion 28 // 注意
         versionCode 1
         versionName "1.0.0"
         multiDexEnabled true
