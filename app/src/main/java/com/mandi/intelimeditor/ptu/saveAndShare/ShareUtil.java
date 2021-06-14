@@ -177,13 +177,13 @@ class ShareUtil {
                 && packageName.equals("com.tencent.mobileqq")
                 && !AllData.globalSettings.getSharedWithout()) {
             return shareByQQSDK(ac, savePath);
-        } else if (title.equals(ShareUtil.WX_SHARE_TITLE)
+        } /*else if (title.equals(ShareUtil.WX_SHARE_TITLE)
                 && packageName.equals("com.tencent.mm")
                 && !AllData.globalSettings.getSharedWithout()
                 && !savePath.endsWith(".gif")) { // 不支持gif
             shareByWXSDK(ac, resolveInfo, savePath, packageName, title);
             return null;
-        } else {
+        } */else {
             normalShare(ac, resolveInfo, savePath, packageName, title);
             return null;
         }

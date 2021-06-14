@@ -7,7 +7,7 @@ public class PicResGroup {
     public String title = "";
     public int heat = 0;
     public List<PicResource> resList = new ArrayList<>();
-    public static final int MIN_GROUP_SIZE = 6;
+    public static final int MIN_GROUP_SIZE = 1;
 
     public PicResGroup(String title) {
         this.title = title;

@@ -457,8 +457,10 @@ public class PicResourcesAdapter extends BasePicAdapter {
         if (!TextUtils.isEmpty(picResGroup.title)) {
             holder.titleTv.setText(picResGroup.title);
             holder.picGridView.setPicResource(picResGroup.resItemList.get(0));
-            holder.picGridView2.setPicResource(picResGroup.resItemList.get(1));
-            holder.picGridView3.setPicResource(picResGroup.resItemList.get(2));
+            if (picResGroup.resItemList.size() > 1)
+                holder.picGridView2.setPicResource(picResGroup.resItemList.get(1));
+            if (picResGroup.resItemList.size() > 2)
+                holder.picGridView3.setPicResource(picResGroup.resItemList.get(2));
         }
     }
 

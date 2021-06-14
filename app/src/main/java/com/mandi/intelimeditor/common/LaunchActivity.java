@@ -289,7 +289,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
 
         // 可选权限，新安装才添加，需要在sp已经写入新用户标志之前添加，否则不能判断是否是新安装
         int optionalReadCount = AllData.appConfig.getOptionalPermissionCount();
-        if (optionalReadCount < 2) {
+        if (optionalReadCount < 1) {
             for (String onePermission : sOptionalPermissionsList) {
                 if (ContextCompat.checkSelfPermission(this, onePermission) != PackageManager.PERMISSION_GRANTED) {
                     lackedPermission.add(onePermission);
