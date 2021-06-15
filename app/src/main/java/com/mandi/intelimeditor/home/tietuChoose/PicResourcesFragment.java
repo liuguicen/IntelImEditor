@@ -23,6 +23,7 @@ import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.common.util.SimpleObserver;
 import com.mandi.intelimeditor.common.util.ToastUtils;
+import com.mandi.intelimeditor.common.util.WrapContentGridLayoutManager;
 import com.mandi.intelimeditor.common.util.WrapContentLinearLayoutManager;
 import com.mandi.intelimeditor.home.ChooseBaseFragment;
 import com.mandi.intelimeditor.home.HomeActivity;
@@ -223,8 +224,23 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
         if (isTietu) {
             spanCount = 3;
         }
-        StaggeredGridLayoutManager linearLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        picResRcv.setLayoutManager(linearLayoutManager);
+        // StaggeredGridLayoutManager linearLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager gridLayoutManager = new WrapContentGridLayoutManager(getContext(), spanCount);
+        int finalSpanCount = spanCount;
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (position <= picResAdapter.getItemCount()
+                        && (picResAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.FEED_AD
+                        || picResAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.GROUP
+                        || picResAdapter.getItemViewType(position) == PicResourceItemData.PicListItemType.NEW_FEATURE_HEADER)
+                ) {
+                    return finalSpanCount;
+                }
+                return 1;
+            }
+        });
+        picResRcv.setLayoutManager(gridLayoutManager);
         picResRcv.setAdapter(picResAdapter);
         picResAdapter.setClickListener((itemHolder, view) -> {
             int position = itemHolder.getLayoutPosition();
@@ -234,9 +250,8 @@ public class PicResourcesFragment extends ChooseBaseFragment implements TietuCho
             } else if (itemHolder instanceof GroupHolder) {
                 PicResGroupItemData picResGroup = picResAdapter.getImageUrlList().get(position).picResGroup;
                 if (view.getId() == R.id.tv_pic_header_more) {
-                    int[] lastPositions = new int[((StaggeredGridLayoutManager) linearLayoutManager).getSpanCount()];
-                    lastGroupPosition = linearLayoutManager.findLastVisibleItemPositions(lastPositions)[0];
-                    lastOffset = linearLayoutManager.findViewByPosition(lastGroupPosition).getTop();
+                    lastGroupPosition = gridLayoutManager.findLastVisibleItemPosition();
+                    lastOffset = gridLayoutManager.findViewByPosition(lastGroupPosition).getTop();
                     showPicsInGroup(picResGroup.title, picResGroup.resItemList);
                     return;
                 }
