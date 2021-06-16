@@ -1,16 +1,20 @@
 package com.mandi.intelimeditor.common.dataAndLogic;
 
+import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.appInfo.IntelImEditApplication;
 import com.mandi.intelimeditor.common.util.FileTool;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,11 +40,23 @@ public class MyDatabase {
     }
 
     /**
+     * 目前只支持本地路径，如果是glide的，会转换成glide在本地的缓存
      * usedpic(path text primary key,time varchar(20))
      * inert时如果存在就替换，使用replace，不然就会出错，
      * 这样就不需要update了
      */
     public void insertUsedPic(String path, long time) {
+        if (FileTool.urlType(path) == FileTool.UrlType.URL) {
+            try {
+                path = Glide.with(IntelImEditApplication.appContext)
+                        .load(path)
+                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get()
+                        .getAbsolutePath();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         db.execSQL("replace into usedpic(path,time) values(?,?) ", new Object[]{path, String.valueOf(time)});
     }
 
@@ -170,14 +186,33 @@ public class MyDatabase {
      * 按时间倒序，即越前面优先级越高
      */
     //    有两个返回值，不能直接返回，传入应用获取
-    public void queryAllPreferShare(List<Pair<String, String>> titleList) {
-        Cursor cursor = db.rawQuery("select packageName,title from prefer_share order by time desc ", new String[]{});
+    public void queryAllPreferShare_andRemoveDuplicate(List<Pair<String, String>> titleList) {
+        List<Pair<String, String>> srcList = new ArrayList<>();
+        List<Long> timeList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select packageName,title,time from prefer_share order by time desc ", new String[]{});
         while (cursor.moveToNext()) {
             String packageName = cursor.getString(0);
             String title = cursor.getString(1);
-            titleList.add(new Pair<>(packageName, title));
+            long time = 0;
+            try {
+                time = Long.parseLong(cursor.getString(2));
+            } catch (Exception e) {
+
+            }
+            srcList.add(new Pair<>(packageName, title));
+            timeList.add(time);
         }
         cursor.close();
+
+        for (int i = 0; i < srcList.size(); i++) {
+            Pair<String, String> pair = srcList.get(i);
+            if (!titleList.contains(pair)) {
+                titleList.add(pair);
+            } else {
+                db.execSQL("delete from prefer_share where packageName = ? and title = ? and time = ? ",
+                        new Object[]{pair.first, pair.second, "" + timeList.get(i)});
+            }
+        }
     }
 
 

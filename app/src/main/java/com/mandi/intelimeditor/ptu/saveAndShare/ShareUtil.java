@@ -17,12 +17,15 @@ import android.util.Pair;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mandi.intelimeditor.R;
+import com.mandi.intelimeditor.common.CommonConstant;
 import com.mandi.intelimeditor.common.appInfo.AppConfig;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 import com.mandi.intelimeditor.common.dataAndLogic.FileProviderToShare;
 import com.mandi.intelimeditor.common.dataAndLogic.MyDatabase;
 import com.mandi.intelimeditor.common.dataAndLogic.ShareDBUtil;
 import com.mandi.intelimeditor.common.util.ToastUtils;
+import com.mandi.intelimeditor.common.util.Util;
 import com.mandi.intelimeditor.user.US;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
@@ -42,7 +45,7 @@ class ShareUtil {
         MyDatabase myDatabase = MyDatabase.getInstance();
         List<Pair<String, String>> preferShare = new ArrayList<>();
         try {
-            myDatabase.queryAllPreferShare(preferShare);
+            myDatabase.queryAllPreferShare_andRemoveDuplicate(preferShare);
         } catch (Exception e) {
         }
         return ShareUtil.sortAndClearAcData(context, preferShare, resolveInfos);
@@ -57,31 +60,43 @@ class ShareUtil {
      * @param preferApps 优先选择的应用Activity的title，越前面，优先级越高
      */
     public static List<ShareItemData> sortAndClearAcData(Context context, List<Pair<String, String>> preferApps, List<ResolveInfo> resolveInfos) {
-        List<ShareItemData> appInfos = getItemDataForShow(context, resolveInfos);
-        List<Pair<String, String>> delActivity = new ArrayList<>();
+        List<ShareItemData> shareItemDataList = getItemDataForShow(context, resolveInfos);
+        List<Pair<String, String>> delInfo = new ArrayList<>();
         int size = preferApps.size();
         for (int p = size - 1; p >= 0; p--) {
-            CharSequence packageNmae = preferApps.get(p).first;
-            CharSequence title = preferApps.get(p).second;
+            CharSequence preferPackage = preferApps.get(p).first;
+            CharSequence preferTitle = preferApps.get(p).second;
             int i = 0;
-            for (; i < appInfos.size(); i++) {
-                if (appInfos.get(i).getPackageName().equals(packageNmae) &&
-                        appInfos.get(i).getTitle().equals(title)) {
+            for (; i < shareItemDataList.size(); i++) {
+                ShareItemData shareItemData = shareItemDataList.get(i);
+                CharSequence exitPackage = shareItemData.getPackageName();
+                CharSequence exitTitle = shareItemData.getTitle();
+
+                //  特殊的项，微信朋友圈没有相应的resolveInfo，preferTitle对上之后，只通过exitPackage判断，
+                //  然后直接加入一个对象，不是移动对象到最前面
+                if (ShareUtil.WX_TIME_LINE_TITLE.contentEquals(preferTitle) &&
+                        CommonConstant.WX_PACKAGE.contentEquals(exitPackage)) {
+                    resolveInfos.add(0, resolveInfos.get(i));
+                    shareItemDataList.add(0, new ShareItemData(preferPackage, preferTitle, Util.getDrawable(R.drawable.wx_timeline)));
+                    break;
+                }
+
+                if (exitPackage.equals(preferPackage) && exitTitle.equals(preferTitle)) {
                     resolveInfos.add(0, resolveInfos.remove(i));
-                    appInfos.add(0, appInfos.remove(i));
+                    shareItemDataList.add(0, shareItemDataList.remove(i));
                     break;
                 }
             }
             //如果没找到这个信息,已经不存在这个开放的activity，将其从数据库删除
-            if (i >= appInfos.size()) {
-                delActivity.add(preferApps.get(p));
+            if (i >= shareItemDataList.size()) {
+                delInfo.add(preferApps.get(p));
             }
         }
-        for (Pair<String, String> ac : delActivity) {
+        for (Pair<String, String> ac : delInfo) {
             preferApps.remove(ac);
         }
-        ShareDBUtil.deletePreferInfo(context, delActivity);
-        return appInfos;
+        ShareDBUtil.deletePreferInfo(context, delInfo);
+        return shareItemDataList;
     }
 
     /**
@@ -167,10 +182,10 @@ class ShareUtil {
     /**
      * @return for代码共用，没找到更好方式，暂时这样
      */
-    public static MyQQShare share(AppCompatActivity ac, ResolveInfo resolveInfo, String savePath) {
+    public static MyQQShare share(AppCompatActivity ac, ShareItemData itemData, ResolveInfo resolveInfo, String savePath) {
         // 将优先信息添加到数据库
         String packageName = resolveInfo.activityInfo.packageName;
-        String title = resolveInfo.loadLabel(ac.getPackageManager()).toString();
+        String title = itemData.getTitle().toString();
         ShareDBUtil.inseartPreferInfo(ac, packageName, title);
         // 是腾讯的分享且用户设置可带有应用图标
         // 如果shareType是Image，那么分享的内容应该为图片在SD卡的路径
@@ -178,13 +193,18 @@ class ShareUtil {
                 && packageName.equals("com.tencent.mobileqq")
                 && !AllData.globalSettings.getSharedWithout()) {
             return shareByQQSDK(ac, savePath);
-        } /*else if (title.equals(ShareUtil.WX_SHARE_TITLE)
+        } else if (title.equals(ShareUtil.WX_TIME_LINE_TITLE)
+                && packageName.equals("com.tencent.mm")
+                && !AllData.globalSettings.getSharedWithout()) {
+            shareByWXSDK(ac, resolveInfo, savePath, packageName, title);
+            return null;
+        } else if (title.equals(ShareUtil.WX_SHARE_TITLE)
                 && packageName.equals("com.tencent.mm")
                 && !AllData.globalSettings.getSharedWithout()
                 && !savePath.endsWith(".gif")) { // 不支持gif
             shareByWXSDK(ac, resolveInfo, savePath, packageName, title);
             return null;
-        } */else {
+        } else {
             normalShare(ac, resolveInfo, savePath, packageName, title);
             return null;
         }
@@ -229,7 +249,11 @@ class ShareUtil {
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("img");
         req.message = msg;
-        req.scene = SendMessageToWX.Req.WXSceneSession;
+        if (WX_TIME_LINE_TITLE.equals(title)) {
+            req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        } else {
+            req.scene = SendMessageToWX.Req.WXSceneSession;
+        }
         req.userOpenId = AppConfig.ID_IN_WEIXIN;
         //调用api接口，发送数据到微信
         boolean isShareSuccess = false;

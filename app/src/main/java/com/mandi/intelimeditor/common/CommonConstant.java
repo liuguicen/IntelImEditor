@@ -13,4 +13,5 @@ public class CommonConstant {
     public static final int RESULT_CODE_HAS_USER_LOGIN_SUCCESS = 50007;
     public static final String CHANGE_BAOZOU_FACE = "CHANGE_BAOZOU_FACE";
     public static final String SUCCESS = "success";
+    public static final String WX_PACKAGE = "com.tencent.mm";
 }

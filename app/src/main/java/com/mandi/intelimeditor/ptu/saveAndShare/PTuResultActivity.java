@@ -353,7 +353,7 @@ public class PTuResultActivity extends BaseActivity {
 
                 int clickPosition = shareActivityInfo.indexOf(data);
                 ResolveInfo resolveInfo = resolveInfos.get(clickPosition);
-                myQQShare = ShareUtil.share(this, resolveInfo, resultPath);
+                myQQShare = ShareUtil.share(this, data, resolveInfo, resultPath);
             });
 
         }

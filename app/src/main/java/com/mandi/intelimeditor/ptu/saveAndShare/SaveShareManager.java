@@ -125,7 +125,7 @@ public class SaveShareManager {
         MyDatabase myDatabase = MyDatabase.getInstance();
         List<Pair<String, String>> preferShare = new ArrayList<>();
         try {
-            myDatabase.queryAllPreferShare(preferShare);
+            myDatabase.queryAllPreferShare_andRemoveDuplicate(preferShare);
         } catch (Exception e) {
         }
         resolveInfos = ShareUtil.getAcInfo_SupportShare(mContext, ShareUtil.Type.Image);
@@ -147,7 +147,7 @@ public class SaveShareManager {
             listenner.onShareItemClick(saveRatio, savePath -> {
                 int clickPosition = acInfo_SupportShare.indexOf(data);
                 ResolveInfo resolveInfo = resolveInfos.get(clickPosition);
-                myQQShare = ShareUtil.share((AppCompatActivity) mContext, resolveInfo, savePath);
+                myQQShare = ShareUtil.share((AppCompatActivity) mContext, data, resolveInfo, savePath);
                 dismissDialog();
             });
         });
