@@ -173,7 +173,7 @@ public class PTuResultActivity extends BaseActivity {
     private void initAd() {
         AdStrategyUtil adStrategyUtil = new AdStrategyUtil(AdData.AdSpaceName.PTU_RESULT, AllData.appConfig.ptu_result_ad_strategy);
         mAdContainer.setVisibility(View.VISIBLE);
-        if (!AdData.judgeAdClose(AdData.TENCENT_AD) && adStrategyUtil.isShow("TX")) {
+        if (!AdData.judgeAdClose(AdData.TENCENT_AD_ID) && adStrategyUtil.isShow(AdData.TX_AD_NAME)) {
             TxFeedAd txFeedAd = new TxFeedAd(this, mAdContainer, AdData.GDT_ID_FEED_PIC_RES_LIST, AdData.AdSpaceName.PTU_RESULT,
                     AdData.AdSpaceName.PTU_RESULT);
             txFeedAd.setAdSize(new ADSize(ADSize.FULL_WIDTH, ADSize.AUTO_HEIGHT));
@@ -184,7 +184,7 @@ public class PTuResultActivity extends BaseActivity {
             } else {
                 txFeedAd.bindData(adHolder);
             }
-        } else if (!AdData.judgeAdClose(AdData.TT_AD)) { // 默认
+        } else if (!AdData.judgeAdClose(AdData.TT_AD_ID)) { // 默认
             TTFeedAd = new TTFeedAd(this);
             TTFeedAd.loadExpressAd(mAdContainer, TTAdConfig.PTU_RESULT_FEED_AD_ID, AllData.screenWidth);
         }
@@ -263,7 +263,7 @@ public class PTuResultActivity extends BaseActivity {
         };
         if (AllData.sRandom.nextDouble() < AdData.PROBABILITY_VAD_PTU_RESULT
                 && System.currentTimeMillis() > AdData.lastVideoAdShowTime + AdData.VIEDO_AD_SHOW_INTERVAL
-                && !AdData.judgeAdClose(AdData.TT_AD)) {
+                && !AdData.judgeAdClose(AdData.TT_AD_ID)) {
             FullScreenVadManager.showFullScreenVad(this, task, getString(R.string.support_by_video_ad));
         } else if (show2RateDialog()) {
             // nothing
@@ -286,7 +286,7 @@ public class PTuResultActivity extends BaseActivity {
         if (AllData.sRandom.nextDouble() < AdData.PROBABILITY_VAD_PTU_RESULT
                 && isFirstReturn
                 && System.currentTimeMillis() > AdData.lastVideoAdShowTime + AdData.VIEDO_AD_SHOW_INTERVAL
-                && !AdData.judgeAdClose(AdData.TT_AD)) {
+                && !AdData.judgeAdClose(AdData.TT_AD_ID)) {
             FullScreenVadManager.showFullScreenVad(this, task, getString(R.string.support_by_video_ad));
         } else if (show2RateDialog()) {
             // nothing

@@ -363,7 +363,7 @@ public class PicResSearchSortUtil {
             PicResource picRes = resList.get(i);
 
             if (picRes.getTag() == null) {
-                LogUtil.d(TAG, "updateAllTagAndGroup 数据异常" + picRes.toString());
+                LogUtil.d(TAG, "updateAllTagAndGroup 数据异常 没有tag" + picRes.toString());
                 continue;
             }
 

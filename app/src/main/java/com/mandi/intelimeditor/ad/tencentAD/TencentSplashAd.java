@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.IBaseSplashAd;
@@ -12,7 +11,6 @@ import com.mandi.intelimeditor.ad.ISplashAdListener;
 
 import com.mandi.intelimeditor.common.util.LogUtil;
 import com.mandi.intelimeditor.user.US;
-import com.mandi.intelimeditor.R;
 import com.qq.e.ads.splash.SplashAD;
 import com.qq.e.ads.splash.SplashADListener;
 import com.qq.e.comm.constants.LoadAdParams;
@@ -63,7 +61,7 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
         // 某个View在它的前面 挡在了大部分
         // 系统拦截，
         if (container.getParent() == null) {
-            US.putSplashADEvent(US.FAILED + US.TENCENT_AD + " container parent null");
+            US.putSplashADEvent(US.FAILED + AdData.TX_AD_NAME + " container parent null");
         }
         //        boolean isCover = isCover(container);
         //        if (isCover) {
@@ -118,7 +116,7 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
         if (LogUtil.debugSplashAd) {
             Log.i(TAG, "SplashADExposure");
         }
-        splashAdStrategy.onAdExpose(US.TENCENT_AD);
+        splashAdStrategy.onAdExpose(AdData.TX_AD_NAME);
     }
 
     /**
@@ -137,9 +135,9 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
         Log.e(TAG,
                 String.format("LoadSplashADFail, eCode=%d, errorMsg=%s", errorCode,
                         error.getErrorMsg()));
-        US.putSplashADEvent(US.FAILED + US.TENCENT_AD, "" + errorCode);
+        US.putSplashADEvent(US.FAILED + AdData.TX_AD_NAME, "" + errorCode);
         if (splashAdStrategy != null) {
-            splashAdStrategy.onAdError("TX");
+            splashAdStrategy.onAdError(AdData.TX_AD_NAME);
         }
     }
 
@@ -162,7 +160,7 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
             Log.i(TAG, "SplashADClicked");
         }
         splashAdStrategy.setUserPause(true);
-        US.putSplashADEvent(US.CLICK + US.TENCENT_AD);
+        US.putSplashADEvent(US.CLICK + AdData.TX_AD_NAME);
     }
 
     @Override

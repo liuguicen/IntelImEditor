@@ -838,7 +838,7 @@ public class PtuActivity extends BaseActivity implements PTuActivityInterface, P
         }
         maxDur *= 1000;
         if (duration >= maxDur && NetWorkState.detectNetworkType() != NetWorkState.NO_NET
-                && !AdData.judgeAdClose(AdData.TT_AD)) {
+                && !AdData.judgeAdClose(AdData.TT_AD_ID)) {
             // new DialogChooseSeeAd().show(); 待完成
             ToastUtils.show(
                     getString(R.string.long_time_parse_video_so_ad),

@@ -83,7 +83,7 @@ public class TTRewardVadManager {
             @Override
             public void onError(int code, String message) {
                 if (rewardVadListener != null) {
-                    rewardVadListener.onError(code, message, "TT");
+                    rewardVadListener.onError(code, message, AdData.TT_AD_NAME);
                     if (code == -2) {
                         ToastUtils.show(R.string.network_error_try_latter);
                     }

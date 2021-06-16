@@ -13,6 +13,7 @@ import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTSplashAd;
+import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.IBaseSplashAd;
 import com.mandi.intelimeditor.ad.ISplashAdListener;
 import com.mandi.intelimeditor.ad.TTAdConfig;
@@ -84,9 +85,9 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                     @MainThread
                     public void onError(int code, String message) {
                         Log.e(TAG, "onError: " + message); // 注意这里message可能 == null，引起崩溃
-                        US.putSplashADEvent(US.FAILED + US.TT_AD + " " + code);
+                        US.putSplashADEvent(US.FAILED + AdData.TT_AD_NAME + " " + code);
                         mHasLoaded = true;
-                        splashStrategy.onAdError("TT");
+                        splashStrategy.onAdError(AdData.TT_AD_NAME);
                         mSplashContainer.removeAllViews();
                     }
 
@@ -95,8 +96,8 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                     public void onTimeout() {
                         mHasLoaded = true;
                         Log.e(TAG, "onTimeout");
-                        US.putSplashADEvent(US.FAILED + US.TT_AD + " " + US.TIME_OUT);
-                        splashStrategy.onAdError("TT");
+                        US.putSplashADEvent(US.FAILED + AdData.TT_AD_NAME + " " + US.TIME_OUT);
+                        splashStrategy.onAdError(AdData.TT_AD_NAME);
                         mSplashContainer.removeAllViews();
                     }
 
@@ -109,7 +110,7 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                         if (ad == null) {
                             return;
                         }
-                        US.putSplashADEvent(US.load_success + US.TT_AD);
+                        US.putSplashADEvent(US.load_success + AdData.TT_AD_NAME);
                         //获取SplashView
                         View view = ad.getSplashView();
                         if (view != null) {
@@ -119,7 +120,7 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                             //设置不开启开屏广告倒计时功能以及不显示跳过按钮,如果这么设置，您需要自定义倒计时逻辑
                             //ad.setNotAllowSdkCountdown();
                         } else {
-                            splashStrategy.onAdError("TT");
+                            splashStrategy.onAdError(AdData.TT_AD_NAME);
                         }
 
                         //设置SplashView的交互监听器
@@ -128,14 +129,14 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                             @Override
                             public void onAdShow(View view, int type) {
                                 Log.d(TAG, "onAdShow");
-                                splashStrategy.onAdExpose(US.TT_AD);
+                                splashStrategy.onAdExpose(AdData.TT_AD_NAME);
                             }
 
                             @Override
                             public void onAdClicked(View view, int type) {
                                 LogUtil.d(TAG, "onAdClicked");
                                 splashStrategy.setUserPause(true);
-                                US.putSplashADEvent(US.CLICK + US.TT_AD);
+                                US.putSplashADEvent(US.CLICK + AdData.TT_AD_NAME);
                             }
 
 
@@ -172,7 +173,7 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                                     if (!hasShow) {
                                         showToast("下载中...");
                                         hasShow = true;
-                                        US.putSplashADEvent(US.START_DOWNLOAD + US.TT_AD);
+                                        US.putSplashADEvent(US.START_DOWNLOAD + AdData.TT_AD_NAME);
                                     }
                                 }
 
@@ -191,13 +192,13 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
                                 @Override
                                 public void onDownloadFinished(long totalBytes, String fileName, String appName) {
                                     Log.d(TAG, "onDownloadFinished: ");
-                                    US.putSplashADEvent(US.DOWNLOAD_COMPLETE + US.TT_AD);
+                                    US.putSplashADEvent(US.DOWNLOAD_COMPLETE + AdData.TT_AD_NAME);
                                 }
 
                                 @Override
                                 public void onInstalled(String fileName, String appName) {
                                     Log.d(TAG, "onInstalled: ");
-                                    US.putSplashADEvent(US.INSTALL_SUCCESS + US.TT_AD);
+                                    US.putSplashADEvent(US.INSTALL_SUCCESS + AdData.TT_AD_NAME);
                                 }
                             });
                         }
@@ -231,9 +232,9 @@ public class MyTTSplashAd implements WeakHandler.IHandler, IBaseSplashAd {
     public void handleMsg(Message msg) {
         if (msg.what == MSG_GO_MAIN) {
             if (!mHasLoaded) {
-                Log.e(TAG, US.FAILED + US.TT_AD + " " + US.TIME_OUT);
-                US.putSplashADEvent(US.FAILED + US.TT_AD + " " + US.TIME_OUT);
-                splashStrategy.onAdError("TT");
+                Log.e(TAG, US.FAILED + AdData.TT_AD_NAME + " " + US.TIME_OUT);
+                US.putSplashADEvent(US.FAILED + AdData.TT_AD_NAME + " " + US.TIME_OUT);
+                splashStrategy.onAdError(AdData.TT_AD_NAME);
             }
         }
     }

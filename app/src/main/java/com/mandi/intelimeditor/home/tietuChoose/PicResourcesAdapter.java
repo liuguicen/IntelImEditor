@@ -130,7 +130,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
      */
     public void initAdData(boolean isFewPic) {
         AdStrategyUtil adStrategyUtil = new AdStrategyUtil(AdData.AdSpaceName.PIC_RES_FEED, AllData.appConfig.pic_res_ad_strategy);
-        if (adStrategyUtil.isShow("TX")) {
+        if (adStrategyUtil.isShow(AdData.TX_AD_NAME)) {
             buildTxFeed(false, isFewPic);
         } else { // 默认
             buildTTFeed(false, isFewPic);
@@ -143,7 +143,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
      * @param isFewPic 图片比较少的情况
      */
     private void buildTTFeed(boolean isOnly, boolean isFewPic) {
-        if (AdData.judgeAdClose(AdData.TT_AD)) return;
+        if (AdData.judgeAdClose(AdData.TT_AD_ID)) return;
 
         Log.d(TAG, "AddTTFeed");
 
@@ -166,7 +166,7 @@ public class PicResourcesAdapter extends BasePicAdapter {
      * @param isFewPic 图片较少
      */
     private void buildTxFeed(boolean isOnly, boolean isFewPic) {
-        if (AdData.judgeAdClose(AdData.TENCENT_AD)) return;
+        if (AdData.judgeAdClose(AdData.TENCENT_AD_ID)) return;
         if (BuildConfig.DEBUG)
             Log.d(TAG, "initTxFeedAd:");
 

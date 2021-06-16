@@ -226,16 +226,16 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
     }
 
     private void chooseAd2Show() {
-        // if (adStrategyUtil.isShow("TX")) {
+        if (adStrategyUtil.isShow(AdData.TX_AD_NAME)) {
             US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_TX");
             showTxSplashAd(SPLASH_FIRST_TIME_OUT);
-        // } else if (adStrategyUtil.isShow("KJ")) {
-        //     US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_KJ");
-        //     showKJSplashAd(SPLASH_FIRST_TIME_OUT);
-        // } else { // 默认优量汇 (adStrategyUtil.isShow("TX"))
-        //     US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_TT");
-        //     showTTSplashAd(SPLASH_FIRST_TIME_OUT);
-        // }
+        } else if (adStrategyUtil.isShow(AdData.KJ_AD_NAME)) {
+            US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_KJ");
+            showKJSplashAd(SPLASH_FIRST_TIME_OUT);
+        } else { // 默认 (adStrategyUtil.isShow(AdData.TX_AD_NAME))
+            US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_TT");
+            showTTSplashAd(SPLASH_FIRST_TIME_OUT);
+        }
     }
 
     private void initAdView() {

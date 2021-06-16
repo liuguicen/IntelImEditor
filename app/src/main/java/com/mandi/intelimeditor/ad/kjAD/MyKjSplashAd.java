@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.kaijia.adsdk.Interface.KjSplashAdListener;
 import com.kaijia.adsdk.Tools.KjSplashAd;
+import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.IBaseSplashAd;
 import com.mandi.intelimeditor.ad.ISplashAdListener;
 import com.mandi.intelimeditor.user.US;
@@ -41,7 +42,7 @@ public class MyKjSplashAd implements IBaseSplashAd, KjSplashAdListener {
     @Override
     public void onAdShow() {
         Log.i(TAG, "show");
-        splashListener.onAdExpose(US.EXPOSURE + US.KJ_AD);
+        splashListener.onAdExpose(US.EXPOSURE + AdData.KJ_AD_NAME);
     }
 
     @Override
@@ -57,14 +58,14 @@ public class MyKjSplashAd implements IBaseSplashAd, KjSplashAdListener {
     public void onAdClick() {
         Log.i(TAG, "click");
         hasClicked = true;
-        US.putSplashADEvent(US.CLICK + US.KJ_AD);
+        US.putSplashADEvent(US.CLICK + AdData.KJ_AD_NAME);
     }
 
     @Override
     public void onFailed(String error) {
         Log.e(TAG, "铠甲开屏广告错误" +error);
-        US.putSplashADEvent(US.FAILED + US.KJ_AD + " " + error);
-        splashListener.onAdError(US.KJ_AD);
+        US.putSplashADEvent(US.FAILED + AdData.KJ_AD_NAME + " " + error);
+        splashListener.onAdError(AdData.KJ_AD_NAME);
     }
 
     @Override

@@ -120,6 +120,6 @@ public class TxRewardVad implements RewardVideoADListener {
 
     @Override
     public void onError(AdError adError) {
-        rewardVadListener.onError(adError.getErrorCode(), adError.getErrorMsg(), "TX");
+        rewardVadListener.onError(adError.getErrorCode(), adError.getErrorMsg(), AdData.TX_AD_NAME);
     }
 }

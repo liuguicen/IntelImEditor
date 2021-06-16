@@ -71,7 +71,7 @@ public class AdStrategyUtil {
     private static final String PATTERN_AVERAGE = "average";
     private static final String PATTERN_ONLY = "only";
     public static final String PATTERN_PRIOR = "prior";
-    public static final List<String> CUR_VERSION_SUPPORT_AD_RES = Arrays.asList("TX", "TT", "KJ");
+    public static final List<String> CUR_VERSION_SUPPORT_AD_RES = Arrays.asList(AdData.TX_AD_NAME, AdData.TT_AD_NAME, AdData.KJ_AD_NAME);
 
     private int numberOfPrior = 3; // 优先模式一个广告源曝光的次数
     private List<String> resList = new ArrayList<>();

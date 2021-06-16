@@ -74,7 +74,7 @@ class TypefacePopWindow(val acContext: Context, val floatTextView: FloatTextView
             val path = AllData.zitiDir + it.nameInFile
 
             val hasUnlocked: Boolean = when {
-                AdData.judgeAdClose(AdData.TT_AD) -> true
+                AdData.judgeAdClose(AdData.TT_AD_ID) -> true
                 id == 0 -> true
                 else -> SPUtil.getTypefaceUnlock(id.toString())
             }

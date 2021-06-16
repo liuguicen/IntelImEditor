@@ -179,7 +179,6 @@ public class IntelImEditApplication extends MultiDexApplication {
             AllData.localUserVipExpire = SPUtil.getUserVipExpire();
             // 由于启动过程需要，这里先暂时判断，后面会在非主线程里面获取网络时间再进行一次判断
             AllData.isVip = AllData.localUserVipExpire > System.currentTimeMillis();
-            AllData.isVip = true;
         }
     }
 

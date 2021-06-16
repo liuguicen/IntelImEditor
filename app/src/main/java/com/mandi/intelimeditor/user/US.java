@@ -16,13 +16,6 @@ import com.umeng.analytics.MobclickAgent;
  */
 public class US { // UseStatistic
 
-    /**
-     * 广告商类型
-     **/
-    public static final String TENCENT_AD = "_tencent";
-    public static final String TT_AD = "_tt";
-    public static final String KJ_AD = "_KJ";
-
     /*** 开屏广告   ***/
     public static final String SPLASH_AD_NOT_SHOW = "not_show";
     public static final String SPLASH_AD_PAUSE_TO_SEE = "pause_to_see";

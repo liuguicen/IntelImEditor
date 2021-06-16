@@ -24,10 +24,7 @@ import com.mandi.intelimeditor.BuildConfig;
 import com.mandi.intelimeditor.R;
 import com.umeng.analytics.AnalyticsConfig;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,6 +73,7 @@ public class AdData {
     /*** 各处广告的ID，各处广告数据的处理以此为核心*/
     public static final int DEFAULT_AD_STATE_COUNT = 2;
     public static final double PROBABILITY_VAD_PTU_RESULT = 1 / 13f;
+
 
     /********************各处广告上次点击或者展示时间*****************/
     public static long lastClickTime_ptuResult = 0;
@@ -126,7 +124,7 @@ public class AdData {
         lastVideoAdShowTime = SPUtil.getLastRadShowTime();
 
         // 读取解锁数据
-        if (!AdData.judgeAdClose(TT_AD)) {
+        if (!AdData.judgeAdClose(TT_AD_ID)) {
             SharedPreferences unlockSp = IntelImEditApplication.appContext.getSharedPreferences(
                     SPConstants.unlock_data_sp, Context.MODE_PRIVATE);
 
@@ -301,22 +299,28 @@ public class AdData {
     /**
      * 广告商代号，最好统一，特殊的地方除外
      */
-    public static final int TT_AD = 1;
-    public static final int TENCENT_AD = 2;
+    public static final int TT_AD_ID = 1;
+    public static final int TENCENT_AD_ID = 2;
 
+    /**
+     * 广告商类型, 各个位置统一使用，一定
+     **/
+    public static final String TX_AD_NAME = "TX";
+    public static final String TT_AD_NAME = "TT";
+    public static final String KJ_AD_NAME = "KJ";
 
     /**
      * 是否全局关闭广告
      * 不传参数表示广告位可能是任意类型, 任意一个广告关闭，那个这个广告位就关闭
      */
     public static boolean judgeAdClose() {
-        return judgeAdClose(TENCENT_AD) || judgeAdClose(TT_AD);
+        return judgeAdClose(TENCENT_AD_ID) || judgeAdClose(TT_AD_ID);
     }
 
     /**
      * 是否全局关闭广告
      *
-     * @param adType {@link #TENCENT_AD} {@link #TT_AD} 广告位类型，可能某种类型关闭而另外的类型不用关闭
+     * @param adType {@link #TENCENT_AD_ID} {@link #TT_AD_ID} 广告位类型，可能某种类型关闭而另外的类型不用关闭
      */
     public static boolean judgeAdClose(int adType) {
         // VIP没到期
@@ -327,11 +331,11 @@ public class AdData {
             }
             return true;
         }
-        if (adType == TENCENT_AD && AppConfig.isCloseTencentAd) {
+        if (adType == TENCENT_AD_ID && AppConfig.isCloseTencentAd) {
             return true;
         }
 
-        if (adType == TT_AD && AppConfig.isCloseTTAd) {
+        if (adType == TT_AD_ID && AppConfig.isCloseTTAd) {
             return true;
         }
         return false;

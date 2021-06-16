@@ -159,17 +159,17 @@ class UnlockDialog : IBaseDialog() {
     }
 
     private fun chooseRewardVad2Show(adStrategyUtil: AdStrategyUtil?, rewardVadListener: VadListener?) {
-        if (adStrategyUtil!!.isShow("TT")) {
-            mAdRes = "TT"
+        if (adStrategyUtil!!.isShow(AdData.TT_AD_NAME)) {
+            mAdRes = AdData.TT_AD_NAME
             TTRewardVadManager.getInstance().setRewardVadListener(rewardVadListener)
             TTRewardVadManager.getInstance().loadAd(activity)
-        } else if (adStrategyUtil.isShow("TX")) {
-            mAdRes = "TX"
+        } else if (adStrategyUtil.isShow(AdData.TX_AD_NAME)) {
+            mAdRes = AdData.TX_AD_NAME
             val txRewardVideoAd = TxRewardVad(activity)
             txRewardVideoAd.setRewardVadListener(rewardVadListener)
             txRewardVideoAd.loadAd()
-        } else if ("TT" != mAdRes) { // 默认的,注意要没选过这个才选，已经选过是因为它出错了才调用这里，不能再次调用，否则死循环！！
-            mAdRes = "TT"
+        } else if (AdData.TT_AD_NAME != mAdRes) { // 默认的,注意要没选过这个才选，已经选过是因为它出错了才调用这里，不能再次调用，否则死循环！！
+            mAdRes = AdData.TT_AD_NAME
             TTRewardVadManager.getInstance().setRewardVadListener(rewardVadListener)
             TTRewardVadManager.getInstance().loadAd(activity)
         }

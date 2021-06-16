@@ -34,8 +34,8 @@ public class OnlineAppConfig extends BmobObject {
     public static final int TX_PIC_TT_FEED = 100;
 
     public static final int HY_REWARD_VAD = 10;
-    public static final int TT_AD = AdData.TT_AD;
-    public static final int TENCENT_AD = AdData.TENCENT_AD;
+    public static final int TT_AD = AdData.TT_AD_ID;
+    public static final int TENCENT_AD = AdData.TENCENT_AD_ID;
 
 
     public static final String TAG = "OnlineAppConfig";

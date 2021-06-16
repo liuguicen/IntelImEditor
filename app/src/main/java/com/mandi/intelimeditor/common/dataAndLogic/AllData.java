@@ -75,7 +75,7 @@ public class AllData {
     /**
      * 用于本次启动运行过程中判断是否是VIP
      */
-    public static boolean isVip = true;
+    public static boolean isVip = false;
     public static String floor_vip_price = VipUtil.getFloorPriceString(VipUtil.DEFAULT_FLOOR_PRICE);
 
     /**

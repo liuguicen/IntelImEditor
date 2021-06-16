@@ -94,7 +94,7 @@ public class LocalPicAdapter extends BasePicAdapter {
     public void initAdData(TxFeedAdPool adPool) {
         if (adPool == null) return;
         AdStrategyUtil adStrategyUtil = new AdStrategyUtil(AdData.AdSpaceName.PIC_RES_FEED, AllData.appConfig.pic_res_ad_strategy);
-        if (adStrategyUtil.isShow("TX")) {
+        if (adStrategyUtil.isShow(AdData.TX_AD_NAME)) {
             buildTxFeed(false);
         } else { // 默认
             buildTTFeed();
@@ -109,7 +109,7 @@ public class LocalPicAdapter extends BasePicAdapter {
     }
 
     private void buildTTFeed() {
-        if (AdData.judgeAdClose(AdData.TT_AD)) return;
+        if (AdData.judgeAdClose(AdData.TT_AD_ID)) return;
         // 首屏，1/5的概率显示大广告,设置start=x个屏的数量就行了，第一个广告位会是0-x屏的数字，结果就是1/x
         mAdController_feed = new ListAdStrategyController(mContext, TTAdConfig.PIC_LIST_FEED_AD_ID,
                 AdData.getTTFeedAdPool_picList((Activity) mContext),
@@ -126,7 +126,7 @@ public class LocalPicAdapter extends BasePicAdapter {
      * @param isFewPic 图片较少
      */
     private void buildTxFeed(boolean isFewPic) {
-        if (AdData.judgeAdClose(AdData.TENCENT_AD)) return;
+        if (AdData.judgeAdClose(AdData.TENCENT_AD_ID)) return;
         if (BuildConfig.DEBUG)
             Log.d(TAG, "initTxFeedAd:");
 

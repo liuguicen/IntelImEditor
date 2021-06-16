@@ -35,7 +35,7 @@ public class InsertAd {
     public static void onClickTarget(Activity activity) {
         if (activity == null) return;
         PtuActivity.myClickCount++;
-        if (!AdData.judgeAdClose(AdData.TENCENT_AD)
+        if (!AdData.judgeAdClose(AdData.TENCENT_AD_ID)
                 && AllData.sRandom.nextDouble() < 1d / 45
                 && PtuActivity.myClickCount > 3) { // 进入PTuActivity之后，点击超过3次才行
             prepareShowAd(activity);

@@ -164,7 +164,7 @@ public class FullScreenVadManager {
             @Override
             public void onError(int code, String message) {
                 if (vadListener != null) {
-                    vadListener.onError(code, message, "TT");
+                    vadListener.onError(code, message, AdData.TT_AD_NAME);
                 }
                 hideLoading();
                 LogUtil.d(TAG, message);
