@@ -20,7 +20,7 @@ import com.mandi.intelimeditor.common.util.ToastUtils
 import com.mandi.intelimeditor.network.NetWorkState
 import com.mandi.intelimeditor.ptu.text.FloatTextView
 import com.mandi.intelimeditor.ptu.text.TextPopUpBuilder
-import com.mandi.intelimeditor.network.TypefaceDownloader
+import com.mandi.intelimeditor.ptu.text.TypefaceDownloader
 import com.mandi.intelimeditor.R
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -71,7 +71,7 @@ class TypefacePopWindow(val acContext: Context, val floatTextView: FloatTextView
         typefaceList.clear()
         var id = 0
         it.forEach {
-            val path = AllData.zitiDir + it.objectId
+            val path = AllData.zitiDir + it.nameInFile
 
             val hasUnlocked: Boolean = when {
                 AdData.judgeAdClose(AdData.TT_AD) -> true

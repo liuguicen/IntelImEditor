@@ -35,6 +35,7 @@ import java.util.List;
 class ShareUtil {
     public static final String QQSHARE_TITLE = "发送给好友";
     public static final String WX_SHARE_TITLE = "发送给朋友";
+    public static final String WX_TIME_LINE_TITLE = "微信朋友圈";
 
 
     public static List<ShareItemData> getShareInfo(Context context, List<ResolveInfo> resolveInfos) {

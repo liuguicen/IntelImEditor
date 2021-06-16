@@ -42,39 +42,16 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
     public boolean canJump = false;
 
     private ViewGroup container;
-    private TextView pauseView;
-    private TextView skipView;
     private long mTimeoutLong;
     private boolean loadAdOnly = false;
 
-    public TencentSplashAd(Activity ac, ViewGroup container, TextView pauseView, TextView skipView,
-                           ISplashAdListener splashAdStrategy, long timeoutLong) {
-        isPauseToSee = false;
+    public TencentSplashAd(Activity ac, ViewGroup container, ISplashAdListener splashAdStrategy, long timeoutLong) {
         isTimingFinish = false;
         this.activity = ac;
         this.container = container;
-        this.pauseView = pauseView;
-        // 注意腾讯广告要求这个view传入的时候就是可见的，
-        // 所以只能一开始就设置为可见的，但是没有文字，后面再手动加入文字
-        this.skipView = skipView;
-        this.skipView.setVisibility(View.VISIBLE);
-        hideSkipContent();
 
         this.splashAdStrategy = splashAdStrategy;
         mTimeoutLong = timeoutLong;
-        pauseView.setOnClickListener(v -> {
-            isPauseToSee = true;
-            splashAdStrategy.setUserPause(true);
-            canJump = false; // 相当于加了一次jump的拦截
-            pauseView.setText(R.string.enter_app);
-            pauseView.setOnClickListener(v1 -> {
-                if (splashAdStrategy != null) {
-                    splashAdStrategy.onAdFinish();
-                }
-                US.putSplashADEvent(US.SPLASH_AD_ENTER_APP + US.TENCENT_AD);
-            });
-            US.putSplashADEvent(US.SPLASH_AD_PAUSE_TO_SEE + US.TENCENT_AD);
-        });
     }
 
     @Override
@@ -92,8 +69,7 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
         //        if (isCover) {
         //            US.putSplashADEvent(US.FAILED + US.TENCENT_AD + " container is covered");
         //        }
-        fetchSplashAD(activity, container, skipView,
-                //                 "test_error",
+        fetchSplashAD(activity, container,
                 AdData.GDT_ID_LAUNCH_QY,
                 this, mTimeoutLong);
     }
@@ -107,29 +83,18 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
     /**
      * 拉取开屏广告，开屏广告的构造方法有3种，详细说明请参考开发者文档。
      *
-     * @param activity      展示广告的activity
-     * @param adContainer   展示广告的大容器
-     * @param skipContainer 自定义的跳过按钮：传入该view给SDK后，SDK会自动给它绑定点击跳过事件。SkipView的样式可以由开发者自由定制，其尺寸限制请参考activity_splash.xml或者接入文档中的说明。
-     * @param posId         广告位ID
-     * @param adListener    广告状态监听器
-     * @param timeoutLong   拉取广告的超时时长：取值范围[3000, 5000]，设为0表示使用广点通SDK默认的超时时长。
+     * @param activity    展示广告的activity
+     * @param adContainer 展示广告的大容器
+     * @param posId       广告位ID
+     * @param adListener  广告状态监听器
+     * @param timeoutLong 拉取广告的超时时长：取值范围[3000, 5000]，设为0表示使用广点通SDK默认的超时时长。
      */
-    private void fetchSplashAD(Activity activity, ViewGroup adContainer, View skipContainer, String posId, SplashADListener adListener, long timeoutLong) {
-        if (LogUtil.debugTencentSplashAd) {
+    private void fetchSplashAD(Activity activity, ViewGroup adContainer, String posId, SplashADListener adListener, long timeoutLong) {
+        if (LogUtil.debugSplashAd) {
             Log.d(TAG, "fetch" + timeoutLong);
         }
-        splashAD = new SplashAD(activity, skipContainer, posId, adListener, (int) timeoutLong);
+        splashAD = new SplashAD(activity, posId, adListener, (int) timeoutLong);
         splashAD.fetchAndShowIn(adContainer);
-    }
-
-    private void showSkipContent() {
-        skipView.setBackgroundResource(R.drawable.background_circle_cornerl);
-        skipView.setText(activity.getText(R.string.click_to_skip));
-    }
-
-    private void hideSkipContent() {
-        this.skipView.setBackground(null);
-        this.skipView.setText("");
     }
 
     @Override
@@ -150,11 +115,9 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
      */
     @Override
     public void onADExposure() {
-        if (LogUtil.debugTencentSplashAd) {
+        if (LogUtil.debugSplashAd) {
             Log.i(TAG, "SplashADExposure");
         }
-        pauseView.setVisibility(View.VISIBLE);
-        showSkipContent();
         splashAdStrategy.onAdExpose(US.TENCENT_AD);
     }
 
@@ -163,11 +126,9 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
      */
     @Override
     public void onADPresent() {
-        if (LogUtil.debugTencentSplashAd) {
+        if (LogUtil.debugSplashAd) {
             Log.i(TAG, "SplashADPresent");
         }
-        pauseView.setVisibility(View.VISIBLE);
-        // showSkipContent();
     }
 
     @Override
@@ -190,44 +151,26 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
      */
     @Override
     public void onADTick(long millisUntilFinished) {
-        if (LogUtil.debugTencentSplashAd) {
+        if (LogUtil.debugSplashAd) {
             Log.i(TAG, "SplashADTick " + millisUntilFinished + "ms");
-        }
-        if (!isPauseToSee) {
-            skipView.setText(String.format(AdUtil.SKIP_TEXT, Math.round(millisUntilFinished / 1000f)));
         }
     }
 
     @Override
     public void onADClicked() {
-        if (LogUtil.debugTencentSplashAd) {
+        if (LogUtil.debugSplashAd) {
             Log.i(TAG, "SplashADClicked");
         }
         splashAdStrategy.setUserPause(true);
-        if (isPauseToSee) {
-            US.putSplashADEvent(US.SPLASH_AD_PAUSE_AND_CLICK + US.TENCENT_AD);
-        } else {
-            US.putSplashADEvent(US.CLICK + US.TENCENT_AD);
-        }
+        US.putSplashADEvent(US.CLICK + US.TENCENT_AD);
     }
 
     @Override
     public void onADDismissed() {
-        if (LogUtil.debugTencentSplashAd) {
+        if (LogUtil.debugSplashAd) {
             Log.i(TAG, "SplashADDismissed");
         }
-        if (isPauseToSee) {
-            // sdk本来说不能绑定点击监听的，不过这是广告结束之后，可以绑定了
-            // 计时过后，广告sdk不会在调用结束广告的方法，这里添加一个跳转
-            skipView.setOnClickListener(v -> {
-                if (splashAdStrategy != null) {
-                    splashAdStrategy.onAdFinish();
-                }
-                US.putSplashADEvent(US.SPLASH_AD_ENTER_APP + US.TENCENT_AD);
-            });
-            skipView.setText(String.format(AdUtil.SKIP_TEXT, Math.round(0)));
-            isTimingFinish = true;
-        }
+        isTimingFinish = true;
         next();
     }
 
@@ -243,7 +186,7 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
      * onNext，跳转到App能够成功
      */
     private void next() {
-        if (LogUtil.debugTencentSplashAd) {
+        if (LogUtil.debugSplashAd) {
             LogUtil.d(TAG, "next");
         }
         if (canJump) {

@@ -671,4 +671,5 @@ b) 在使用艺术美图网络服务进行网上交易时，您不可避免的�
     <string name="open_hight_resolution_waring">打开高清模式能使照片更清晰，但花费时间会更长，可能导致生成图片出错</string>
     <string name="you_did_not_choose_content">没有发现内容图片，请选择一张吧</string>
     <string name="you_did_not_choose_style">没有发现风格图片，请选择一张吧</string>
+    <string name="fail_to_make_dir">创建文件夹失败</string>
 </resources>

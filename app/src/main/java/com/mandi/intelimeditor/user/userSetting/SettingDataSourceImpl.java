@@ -46,7 +46,7 @@ public class SettingDataSourceImpl implements SettingDataSource {
          * 写死的部分
          */
         // 字体缓存， glide下载来的贴图缓存
-        DATA_DIRS = new String[]{AllData.zitiDir, appContext.getCacheDir() + "/" + "/" + InternalCacheDiskCacheFactory.DEFAULT_DISK_CACHE_DIR};
+        DATA_DIRS = new String[]{AllData.zitiDir, appContext.getCacheDir() + "/" + InternalCacheDiskCacheFactory.DEFAULT_DISK_CACHE_DIR};
 
         DATA_NAMES = new String[]{"字体文件", "贴图文件"};
     }

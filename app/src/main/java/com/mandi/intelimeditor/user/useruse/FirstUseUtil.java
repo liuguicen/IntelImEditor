@@ -20,10 +20,10 @@ import com.mandi.intelimeditor.R;
  * <pre>
  */
 public class FirstUseUtil {
-    public static void usuPicUseGuide(final Context context, View targetView, View targetView1) {
+    public static void usuLocalPicUseGuide(final Context context, View targetView, View targetView1) {
         if (!AllData.hasReadConfig.hasReadUsuPicUse()) {
             showGuideView(context, targetView, GuideView.Direction.TOP, GuideView.MyShape.CIRCULAR, "点击右下角图标可选择文件夹内图片哦",
-                    () -> showGuideView(context, targetView1, GuideView.Direction.BOTTOM, GuideView.MyShape.RECTANGULAR, "长按图片多选，即可制作GIF，设为常用等哦",
+                    () -> showGuideView(context, targetView1, GuideView.Direction.BOTTOM, GuideView.MyShape.RECTANGULAR, "选择正脸照创作效果更佳哟",
                             () -> AllData.hasReadConfig.put_usuPicUse(true)));
         } else if (AllData.globalSettings.isShowShortVideo() && !AllData.hasReadConfig.hasRead_video2Gif()) {
             showGuideView(context, "还可以选择短视频制作GIF哟", () -> AllData.hasReadConfig.put_video2Gif(true));

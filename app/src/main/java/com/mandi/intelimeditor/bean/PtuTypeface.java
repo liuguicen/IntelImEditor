@@ -1,5 +1,7 @@
 package com.mandi.intelimeditor.bean;
 
+import org.jetbrains.annotations.NotNull;
+
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.datatype.BmobFile;
 
@@ -55,5 +57,10 @@ public class PtuTypeface extends BmobObject {
                 ", size='" + size + '\'' +
                 ", typeface=" + typeface +
                 '}';
+    }
+
+    @NotNull
+    public String getNameInFile() {
+        return name + getObjectId() + ".ttf";
     }
 }

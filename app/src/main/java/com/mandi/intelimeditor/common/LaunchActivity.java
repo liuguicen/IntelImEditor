@@ -202,8 +202,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
         // 广告控制策略，
         // 全局关闭广告
         // 特殊情况避免检查不显示
-        // AllData.isVip = true;
-        if (!LogUtil.testSplashAd
+        if (!LogUtil.debugSplashAd
                 && (AllData.isVip || AdData.judgeAdClose() ||
                 System.currentTimeMillis() - lastADShowTime < AdData.LAUNCH_AD_TIME_INTERVAL)) {
             US.putSplashADEvent(US.SPLASH_AD_NOT_SHOW);
@@ -227,29 +226,26 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
     }
 
     private void chooseAd2Show() {
-        if (adStrategyUtil.isShow("TT")) {
-            US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_TT");
-            showTTSplashAd(SPLASH_FIRST_TIME_OUT);
-        } else if (adStrategyUtil.isShow("KJ")) {
-            US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_KJ");
-            showKJSplashAd(SPLASH_FIRST_TIME_OUT);
-        } else { // 默认优量汇 (adStrategyUtil.isShow("TX"))
+        // if (adStrategyUtil.isShow("TX")) {
             US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_TX");
-            showTencentSplashAd(SPLASH_FIRST_TIME_OUT);
-        }
+            showTxSplashAd(SPLASH_FIRST_TIME_OUT);
+        // } else if (adStrategyUtil.isShow("KJ")) {
+        //     US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_KJ");
+        //     showKJSplashAd(SPLASH_FIRST_TIME_OUT);
+        // } else { // 默认优量汇 (adStrategyUtil.isShow("TX"))
+        //     US.putSplashADEvent(US.CHOOSE_SPLASH_AD + "_TT");
+        //     showTTSplashAd(SPLASH_FIRST_TIME_OUT);
+        // }
     }
 
     private void initAdView() {
-        pauseView = findViewById(R.id.tv_ad_pause_to_see);
         container = this.findViewById(R.id.splash_container);
-        skipView = findViewById(R.id.skip_view);
     }
 
-    private void showTencentSplashAd(long timeout) {
+    private void showTxSplashAd(long timeout) {
         // 重要log，别删
         Log.e(TAG, "准备显示腾讯开屏广告:");
-        mTencentSplashAd = new TencentSplashAd(this, container, pauseView, skipView,
-                this, timeout);
+        mTencentSplashAd = new TencentSplashAd(this, container, this, timeout);
         // 如果是Android6.0以下的机器，默认在安装时获得了所有权限，可以直接调用SDK
         mTencentSplashAd.fetchSplashAD();
         if (hadResumed) {
@@ -298,7 +294,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
             AllData.appConfig.putOptionPermissionCount(optionalReadCount + 1);
         }
 
-        // 权限都已经有了
+        // 权限都已经有了，那么直接调用SDK
         if (lackedPermission.size() == 0) {
             afterPermissionSuccess();
         } else {

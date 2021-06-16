@@ -100,13 +100,14 @@ public class InstallPolicy {
         MyDatabase myDatabase = null;
         try {//添加分享的优先选项，2020年4月，前几个变成了qq、微信、钉钉、抖音、快手
             String[] packageNames = new String[]{
-                    "com.tencent.mobileqq", "com.tencent.mm", "com.alibaba.android.rimet",
-                    "com.tencent.mobileqq", "com.ss.android.ugc.aweme", "com.tencent.mm",
-                    "com.smile.gifmaker",};
+                    "com.tencent.mm", "com.tencent.mm", "com.tencent.mobileqq",
+                    "com.ss.android.ugc.aweme",  "com.smile.gifmaker",
+                    "com.tencent.mobileqq", "com.tencent.mm",
+                    "com.alibaba.android.rimet",};
             String[] shareTitles = new String[]{
-                    "发送给好友", "发送给朋友", "钉钉",
-                    "保存到QQ收藏", "抖音短视频", "添加到微信收藏",
-                    "快手"};
+                    "发送给朋友", "微信朋友圈", "发送给好友",
+                    "抖音",  "快手",
+                    "保存到QQ收藏", "添加到微信收藏", "钉钉"};
             myDatabase = MyDatabase.getInstance();
             long time = System.currentTimeMillis();
             for (int i = 0; i < packageNames.length; i++)

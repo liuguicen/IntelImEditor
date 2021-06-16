@@ -286,7 +286,7 @@ public class LocalPicFragment extends ChooseBaseFragment implements ChoosePicCon
     public void showPicList() {
         LogUtil.d("开始显示图片列表");
         if (mActivity != null && gridLayoutManager != null && gridLayoutManager.findViewByPosition(2) == null) {
-            FirstUseUtil.usuPicUseGuide(mActivity, mActivity.mFloatActionBtn, gridLayoutManager.findViewByPosition(2));
+            FirstUseUtil.usuLocalPicUseGuide(mActivity, mActivity.mFloatActionBtn, gridLayoutManager.findViewByPosition(2));
         }
         pictureGridView.setAdapter(picAdapter);
 //        Debug.stopMethodTracing();

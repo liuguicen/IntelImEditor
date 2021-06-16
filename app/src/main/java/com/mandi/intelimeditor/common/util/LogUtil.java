@@ -38,7 +38,6 @@ public final class LogUtil {
     public static final boolean debugRendPic = false;
     public static final boolean debugTietuEraser = false;
     public static final boolean debugTouchEnlarge = false;
-    public static final boolean debugTencentSplashAd = false;
     public static final boolean debugBaoZouFaceFuse = false;
     public static final boolean debugAdjustLevels = false;
     public static final boolean debugAdDStrategy = false;
@@ -47,7 +46,7 @@ public final class LogUtil {
     public static boolean debugDeformation = false;
     public static final boolean debugFace = false; // 人脸检测 对齐 相关的调试
     public static boolean debugGif = false;
-    public static boolean testSplashAd = false;
+    public static boolean debugSplashAd = false;
     public static boolean debugPtuTietuList = false;
     public static boolean debugStyleTransfer = false;
 
