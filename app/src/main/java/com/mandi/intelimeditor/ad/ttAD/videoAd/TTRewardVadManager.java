@@ -10,6 +10,7 @@ import com.bytedance.sdk.openadsdk.TTAdManager;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTRewardVideoAd;
+import com.mandi.intelimeditor.ad.AdData;
 import com.mandi.intelimeditor.ad.TTAdConfig;
 import com.mandi.intelimeditor.common.dataAndLogic.AllData;
 
