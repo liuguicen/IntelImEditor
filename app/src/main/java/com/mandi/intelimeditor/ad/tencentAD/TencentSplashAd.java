@@ -17,7 +17,6 @@ import com.qq.e.comm.constants.LoadAdParams;
 import com.qq.e.comm.util.AdError;
 
 
-
 /**
  * <pre>
  *      author : liuguicen
@@ -68,7 +67,7 @@ public class TencentSplashAd implements SplashADListener, IBaseSplashAd {
         //            US.putSplashADEvent(US.FAILED + US.TENCENT_AD + " container is covered");
         //        }
         fetchSplashAD(activity, container,
-                AdData.GDT_ID_LAUNCH_QY,
+                TxAdConfig.SPLASH_ID,
                 this, mTimeoutLong);
     }
 

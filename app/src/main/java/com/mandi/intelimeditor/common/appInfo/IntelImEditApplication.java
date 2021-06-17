@@ -165,7 +165,7 @@ public class IntelImEditApplication extends MultiDexApplication {
         // 铠甲广告
         AdCenter adCenter = AdCenter.getInstance(this);
         adCenter.onCreate();
-        adCenter.setAppID(this, "3d1506dc");
+        adCenter.setAppID(this, AppConfig.KJ_ID);
         adCenter.onResume();
         adCenter.setOaid(false, "");
     }

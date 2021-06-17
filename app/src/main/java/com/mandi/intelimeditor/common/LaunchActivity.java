@@ -344,7 +344,7 @@ public class LaunchActivity extends BaseActivity implements ISplashAdListener {
                 }
             }
             // 缺乏必须权限或者 缺乏可选权限且权限弹窗阅读只有1次
-            if ((isLackOptional && AllData.appConfig.getOptionalPermissionCount() <= 1) || isLackNecessary) {
+            if ((isLackOptional && AllData.appConfig.getOptionalPermissionCount() < 1) || isLackNecessary) {
                 showPermissionDialog(isBanForever, isLackNecessary);
             } else {
                 afterPermissionSuccess();

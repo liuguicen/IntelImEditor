@@ -134,7 +134,7 @@ object TypefaceDownloader {
         var saveFile = File(path)
         try {
             var dir = File(AllData.zitiDir)
-            if (!dir.isDirectory) {
+            if (!dir.exists() || !dir.isDirectory) {
                 dir.delete()
                 if (!dir.mkdir()) {
                     return java.lang.Exception("创建文件夹失败")
