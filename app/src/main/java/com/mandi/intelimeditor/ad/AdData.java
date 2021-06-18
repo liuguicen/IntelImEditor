@@ -349,20 +349,20 @@ public class AdData {
             AppConfig.isCloseVipFunction = true;
             Calendar calendar = Calendar.getInstance();
             // 一定注意！！！calendar月份从0开始算的， 10月1日要写成9月1日，不然多一个月延期，一个月的广告费
-            calendar.set(2020, 10, 18, 20, 0, 0);
+            calendar.set(2021, 5, 23, 20, 0, 0);
             adOpenTime = calendar.getTimeInMillis();
         }
         if ("vivo".equals(channel)) {
             Calendar calendar = Calendar.getInstance();
             // 一定注意！！！calendar月份从0开始算的， 10月1日要写成9月1日，不然多一个月延期，一个月的广告费
-            calendar.set(2020, 10, 18, 12, 0, 0);
+            calendar.set(2020, 5, 23, 12, 0, 0);
             adOpenTime = calendar.getTimeInMillis();
         }
 
         if ("oppo".equals(channel)) {
             Calendar calendar = Calendar.getInstance();
             // 一定注意！！！calendar月份从0开始算的， 10月1日要写成9月1日，不然多一个月延期，一个月的广告费
-            calendar.set(2020, 10, 18, 15, 0, 0);
+            calendar.set(2020, 5, 23, 15, 0, 0);
             adOpenTime = calendar.getTimeInMillis();
         }
         closeAdForStoreCheck(adOpenTime);
